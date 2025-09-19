@@ -1,6 +1,7 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "Camera.h"
+#include "../Player/Player.h"
 
 Camera::Camera(void)
 {
@@ -26,6 +27,34 @@ void Camera::Init(void)
 
 void Camera::Update(void)
 {
+	if (player_)
+	{
+		// プレイヤーの座標を取得
+		VECTOR target = player_->GetPos();
+
+		// 目標カメラ座標（例：プレイヤーの真上や後方など、好みで調整）
+		VECTOR targetPos = { target.x, target.y + 200.0f, target.z - 150.0f };
+
+		// 線形補間で滑らかに追従
+		float followSpeed = 0.1f; // 0.0f～1.0f（小さいほどゆっくり追従）
+		pos_.x = pos_.x + (targetPos.x - pos_.x) * followSpeed;
+		pos_.y = pos_.y + (targetPos.y - pos_.y) * followSpeed;
+		pos_.z = pos_.z + (targetPos.z - pos_.z) * followSpeed;
+
+		// カメラの位置・角度をDxLibに反映
+		SetCameraPositionAndTarget_UpVecY(pos_, target);
+	}
+
+	if (player_)
+	{
+		// プレイヤーの角度を取得
+		VECTOR angles = player_->GetAngles();
+
+		// プレイヤーの向きを基準にカメラの角度を設定
+		angles_.y = angles.y;
+		angles_.x = AsoUtility::Deg2RadF(20.0f); // 少し上から見る
+		angles_.z = 0.0f;
+	}
 }
 
 void Camera::SetBeforeDraw(void)
@@ -137,29 +166,34 @@ void Camera::MoveXYZDirection(void)
 	if (ins.IsNew(KEY_INPUT_RIGHT)) { angles_.y += rotPow; }
 	if (ins.IsNew(KEY_INPUT_LEFT)) { angles_.y -= rotPow; }
 
-	// WASDでカメラを移動させる
-	const float movePow = 3.0f;
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	//// WASDでカメラを移動させる
+	//const float movePow = 3.0f;
+	//VECTOR dir = AsoUtility::VECTOR_ZERO;
 
-	if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-	if (ins.IsNew(KEY_INPUT_A)) { dir = { -1.0f, 0.0f, 0.0f }; }
-	if (ins.IsNew(KEY_INPUT_S)) { dir = { 0.0f, 0.0f, -1.0f }; }
-	if (ins.IsNew(KEY_INPUT_D)) { dir = { 1.0f, 0.0f, 0.0f }; }
+	//if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
+	//if (ins.IsNew(KEY_INPUT_A)) { dir = { -1.0f, 0.0f, 0.0f }; }
+	//if (ins.IsNew(KEY_INPUT_S)) { dir = { 0.0f, 0.0f, -1.0f }; }
+	//if (ins.IsNew(KEY_INPUT_D)) { dir = { 1.0f, 0.0f, 0.0f }; }
 
-	if (!AsoUtility::EqualsVZero(dir))
+	//if (!AsoUtility::EqualsVZero(dir))
 
-	{
-		// XYZの回転行列
-		// XZ平面移動にする場合は、XZの回転を考慮しないようにする
-		MATRIX mat = MGetIdent();
-		//mat = MMult(mat, MGetRotX(angles_.x));
-		mat = MMult(mat, MGetRotY(angles_.y));
-		//mat = MMult(mat, MGetRotZ(angles_.z));
-		// 
-		// 回転行列を使用して、ベクトルを回転させる
-		VECTOR moveDir = VTransform(dir, mat);
+	//{
+	//	// XYZの回転行列
+	//	// XZ平面移動にする場合は、XZの回転を考慮しないようにする
+	//	MATRIX mat = MGetIdent();
+	//	//mat = MMult(mat, MGetRotX(angles_.x));
+	//	mat = MMult(mat, MGetRotY(angles_.y));
+	//	//mat = MMult(mat, MGetRotZ(angles_.z));
+	//	// 
+	//	// 回転行列を使用して、ベクトルを回転させる
+	//	VECTOR moveDir = VTransform(dir, mat);
 
-		// 方向×スピードで移動量を作って、座標に足して移動
-		pos_ = VAdd(pos_, VScale(moveDir, movePow));
-	}
+	//	// 方向×スピードで移動量を作って、座標に足して移動
+	//	pos_ = VAdd(pos_, VScale(moveDir, movePow));
+	//}
+}
+
+void Camera::SetFollow(Player* player)
+{
+	player_ = player;
 }

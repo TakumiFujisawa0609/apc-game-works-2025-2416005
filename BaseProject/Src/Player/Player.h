@@ -35,13 +35,15 @@ public:
 	static constexpr float SPEED_ANIM = 20.0f;
 
 	// 移動スピード
-	static constexpr float SPEED_MOVE = 10.0f;
+	static constexpr float SPEED_MOVE = 3.0f;
 
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
 		IDLE,
 		WALK,
+		CAPO,
+		BAKA,
 		MAX,
 	};
 
@@ -49,6 +51,10 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Release(void);
+
+	VECTOR GetPos(void);
+
+	VECTOR GetAngles(void);
 
 private:
 

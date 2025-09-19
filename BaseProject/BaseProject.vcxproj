@@ -35,6 +35,7 @@
     <ClCompile Include="Src\Utility\AnimationController.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Object\Stage.cpp" />
+    <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Player\Player.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="Src\Utility\AnimationController.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Object\Stage.h" />
+    <ClInclude Include="Src\Utility\MatrixUtility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1,6 +1,8 @@
 #pragma once
 #include <DxLib.h>
 
+class Player;
+
 class Camera
 {
 
@@ -61,7 +63,13 @@ public:
 	// XYZ方向に移動
 	void MoveXYZDirection(void);
 
+	// 追従対象の設定
+	void SetFollow(Player* player);
+
 private:
+
+	// カメラの追従対象
+	Player* player_;
 
 	// カメラモード
 	MODE mode_;
