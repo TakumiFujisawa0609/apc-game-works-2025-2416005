@@ -11,6 +11,7 @@
 TitleScene::TitleScene(void) : SceneBase()
 {
 	grid_ = nullptr;
+	SetMouseDispFlag(false);
 }
 
 TitleScene::~TitleScene(void)
@@ -21,7 +22,8 @@ void TitleScene::Init(void)
 {
 	// カメラモード変更
 	Camera* camera = SceneManager::GetInstance().GetCamera();
-	camera->ChangeMode(Camera::MODE::FREE);
+	camera->SetFollow(player_);
+	camera->ChangeMode(Camera::MODE::FOLLOW);
 
 	// グリッド初期化
 	grid_ = new Grid();

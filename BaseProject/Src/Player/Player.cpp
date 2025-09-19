@@ -53,7 +53,7 @@ void Player::Init(void)
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), 30.0f,
 		 Application::PATH_MODEL + "Player/Walk.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::CAPO), 30.0f,
+	 animationController_->Add(static_cast<int>(ANIM_TYPE::CAPO), 50.0f,
 		 Application::PATH_MODEL + "Player/Capoeira.mv1");
 
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
@@ -67,59 +67,8 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
-	// 入力制御のインスタンスを取得
-	InputManager& ins = InputManager::GetInstance();
-
-	// 移動方向を決める
-	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
-	if (ins.IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
-	if (ins.IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
-	if (ins.IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
-	if (ins.IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
-
-	if (AsoUtility::EqualsVZero(moveDir))
-	{
-		// 待機アニメーションをループ再生
-		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-	}
-	else
-	{
-		// 移動方向を更新
-		moveDir_ = moveDir;
-
-		// 移動量を計算する(方向×スピード)
-		movePow = VScale(moveDir, SPEED_MOVE);
-
-		// 移動処理(座標＋移動量)
-		pos_ = VAdd(pos_, movePow);
-
-		// プレイヤーのモデルの位置を更新
-		MV1SetPosition(modelId_, pos_);
-
-		// 方向から角度に変換する
-		angles_.y = atan2(moveDir.x, moveDir.z);
-
-		// モデルの方向が正の負の方向を向いているので補正する
-		angles_.y += AsoUtility::Deg2RadF(180.0f);
-
-		MV1SetRotationXYZ(modelId_, angles_);
-
-		// 歩くアニメーションをループ再生
-		if (animationController_->GetPlayType() != static_cast<int>(ANIM_TYPE::WALK))
-		{
-			animationController_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
-		}
-	}
-
-	//angles_.y += AsoUtility::Deg2RadF(0.1f);
-
-	//// 親子回転行列を計算
-	//MATRIX mat = MatrixUtility::Multiplication(localAngles_, angles_);
-
-	//MV1SetRotationMatrix(modelId_, mat);
-
-	// アニメーションの更新  
-	animationController_->Update();
+	ProcessJump();
+	ProcessMove();
 }
 
 void Player::Draw(void)
@@ -167,4 +116,180 @@ VECTOR Player::GetPos(void)
 VECTOR Player::GetAngles(void)
 {
 	return angles_;
+}
+
+void Player::ChangeState(STATE newState)
+{
+
+	currentState_ = newState;
+
+	switch (currentState_)
+	{
+	case STATE::NONE:
+		break;
+	case STATE::STANDBY:
+		// 待機状態に変更
+		ChangeStandby();
+		break;
+	case STATE::KNOCKBACK:
+		// ノックバック状態に変更
+		ChangeKnockback();
+		break;
+	case STATE::ATTACK:
+		// 攻撃状態に変更
+		ChangeAttack();
+		break;
+	case STATE::DEAD:
+		// 死亡状態に変更
+		ChangeDead();
+		break;
+	case STATE::END:
+		ChangeEnd();
+		break;
+	case STATE::VICTORY:
+		// 勝利状態に変更
+		ChangeVictory();
+		break;
+	}
+}
+
+void Player::ChangeKnockback(void)
+{
+	// ジャンプ判定にする
+	isJump_ = true;
+
+	// ノックバックカウンタリセット
+	cntKnockBack_ = 0;
+}
+
+
+void Player::ChangeStandby(void)
+{
+	// 待機状態に変更
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void Player::ChangeAttack(void)
+{
+	//// 武器を使用する
+	//useWeapon_->Use(pos_, moveDir_);
+
+	//// 攻撃アニメーション
+	//animationController_->Play(static_cast<int>(ANIM_TYPE::PUNCH), false);
+
+}
+
+void Player::ChangeDead(void)
+{
+	//// DEATHアニメーションをループ無しで再生
+	//animationController_->Play(static_cast<int>(ANIM_TYPE::DEATH), false);
+}
+
+void Player::ChangeEnd(void)
+{
+}
+
+void Player::ChangeVictory(void)
+{
+	//// VICTORYアニメーションをループ再生
+	//animationController_->Play(static_cast<int>(ANIM_TYPE::WAVE), true);
+
+}
+
+void Player::UpdateKnockback(void)
+{
+	// 着地したら通常状態に戻す
+	if (!isJump_)
+	{
+		ChangeState(STATE::STANDBY);
+		return;
+	}
+	cntKnockBack_++;
+	// ジャンプする
+	jumpPow_ -= GRAVITY_POW;
+	pos_.y += jumpPow_;
+	// ノックバック方向に移動させる
+	VECTOR movePow = VScale(knockBackDir_, SPEED_KNOCKBACK);
+	pos_ = VAdd(pos_, movePow);
+	MV1SetPosition(modelId_, pos_);
+}
+
+void Player::ProcessJump(void)
+{
+	InputManager& ins = InputManager::GetInstance();
+
+	//// 重力(加速度を速度に加算していく)
+	//jumpPow_ -= GRAVITY_POW;
+
+	// ジャンプ判定
+	if (ins.IsTrgDown(KEY_INPUT_SPACE) && !isJump_)
+	{
+		isJump_ = true;
+		jumpPow_ = JUMP_POW;
+		// ジャンプアニメーション再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), false);
+	}
+
+	// プレイヤーの座標に移動量(速度、ジャンプ力)を加算する
+	pos_.y += jumpPow_;
+
+	// モデルに座標を設定する
+	MV1SetPosition(modelId_, pos_);
+}
+
+void Player::ProcessMove(void)
+{
+	// 入力制御のインスタンスを取得
+	InputManager& ins = InputManager::GetInstance();
+
+	// 移動方向を決める
+	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
+	if (ins.IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
+	if (ins.IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
+	if (ins.IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
+	if (ins.IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
+
+	if (AsoUtility::EqualsVZero(moveDir))
+	{
+		// 待機アニメーションをループ再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	}
+	else
+	{
+
+		Camera* camera = SceneManager::GetInstance().GetCamera();
+
+		VECTOR angle = camera->GetAngles();
+
+		// 移動方向をカメラの方向に更新
+		MATRIX mat = MGetIdent();
+		mat = MMult(mat, MGetRotY(angle.y));
+		moveDir = VTransform(moveDir, mat);
+
+		// 移動量を計算する(方向×スピード)
+		movePow = VScale(moveDir, SPEED_MOVE);
+
+		// 移動処理(座標＋移動量)
+		pos_ = VAdd(pos_, movePow);
+
+		// プレイヤーのモデルの位置を更新
+		MV1SetPosition(modelId_, pos_);
+
+		// 方向から角度に変換する
+		angles_.y = atan2(moveDir.x, moveDir.z);
+
+		// モデルの方向が正の負の方向を向いているので補正する
+		angles_.y += AsoUtility::Deg2RadF(180.0f);
+
+		MV1SetRotationXYZ(modelId_, angles_);
+
+		// 歩くアニメーションをループ再生
+		if (animationController_->GetPlayType() != static_cast<int>(ANIM_TYPE::WALK))
+		{
+			animationController_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
+		}
+	}
+
+	animationController_->Update();
+
 }

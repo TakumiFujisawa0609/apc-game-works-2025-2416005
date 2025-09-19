@@ -37,11 +37,22 @@ public:
 	// 移動スピード
 	static constexpr float SPEED_MOVE = 3.0f;
 
+	// 重力
+	static constexpr float GRAVITY_POW = 0.8f;
+
+	// ジャンプ力
+	static constexpr float JUMP_POW = 20.0f;
+
+	// ノックバックスピード
+	static constexpr float SPEED_KNOCKBACK = 10.0f;
+
+
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
 		IDLE,
 		WALK,
+		JUMP,
 		CAPO,
 		BAKA,
 		MAX,
@@ -58,6 +69,17 @@ public:
 
 private:
 
+	enum class STATE
+	{
+		NONE,
+		STANDBY,
+		KNOCKBACK,
+		ATTACK,
+		DEAD,
+		END,
+		VICTORY,
+	};
+
 	// アニメーション制御
 	AnimationController* animationController_;
 
@@ -67,6 +89,31 @@ private:
 	// モデル情報
 	int modelId_;
 
+	// 現在の状態  
+	STATE currentState_;
+
+	void ChangeState(STATE newState);
+
+	// 状態を変更する
+	void ChangeKnockback(void);
+	void ChangeStandby(void);
+	void ChangeAttack(void);
+	void ChangeDead(void);
+	void ChangeEnd(void);
+	void ChangeVictory(void);
+
+	void UpdateKnockback(void);
+
+	void ProcessJump(void);
+	void ProcessMove(void);
+
+
+	// ノックバック方向
+	VECTOR knockBackDir_;
+
+	// ノックバックカウンタ(点滅用)
+	int cntKnockBack_;
+
 	VECTOR pos_;
 	VECTOR angles_;
 	VECTOR scales_;
@@ -74,4 +121,10 @@ private:
 	VECTOR movePow;
 	// ローカル角度
 	VECTOR localAngles_;
+
+	// ジャンプ力
+	float jumpPow_;
+
+	// ジャンプ判定
+	bool isJump_;
 };
