@@ -25,7 +25,7 @@ void Application::Init(void)
 {
 
 	// アプリケーションの初期設定
-	SetWindowText("3DWorld");
+	SetWindowText("魔法少女無双");
 
 	// ウィンドウサイズ
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
@@ -65,9 +65,13 @@ void Application::Run(void)
 	InputManager& inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
+	int StartTime, EndTime, TookTime;
+
 	// ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
+
+		StartTime = GetNowCount();
 
 		inputManager.Update();
 		sceneManager.Update();
@@ -78,6 +82,15 @@ void Application::Run(void)
 
 	}
 
+	// フレーム終了時刻を取得
+	EndTime = GetNowCount();
+	TookTime = EndTime - StartTime;
+
+	// 規定時間より処理が早ければ待機
+	if (TookTime < OneFrameTime)
+	{
+		Sleep(OneFrameTime - TookTime);
+	}
 }
 
 void Application::Destroy(void)

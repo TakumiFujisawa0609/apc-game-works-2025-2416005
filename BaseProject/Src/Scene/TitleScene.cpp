@@ -7,6 +7,7 @@
 #include "../Object/Stage.h"
 #include "TitleScene.h"
 #include "../Player/Player.h"
+#include "../Object/Enemy/Slime/SlimeManager.h"
 
 TitleScene::TitleScene(void) : SceneBase()
 {
@@ -36,6 +37,9 @@ void TitleScene::Init(void)
 	// プレイヤー初期化
 	Player::CreateInstance();
 	Player::GetInstance()->Init();
+
+	slime_ = new SlimeManager();
+	slime_->Spawn(0.0f, 0.0f, 50.0f);
 }
 
 void TitleScene::Update(void)
@@ -48,6 +52,8 @@ void TitleScene::Update(void)
 
 	// プレイヤー更新
 	Player::GetInstance()->Update();
+
+	slime_->Update();
 }
 
 void TitleScene::Draw(void)
@@ -60,6 +66,8 @@ void TitleScene::Draw(void)
 
 	// プレイヤー描画
 	Player::GetInstance()->Draw();
+
+	slime_->Draw();
 }
 
 void TitleScene::Release(void)
@@ -75,4 +83,6 @@ void TitleScene::Release(void)
 	// プレイヤー解放
 	Player::GetInstance()->Release();
 	Player::DeleteInstance();
+
+	slime_->Release();
 }

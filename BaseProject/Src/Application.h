@@ -10,6 +10,10 @@ public:
 	static constexpr int SCREEN_SIZE_X = 1024;
 	static constexpr int SCREEN_SIZE_Y = 640;
 
+	static constexpr int FPS = 60;                           // 固定FPS
+	static constexpr int OneFrameTime = 1000 / FPS;          // 1フレームあたりのms (約16ms)
+
+
 	// データパス関連
 	//-------------------------------------------
 	static const std::string PATH_DATA;

@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 class Grid;
 class Player;
+class SlimeManager;
 
 class TitleScene : public SceneBase
 {
@@ -25,5 +26,7 @@ private:
 	Grid* grid_;
 
 	Player* player_;
+
+	SlimeManager* slime_;
 
 };
