@@ -7,7 +7,7 @@
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage.h"
-
+#include "ShotPlayerManager.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -71,6 +71,7 @@ void Player::Update(void)
 {
 	ProcessJump();
 	ProcessMove();
+	ProcessShot(); 
 }
 
 void Player::Draw(void)
@@ -79,6 +80,8 @@ void Player::Draw(void)
 	if (modelId_ != -1) {
 		MV1DrawModel(modelId_);
 	}
+
+	ShotPlayerManager::GetInstance().Draw();
 	
 	DrawFormatString(
 		0, 50, 0xffffff,
@@ -301,4 +304,28 @@ void Player::ProcessMove(void)
 
 	animationController_->Update();
 
+}
+
+void Player::ProcessShot(void)
+{
+	InputManager& ins = InputManager::GetInstance();
+
+	static int prevMouse = 0;
+
+	int mouse = GetMouseInput();
+	if ((mouse & MOUSE_INPUT_LEFT) && !(prevMouse & MOUSE_INPUT_LEFT))
+	{
+		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
+		dir = VNorm(dir);
+
+		VECTOR shotPos = pos_;
+		shotPos.y += 100.0f;
+		shotPos = VAdd(shotPos, VScale(dir, 30.0f));
+
+		ShotPlayerManager::GetInstance().AddShot(shotPos, dir);
+	}
+
+	prevMouse = mouse;
+
+	ShotPlayerManager::GetInstance().Update();
 }

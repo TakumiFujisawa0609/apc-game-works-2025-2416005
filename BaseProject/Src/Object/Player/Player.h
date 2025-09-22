@@ -108,6 +108,7 @@ private:
 
 	void ProcessJump(void);
 	void ProcessMove(void);
+	void ProcessShot(void);
 
 
 	// ノックバック方向

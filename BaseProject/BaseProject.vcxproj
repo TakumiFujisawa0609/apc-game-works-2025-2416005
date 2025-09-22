@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\ShotPlayerManager.cpp" />
+    <ClCompile Include="Src\Object\Player\ShotPlayer.cpp" />
     <ClCompile Include="Src\Object\Enemy\Slime\SlimeManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\Slime\SlimeEnemy.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
@@ -41,6 +43,8 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\ShotPlayerManager.h" />
+    <ClInclude Include="Src\Object\Player\ShotPlayer.h" />
     <ClInclude Include="Src\Object\Enemy\Slime\SlimeManager.h" />
     <ClInclude Include="Src\Object\Enemy\Slime\SlimeEnemy.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
