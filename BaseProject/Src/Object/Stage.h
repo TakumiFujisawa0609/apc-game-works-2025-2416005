@@ -35,6 +35,8 @@ public:
 	void Draw(void);
 	void Release(void);
 
+    float GetGroundHeight(float x, float z); // 地面の高さを返す
+
 private:
 	// ステージモデルのハンドルID
 	int modelId_;

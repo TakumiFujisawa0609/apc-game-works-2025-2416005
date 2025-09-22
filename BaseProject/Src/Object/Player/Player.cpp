@@ -1,11 +1,12 @@
 #include "Player.h"
-#include "../Manager/InputManager.h"
-#include "../Utility/AnimationController.h"
-#include "../Manager/SceneManager.h"
-#include "../Utility/AsoUtility.h"
-#include "../Application.h"
-#include "../Utility/MatrixUtility.h"
-#include "../Manager/Camera.h"
+#include "../../Manager/InputManager.h"
+#include "../../Utility/AnimationController.h"
+#include "../../Manager/SceneManager.h"
+#include "../../Utility/AsoUtility.h"
+#include "../../Application.h"
+#include "../../Utility/MatrixUtility.h"
+#include "../../Manager/Camera.h"
+#include "../../Object/Stage.h"
 
 
 Player* Player::instance_ = nullptr;
@@ -58,6 +59,7 @@ void Player::Init(void)
 
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
 		 Application::PATH_MODEL + "Player/Silly Dancing.mv1");
+
 
 	 animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
@@ -218,22 +220,29 @@ void Player::ProcessJump(void)
 {
 	InputManager& ins = InputManager::GetInstance();
 
-	//// 重力(加速度を速度に加算していく)
-	//jumpPow_ -= GRAVITY_POW;
+	// 重力を適用
+	jumpPow_ -= GRAVITY_POW;
 
-	// ジャンプ判定
+	// ジャンプ開始
 	if (ins.IsTrgDown(KEY_INPUT_SPACE) && !isJump_)
 	{
 		isJump_ = true;
 		jumpPow_ = JUMP_POW;
-		// ジャンプアニメーション再生
 		animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), false);
 	}
 
-	// プレイヤーの座標に移動量(速度、ジャンプ力)を加算する
+	// 移動量を反映
 	pos_.y += jumpPow_;
 
-	// モデルに座標を設定する
+	// ★ ステージとの当たり判定
+	float groundY = Stage::GetInstance()->GetGroundHeight(pos_.x, pos_.z);
+	if (pos_.y <= groundY)
+	{
+		pos_.y = groundY;     // 地面に固定
+		isJump_ = false;      // 着地
+		jumpPow_ = 0.0f;      // 落下速度リセット
+	}
+
 	MV1SetPosition(modelId_, pos_);
 }
 

@@ -92,6 +92,8 @@ private:
 	// 現在の状態  
 	STATE currentState_;
 
+	int prevAnimType_ = static_cast<int>(ANIM_TYPE::IDLE);
+
 	void ChangeState(STATE newState);
 
 	// 状態を変更する
@@ -127,4 +129,6 @@ private:
 
 	// ジャンプ判定
 	bool isJump_;
+
+	VECTOR jumpForward_ = VGet(0.0f, 0.0f, 0.0f);  // 前方向のジャンプ移動量
 };

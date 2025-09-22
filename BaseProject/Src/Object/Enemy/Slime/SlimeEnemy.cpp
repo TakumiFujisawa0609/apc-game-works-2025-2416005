@@ -13,8 +13,8 @@ SlimeEnemy::~SlimeEnemy()
 void SlimeEnemy::Init(float _x, float _y, float _z) 
 {
     EnemyBase::Init(_x, _y, _z);
-    moveSpeed = 0.05f;
-    color = GetColor(0, 255, 0);
+    moveSpeed = 5.0f;
+    color = GetColor(0, 106, 182);
 
 	isAlive = true; // “G‚ğ¶‘¶ó‘Ô‚É‚·‚é
 }

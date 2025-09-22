@@ -33,13 +33,19 @@ void Stage::Update(void)
 
 void Stage::Draw(void)
 {
-	// ステージモデルの描画
-	MV1SetPosition(modelId_, pos_);
-	MV1DrawModel(modelId_);
+	//// ステージモデルの描画
+	//MV1SetPosition(modelId_, pos_);
+	//MV1DrawModel(modelId_);
 }
 
 void Stage::Release(void)
 {
 	// ステージモデルの解放
 	MV1DeleteModel(modelId_);
+}
+
+float Stage::GetGroundHeight(float x, float z)
+{
+	// 今は固定で y=0 を返す
+	return 0.0f;
 }

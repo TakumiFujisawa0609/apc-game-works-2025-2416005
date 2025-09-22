@@ -15,4 +15,12 @@ public:
     void Update();
     void Draw();
     void Release();
+
+private:
+    // spawn 制御
+    int maxSlimes = 100;
+    int spawnedCount = 0;        // これまでスポーンした数（0 から maxSlimes-1）
+    int framesSinceLastSpawn = 0;
+    int spawnInterval = 1;       // 何フレームごとにスポーンするか (1 = 毎フレーム)
+    float spawnRadius = 200.0f;  // プレイヤーを中心に置く半径
 };

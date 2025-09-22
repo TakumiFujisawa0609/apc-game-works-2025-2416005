@@ -6,7 +6,7 @@
 #include "../Object/Grid.h"
 #include "../Object/Stage.h"
 #include "TitleScene.h"
-#include "../Player/Player.h"
+#include "../Object/Player/Player.h"
 #include "../Object/Enemy/Slime/SlimeManager.h"
 
 TitleScene::TitleScene(void) : SceneBase()
