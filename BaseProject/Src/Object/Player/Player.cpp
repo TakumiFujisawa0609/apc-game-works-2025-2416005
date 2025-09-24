@@ -319,7 +319,7 @@ void Player::ProcessShot(void)
 		dir = VNorm(dir);
 
 		VECTOR shotPos = pos_;
-		shotPos.y += 100.0f;
+		shotPos.y += 70.0f;
 		shotPos = VAdd(shotPos, VScale(dir, 30.0f));
 
 		ShotPlayerManager::GetInstance().AddShot(shotPos, dir);

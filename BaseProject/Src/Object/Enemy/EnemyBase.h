@@ -3,12 +3,11 @@
 
 // 敵の基底クラス
 class EnemyBase {
-protected:
-    float x, y, z;   // 位置
-    int hp;          // 体力
-    bool isAlive;    // 生存フラグ
 
 public:
+
+    float x, y, z;   // 位置
+
     EnemyBase();
     virtual ~EnemyBase();
 
@@ -18,6 +17,16 @@ public:
     virtual void Release(); // 解放処理
 
     bool GetAlive() const { return isAlive; }
+    void Kill() { isAlive = false; }
+    VECTOR GetPos() const { return VGet(x, y, z); }
+
 
     VECTOR pos = VGet(x, y, z);
+
+private:
+
+
+    int hp;          // 体力
+    bool isAlive;    // 生存フラグ
+
 };

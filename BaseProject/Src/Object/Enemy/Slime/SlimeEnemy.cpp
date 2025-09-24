@@ -1,5 +1,8 @@
 #include "../Slime/SlimeEnemy.h"
 
+std::vector<SlimeEnemy*> slimes;
+std::vector<ShotPlayer*> shots;
+
 SlimeEnemy::SlimeEnemy()
     : moveSpeed(0.1f), color(GetColor(0, 255, 0)) 
 {

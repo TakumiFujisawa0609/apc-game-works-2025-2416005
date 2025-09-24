@@ -16,6 +16,9 @@ public:
     void Draw();
     void Release();
 
+    // スライムリストを取得
+    const std::vector<SlimeEnemy*>& GetSlimes() const { return slimes; }
+
 private:
     // spawn 制御
     int maxSlimes = 100;
