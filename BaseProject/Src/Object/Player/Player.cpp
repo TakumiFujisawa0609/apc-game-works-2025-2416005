@@ -13,6 +13,18 @@ Player* Player::instance_ = nullptr;
 
 Player::Player(void)
 {
+	modelId_ = -1;
+	animationController_ = nullptr;
+	pos_ = AsoUtility::VECTOR_ZERO;
+	angles_ = AsoUtility::VECTOR_ZERO;
+	localAngles_ = AsoUtility::VECTOR_ZERO;
+	// 状態初期化
+	currentState_ = STATE::NONE;
+	// ジャンプ関連初期化
+	isJump_ = false;
+	jumpPow_ = 0.0f;
+	// ノックバック関連初期化
+	cntKnockBack_ = 0;
 }
 
 Player::~Player(void)
@@ -313,13 +325,13 @@ void Player::ProcessShot(void)
 	static int prevMouse = 0;
 
 	int mouse = GetMouseInput();
-	if ((mouse & MOUSE_INPUT_LEFT) && !(prevMouse & MOUSE_INPUT_LEFT))
+	if ((mouse & MOUSE_INPUT_RIGHT) && !(prevMouse & MOUSE_INPUT_RIGHT))
 	{
 		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
 		dir = VNorm(dir);
 
 		VECTOR shotPos = pos_;
-		shotPos.y += 100.0f;
+		shotPos.y += 70.0f;
 		shotPos = VAdd(shotPos, VScale(dir, 30.0f));
 
 		ShotPlayerManager::GetInstance().AddShot(shotPos, dir);

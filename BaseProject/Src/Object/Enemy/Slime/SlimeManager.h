@@ -3,6 +3,9 @@
 #include "SlimeEnemy.h"
 
 class SlimeManager {
+public:
+    static SlimeManager* GetInstance();
+    static void SetInstance(SlimeManager* instance);
 
 private:
     std::vector<SlimeEnemy*> slimes;
@@ -11,16 +14,17 @@ public:
     SlimeManager();
     ~SlimeManager();
 
-    void Spawn(float x, float y, float z); // スライム出現
+    void Spawn(float x, float y, float z);
     void Update();
     void Draw();
     void Release();
 
+    const std::vector<SlimeEnemy*>& GetSlimes() const { return slimes; }
+
 private:
-    // spawn 制御
     int maxSlimes = 100;
-    int spawnedCount = 0;        // これまでスポーンした数（0 から maxSlimes-1）
+    int spawnedCount = 0;
     int framesSinceLastSpawn = 0;
-    int spawnInterval = 1;       // 何フレームごとにスポーンするか (1 = 毎フレーム)
-    float spawnRadius = 200.0f;  // プレイヤーを中心に置く半径
+    int spawnInterval = 1;
+    float spawnRadius = 1000.0f;
 };

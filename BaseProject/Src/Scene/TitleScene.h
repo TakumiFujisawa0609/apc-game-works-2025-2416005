@@ -29,4 +29,5 @@ private:
 
 	SlimeManager* slime_;
 
+	int imageId_;
 };

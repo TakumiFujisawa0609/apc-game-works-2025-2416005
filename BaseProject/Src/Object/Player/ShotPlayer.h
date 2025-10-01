@@ -1,9 +1,14 @@
 #pragma once
 #include <DxLib.h>
+#include <vector>
 
+class EnemyBase;
+class SlimeManager;
 class ShotPlayer
 {
 public:
+
+	const float SHOT_RADIUS = 50.0f;  // 弾の半径
 
 	ShotPlayer(const VECTOR& pos, const VECTOR& dir);
 	~ShotPlayer();
@@ -21,5 +26,6 @@ private:
 	VECTOR startPos_;  // 発射位置（基準）
 	float speed_;    // 移動速度
 	bool alive_;     // 生存フラグ
+	VECTOR prevPos_;
 };
 

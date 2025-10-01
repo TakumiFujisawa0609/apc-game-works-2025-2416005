@@ -1,14 +1,14 @@
 #pragma once
 #include "../EnemyBase.h"
+#include <DxLib.h>
+#include <vector>
+#include "../../Player/ShotPlayer.h"
 
-// スライム敵クラス
 class SlimeEnemy : public EnemyBase {
-
-private:
-    float moveSpeed;   // 移動速度
-    int color;         // 色
-
 public:
+
+    bool isCounted = false;
+
     SlimeEnemy();
     ~SlimeEnemy();
 
@@ -18,4 +18,14 @@ public:
     void Release() override;
 
     VECTOR pos = VGet(x, y, z);
+
+    VECTOR GetPos() const { return VGet(x, y, z); }
+    float GetRadius() const { return 15.0f; }
+
+private:
+    float moveSpeed;
+    int color;
+
+    // モデル情報
+    int modelId_;
 };
