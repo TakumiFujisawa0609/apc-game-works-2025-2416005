@@ -1,13 +1,14 @@
+#include <DxLib.h>
 #include "ShotPlayer.h"
 #include "../../Object/Enemy/Slime/SlimeManager.h"
 #include "../../Object/Enemy/EnemyBase.h"
 #include "../../Object/Enemy/Slime/SlimeEnemy.h"
-
+#include "../../Utility/AsoUtility.h"
 
 ShotPlayer::ShotPlayer(const VECTOR& pos, const VECTOR& dir)
-    : pos_(pos), dir_(VNorm(dir)), speed_(20.0f), alive_(true), startPos_(pos)
+    : pos_(pos), dir_(VNorm(dir)), speed_(20.0f), alive_(true), startPos_(pos), prevPos_(pos)
 {
-    dir_ = VNorm(dir_); // 正規化
+    dir_ = VNorm(dir_);
 }
 
 ShotPlayer::~ShotPlayer()
@@ -23,36 +24,45 @@ void ShotPlayer::Update(void)
 {
     if (!alive_) return;
 
-    // 移動
+    prevPos_ = pos_;
     pos_ = VAdd(pos_, VScale(dir_, speed_));
 
-    // 発射位置からの距離を計算
-    float dist = VSize(VSub(pos_, startPos_));
-
-    // 1000.0f 以上離れたら消す（値はお好みで）
-    if (dist > 1000.0f)
-    {
+    const float maxRange = 2000.0f;
+    if (VSize(VSub(pos_, startPos_)) > maxRange) {
         alive_ = false;
+        return;
     }
 
-    // スライムとの当たり判定
-    if (slimeManager_)
-    {
-        const auto& slimes = slimeManager_->GetSlimes();
-        for (auto& slime : slimes)
-        {
-            if (!slime->GetAlive()) continue;
+    SlimeManager* sm = SlimeManager::GetInstance();
+    if (!sm) return;
 
-            VECTOR slimePos = slime->GetPos();
-            float slimeRadius = 15.0f;
+    const auto& slimes = sm->GetSlimes();
+    for (auto slime : slimes) {
+        if (!slime) continue;
+        if (!slime->GetAlive()) continue;
 
-            float hitDist = VSize(VSub(pos_, slimePos));
-            if (hitDist <= (SHOT_RADIUS + slimeRadius))
-            {
-                alive_ = false;   // 弾を消す
-                slime->Kill();    
+        VECTOR c = slime->GetPos();
+        float r = slime->GetRadius() + SHOT_RADIUS;
+
+        VECTOR d = VSub(pos_, prevPos_);
+        float dd = VSize(d);
+        if (dd == 0.0f) {
+            if (VSize(VSub(prevPos_, c)) <= r) {
+                slime->Kill();
+                alive_ = false;
                 break;
             }
+            continue;
+        }
+        float t = AsoUtility::Dot(VSub(c, prevPos_), d) / (dd * dd);
+        if (t < 0.0f) t = 0.0f;
+        if (t > 1.0f) t = 1.0f;
+        VECTOR closest = VAdd(prevPos_, VScale(d, t));
+        float dist = VSize(VSub(closest, c));
+        if (dist <= r) {
+            slime->Kill();
+            alive_ = false;
+            break;
         }
     }
 }
@@ -61,8 +71,7 @@ void ShotPlayer::Draw(void)
 {
     if (!alive_) return;
 
-    // 半径 1.0 の球を描画（赤色・塗りつぶし）
-    DrawSphere3D(pos_, 30.0f, 16, GetColor(255, 0, 0), GetColor(128, 0, 0), TRUE);
+    DrawSphere3D(pos_, SHOT_RADIUS, 16, GetColor(255, 0, 0), GetColor(128, 0, 0), TRUE);
 }
 
 void ShotPlayer::Release(void)

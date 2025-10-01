@@ -8,7 +8,7 @@ class ShotPlayer
 {
 public:
 
-	const float SHOT_RADIUS = 5.0f;  // 弾の半径
+	const float SHOT_RADIUS = 10.0f;  // 弾の半径
 
 	ShotPlayer(const VECTOR& pos, const VECTOR& dir);
 	~ShotPlayer();
@@ -21,11 +21,11 @@ public:
 	
 private:
 
-	SlimeManager* slimeManager_; // スライムマネージャーへのポインタ
 	VECTOR pos_;     // 位置
 	VECTOR dir_;     // 移動方向
 	VECTOR startPos_;  // 発射位置（基準）
 	float speed_;    // 移動速度
 	bool alive_;     // 生存フラグ
+	VECTOR prevPos_;
 };
 

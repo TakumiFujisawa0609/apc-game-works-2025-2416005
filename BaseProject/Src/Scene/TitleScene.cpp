@@ -39,6 +39,7 @@ void TitleScene::Init(void)
 	Player::GetInstance()->Init();
 
 	slime_ = new SlimeManager();
+	SlimeManager::SetInstance(slime_);
 	slime_->Spawn(0.0f, 0.0f, 50.0f);
 }
 
@@ -85,4 +86,5 @@ void TitleScene::Release(void)
 	Player::DeleteInstance();
 
 	slime_->Release();
+	SlimeManager::SetInstance(nullptr);
 }

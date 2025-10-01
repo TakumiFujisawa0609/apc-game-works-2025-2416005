@@ -4,9 +4,7 @@
 #include <vector>
 #include "../../Player/ShotPlayer.h"
 
-// スライム敵クラス
 class SlimeEnemy : public EnemyBase {
-
 public:
     SlimeEnemy();
     ~SlimeEnemy();
@@ -18,13 +16,10 @@ public:
 
     VECTOR pos = VGet(x, y, z);
 
-    bool IsAlive() const { return isAlive; }
-    void Kill() { isAlive = false; }
-
     VECTOR GetPos() const { return VGet(x, y, z); }
     float GetRadius() const { return 15.0f; }
+
 private:
-    float moveSpeed;   // 移動速度
-    int color;         // 色
-    bool isAlive = true;
+    float moveSpeed;
+    int color;
 };

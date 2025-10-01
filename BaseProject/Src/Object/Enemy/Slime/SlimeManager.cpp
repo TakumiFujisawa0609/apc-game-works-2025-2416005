@@ -6,6 +6,11 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+SlimeManager* g_slime_manager_instance = nullptr;
+
+SlimeManager* SlimeManager::GetInstance() { return g_slime_manager_instance; }
+void SlimeManager::SetInstance(SlimeManager* instance) { g_slime_manager_instance = instance; }
+
 SlimeManager::SlimeManager() 
 {
 
@@ -13,8 +18,9 @@ SlimeManager::SlimeManager()
 
 SlimeManager::~SlimeManager() 
 {
-    Release();
+    Release(); 
 }
+
 
 void SlimeManager::Spawn(float x, float y, float z)
 {
@@ -52,6 +58,18 @@ void SlimeManager::Update()
             Spawn(sx, sy, sz);
         }
     }
+
+    // €‚ñ‚¾“G‚ğíœ
+    slimes.erase(
+        std::remove_if(slimes.begin(), slimes.end(),
+            [](SlimeEnemy* s) {
+                if (!s->GetAlive()) {
+                    delete s;
+                    return true; // erase ‘ÎÛ
+                }
+                return false;
+            }),
+        slimes.end());
 }
 
 void SlimeManager::Draw() 

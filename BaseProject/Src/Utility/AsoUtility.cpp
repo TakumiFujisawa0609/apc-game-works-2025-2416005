@@ -534,4 +534,7 @@ void AsoUtility::DrawLineXYZ(const VECTOR& pos, const Quaternion& rot, float len
 
 }
 
+float AsoUtility::Dot(const VECTOR& a, const VECTOR& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
 
