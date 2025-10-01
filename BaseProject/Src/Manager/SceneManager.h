@@ -24,6 +24,8 @@ public:
 		NONE,
 		TITLE,
 		GAME,
+		CLEAR,
+		OVER,
 		BASE
 	};
 	
@@ -60,6 +62,8 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+	SceneBase* GetCurrentScene() const { return scene_; }
+
 private:
 
 	// 静的インスタンス
@@ -71,7 +75,6 @@ private:
 	// フェード
 	Fader* fader_;
 
-	// 各種シーン
 	SceneBase* scene_;
 
 	// カメラ

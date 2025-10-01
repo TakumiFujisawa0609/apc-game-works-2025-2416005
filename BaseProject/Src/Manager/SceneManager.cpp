@@ -5,6 +5,9 @@
 #include "Camera.h"
 #include "MiniCamera.h"
 #include "SceneManager.h"
+#include "../Scene/GameScene.h"
+#include "../Scene/GameOver.h"
+#include "../Scene/GameClear.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
 
@@ -51,7 +54,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// èâä˙ÉVÅ[ÉìÇÃê›íË
-	DoChangeScene(SCENE_ID::TITLE);
+	DoChangeScene(SCENE_ID::GAME);
 
 }
 
@@ -239,6 +242,13 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		scene_ = new TitleScene();
 		break;
 	case SCENE_ID::GAME:
+		scene_ = new GameScene();
+		break;
+	case SCENE_ID::OVER:
+		scene_ = new GameOver();
+		break;
+	case SCENE_ID::CLEAR:
+		scene_ = new GameClear();
 		break;
 	case SCENE_ID::BASE:
 		break;

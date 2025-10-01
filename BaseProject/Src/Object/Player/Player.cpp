@@ -81,9 +81,12 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
-	ProcessJump();
+	ProcessUp();
+	ProcessDown();
 	ProcessMove();
 	ProcessShot(); 
+	ProcessAtack();
+	ProcessBrink();
 }
 
 void Player::Draw(void)
@@ -133,6 +136,11 @@ VECTOR Player::GetPos(void)
 VECTOR Player::GetAngles(void)
 {
 	return angles_;
+}
+
+float Player::GetRadius() const {
+	// プレイヤーの当たり判定半径
+	return 30.0f; 
 }
 
 void Player::ChangeState(STATE newState)
@@ -231,7 +239,7 @@ void Player::UpdateKnockback(void)
 	MV1SetPosition(modelId_, pos_);
 }
 
-void Player::ProcessJump(void)
+void Player::ProcessUp(void)
 {
 	InputManager& ins = InputManager::GetInstance();
 
@@ -239,7 +247,7 @@ void Player::ProcessJump(void)
 	jumpPow_ -= GRAVITY_POW;
 
 	// ジャンプ開始
-	if (ins.IsTrgDown(KEY_INPUT_SPACE) && !isJump_)
+	if (ins.IsTrgDown(KEY_INPUT_LSHIFT) && !isJump_)
 	{
 		isJump_ = true;
 		jumpPow_ = JUMP_POW;
@@ -259,6 +267,11 @@ void Player::ProcessJump(void)
 	}
 
 	MV1SetPosition(modelId_, pos_);
+}
+
+void Player::ProcessDown(void)
+{
+
 }
 
 void Player::ProcessMove(void)
@@ -340,4 +353,34 @@ void Player::ProcessShot(void)
 	prevMouse = mouse;
 
 	ShotPlayerManager::GetInstance().Update();
+}
+
+void Player::ProcessAtack(void)
+{
+
+}
+
+void Player::ProcessBrink(void)
+{
+	int moveSpeed = SPEED_MOVE;
+	bool isDashing = false;
+	static int dashTpRecoverCounter = 0;
+
+	// ダッシュ判定（元のダッシュ処理をここに）
+	if (CheckHitKey(KEY_INPUT_SPACE) && dashTp > 0) {
+		moveSpeed = DASH_SPEED;
+		isDashing = true;
+		dashTp -= DASH_TP_USE;
+		if (dashTp < 0) dashTp = 0;
+	}
+	else {
+		// ダッシュしていない場合は体力を回復
+		dashTpRecoverCounter++;
+		if (dashTpRecoverCounter >= 5) {
+			dashTp += DASH_TP_RECOVER;
+			if (dashTp > DASH_TP_MAX) dashTp = DASH_TP_MAX;
+			dashTpRecoverCounter = 0;
+		}
+	}
+
 }

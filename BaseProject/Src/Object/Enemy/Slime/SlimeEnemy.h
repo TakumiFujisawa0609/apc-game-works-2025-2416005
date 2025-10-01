@@ -6,6 +6,9 @@
 
 class SlimeEnemy : public EnemyBase {
 public:
+
+    bool isCounted = false;
+
     SlimeEnemy();
     ~SlimeEnemy();
 
@@ -22,4 +25,7 @@ public:
 private:
     float moveSpeed;
     int color;
+
+    // ƒ‚ƒfƒ‹î•ñ
+    int modelId_;
 };
