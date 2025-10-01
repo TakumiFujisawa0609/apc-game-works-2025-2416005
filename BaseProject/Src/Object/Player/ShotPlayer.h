@@ -8,7 +8,7 @@ class ShotPlayer
 {
 public:
 
-	const float SHOT_RADIUS = 10.0f;  // ’e‚Ì”¼Œa
+	const float SHOT_RADIUS = 50.0f;  // ’e‚Ì”¼Œa
 
 	ShotPlayer(const VECTOR& pos, const VECTOR& dir);
 	~ShotPlayer();

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\GameOver.cpp" />
+    <ClCompile Include="Src\Scene\GameClear.cpp" />
+    <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Object\Player\ShotPlayerManager.cpp" />
     <ClCompile Include="Src\Object\Player\ShotPlayer.cpp" />
     <ClCompile Include="Src\Object\Enemy\Slime\SlimeManager.cpp" />
@@ -43,6 +46,9 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\GameOver.h" />
+    <ClInclude Include="Src\Scene\GameClear.h" />
+    <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Object\Player\ShotPlayerManager.h" />
     <ClInclude Include="Src\Object\Player\ShotPlayer.h" />
     <ClInclude Include="Src\Object\Enemy\Slime\SlimeManager.h" />

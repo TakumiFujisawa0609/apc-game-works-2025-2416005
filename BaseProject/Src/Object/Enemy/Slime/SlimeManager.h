@@ -26,5 +26,5 @@ private:
     int spawnedCount = 0;
     int framesSinceLastSpawn = 0;
     int spawnInterval = 1;
-    float spawnRadius = 200.0f;
+    float spawnRadius = 1000.0f;
 };
