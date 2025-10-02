@@ -27,7 +27,7 @@ void SlimeEnemy::Init(float _x, float _y, float _z)
 
 void SlimeEnemy::Update()
 {
-    // 単純に上下運動する例
+    // 上下運動
     y += moveSpeed;
     if (y > 50.0f || y < 0.0f) {
         moveSpeed *= -1.0f;
@@ -37,10 +37,9 @@ void SlimeEnemy::Update()
     Player& player = *Player::GetInstance();
     VECTOR playerPos = player.GetPos();
 
-    // 自分 → プレイヤーの方向を計算
     VECTOR dir = VSub(playerPos, GetPos());
 
-    // --- 他のスライムとの衝突回避（完全非接触） ---
+    // 他のスライムとの衝突回避
     SlimeManager* sm = SlimeManager::GetInstance();
     if (sm) {
         const auto& slimes = sm->GetSlimes();
@@ -73,7 +72,7 @@ void SlimeEnemy::Update()
     }
 
 
-    // 正規化（長さを1に）
+    // 正規化
     dir = VNorm(dir);
 
 	int enemymoove = 1;

@@ -72,6 +72,8 @@ void Player::Init(void)
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
 		 Application::PATH_MODEL + "Player/Silly Dancing.mv1");
 
+	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATACK), 30.0f,
+		 Application::PATH_MODEL + "Player/Atack.mv1");
 
 	 animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
@@ -111,6 +113,17 @@ void Player::Draw(void)
 		"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
 		pos_.x, pos_.y, pos_.z
 	);
+
+	DrawFormatString(
+		0, 110, 0xffffff,
+		"ジャンプ中　　　 ：%s",
+		isJump_ ? "Yes" : "No"
+	);
+
+	//DrawFormatString(
+	//	0, 130, 0xffffff,
+	//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
+	//);
 }
 
 void Player::Release(void)
@@ -357,7 +370,26 @@ void Player::ProcessShot(void)
 
 void Player::ProcessAtack(void)
 {
+	static int prevMouse = 0;
+	int mouse = GetMouseInput();
 
+	// 左クリックで攻撃開始
+	if ((mouse & MOUSE_INPUT_LEFT) && !isAtack_)
+	{
+		isAtack_ = true;
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATACK), false); // 攻撃モーションを一度だけ再生
+	}
+
+	// 攻撃中 → アニメーションが終わったら解除
+	if (isAtack_ && animationController_->IsEnd())
+	{
+		isAtack_ = false;
+		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); // 待機モーションへ戻す
+	}
+
+	animationController_->Update();
+
+	prevMouse = mouse;
 }
 
 void Player::ProcessBrink(void)

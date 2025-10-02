@@ -67,6 +67,7 @@ public:
 		JUMP,
 		CAPO,
 		BAKA,
+		ATACK,
 		MAX,
 	};
 
@@ -147,6 +148,12 @@ private:
 
 	// ジャンプ判定
 	bool isJump_;
+
+	// アタック判定	
+	bool isAtack_;
+
+	// アタック継続時間
+	int cntAtack_;
 
 	// ダッシュ体力
 	int dashTp;
