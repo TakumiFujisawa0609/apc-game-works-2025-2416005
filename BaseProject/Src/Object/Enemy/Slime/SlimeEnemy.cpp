@@ -37,16 +37,11 @@ void SlimeEnemy::Update()
     Player& player = *Player::GetInstance();
     VECTOR playerPos = player.GetPos();
 
-<<<<<<< HEAD
-    VECTOR dir = VSub(playerPos, GetPos());
-
     // 他のスライムとの衝突回避
-=======
     // 自分 → プレイヤーの方向を計算
     VECTOR dir = VSub(playerPos, GetPos());
 
     // --- 他のスライムとの衝突回避（完全非接触） ---
->>>>>>> df5c4d14810d01b3d626a44b471cb247f9c95dfd
     SlimeManager* sm = SlimeManager::GetInstance();
     if (sm) {
         const auto& slimes = sm->GetSlimes();
@@ -75,18 +70,11 @@ void SlimeEnemy::Update()
                 other->z -= pushDir.z * pushAmount;
             }
         }
-<<<<<<< HEAD
+
 
     }
-
-
-    // 正規化
-=======
-    }
-
 
     // 正規化（長さを1に）
->>>>>>> df5c4d14810d01b3d626a44b471cb247f9c95dfd
     dir = VNorm(dir);
 
 	int enemymoove = 1;
@@ -95,7 +83,6 @@ void SlimeEnemy::Update()
     x += dir.x * enemymoove;
     y += dir.y * enemymoove;
     z += dir.z * enemymoove;
-<<<<<<< HEAD
 
     {
         VECTOR diff = VSub(GetPos(), playerPos);
@@ -113,18 +100,13 @@ void SlimeEnemy::Update()
             z += pushDir.z * pushAmount;
         }
     }
-=======
->>>>>>> df5c4d14810d01b3d626a44b471cb247f9c95dfd
 }
 
 void SlimeEnemy::Draw()
 {
 	// 当たり判定の可視化
-<<<<<<< HEAD
 	DrawSphere3D(VGet(x, y, z), GetRadius(), 16, color, color, true);
-=======
 	DrawSphere3D(VGet(x, y, z), GetRadius(), 16, color, color, false);
->>>>>>> df5c4d14810d01b3d626a44b471cb247f9c95dfd
 }
 
 void SlimeEnemy::Release() 
