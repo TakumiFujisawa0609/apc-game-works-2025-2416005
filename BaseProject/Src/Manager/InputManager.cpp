@@ -40,6 +40,11 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_LEFT);
 	InputManager::GetInstance().Add(KEY_INPUT_RIGHT);
 
+	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
+	InputManager::GetInstance().Add(KEY_INPUT_LCONTROL);
+	InputManager::GetInstance().Add(KEY_INPUT_G);
+	InputManager::GetInstance().Add(KEY_INPUT_ESCAPE);
+
 
 	InputManager::MouseInfo info;
 

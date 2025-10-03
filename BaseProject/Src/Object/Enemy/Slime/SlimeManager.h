@@ -22,7 +22,7 @@ public:
     const std::vector<SlimeEnemy*>& GetSlimes() const { return slimes; }
 
 private:
-    int maxSlimes = 100;
+    int maxSlimes = 250;
     int spawnedCount = 0;
     int framesSinceLastSpawn = 0;
     int spawnInterval = 1;

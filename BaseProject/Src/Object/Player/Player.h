@@ -46,6 +46,18 @@ public:
 	// ノックバックスピード
 	static constexpr float SPEED_KNOCKBACK = 10.0f;
 
+	// ダッシュスピード
+	static constexpr float DASH_SPEED = 6.0f;
+	
+	// ダッシュ体力最大値
+	static constexpr int DASH_TP_MAX = 100;  
+
+	// 1フレームで消費する体力
+	static constexpr int DASH_TP_USE = 1;   
+
+	// 1フレームで回復する体力
+	static constexpr int DASH_TP_RECOVER = 1; 
+
 
 	// アニメーション種別
 	enum class ANIM_TYPE
@@ -55,6 +67,7 @@ public:
 		JUMP,
 		CAPO,
 		BAKA,
+		ATACK,
 		MAX,
 	};
 
@@ -66,6 +79,8 @@ public:
 	VECTOR GetPos(void);
 
 	VECTOR GetAngles(void);
+
+	float GetRadius() const;
 
 private:
 
@@ -106,9 +121,12 @@ private:
 
 	void UpdateKnockback(void);
 
-	void ProcessJump(void);
+	void ProcessUp(void);
+	void ProcessDown(void);
 	void ProcessMove(void);
 	void ProcessShot(void);
+	void ProcessAtack(void);
+	void ProcessBrink(void);
 
 
 	// ノックバック方向
@@ -130,6 +148,15 @@ private:
 
 	// ジャンプ判定
 	bool isJump_;
+
+	// アタック判定	
+	bool isAtack_;
+
+	// アタック継続時間
+	int cntAtack_;
+
+	// ダッシュ体力
+	int dashTp;
 
 	VECTOR jumpForward_ = VGet(0.0f, 0.0f, 0.0f);  // 前方向のジャンプ移動量
 };
