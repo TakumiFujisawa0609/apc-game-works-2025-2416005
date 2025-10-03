@@ -387,8 +387,6 @@ void Player::ProcessAtack(void)
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); // ‘Ò‹@ƒ‚[ƒVƒ‡ƒ“‚Ö–ß‚·
 	}
 
-	animationController_->Update();
-
 	prevMouse = mouse;
 }
 
