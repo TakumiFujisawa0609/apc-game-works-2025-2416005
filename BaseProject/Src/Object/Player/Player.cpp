@@ -1,3 +1,5 @@
+#include "ShotPlayerManager.h"
+#include "AtackPlayerManager.h"
 #include "Player.h"
 #include "../../Manager/InputManager.h"
 #include "../../Utility/AnimationController.h"
@@ -7,7 +9,6 @@
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage.h"
-#include "ShotPlayerManager.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -79,6 +80,8 @@ void Player::Init(void)
 
 	 // ƒJƒƒ‰‚ÉŽ©•ªŽ©g‚ð“n‚·
 	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
+
+	 AtackPlayerManager::CreateInstance();
 }
 
 void Player::Update(void)
@@ -395,6 +398,8 @@ void Player::ProcessAtack(void)
 	}
 
 	prevMouse = mouse;
+
+	AtackPlayerManager::GetInstance()->Update();
 }
 
 void Player::ProcessBrink(void)
