@@ -1,3 +1,5 @@
+#include "ShotPlayerManager.h"
+#include "AtackPlayerManager.h"
 #include "Player.h"
 #include "../../Manager/InputManager.h"
 #include "../../Utility/AnimationController.h"
@@ -7,7 +9,6 @@
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage.h"
-#include "ShotPlayerManager.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -72,23 +73,51 @@ void Player::Init(void)
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
 		 Application::PATH_MODEL + "Player/Silly Dancing.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATACK), 30.0f,
+	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
 		 Application::PATH_MODEL + "Player/Atack.mv1");
 
 	 animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 	 // カメラに自分自身を渡す
 	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
+
+	 AtackPlayerManager::CreateInstance();
+
+	 // 初期状態
+	 ChangeState(STATE::STANDBY);
 }
 
 void Player::Update(void)
 {
-	ProcessUp();
-	ProcessDown();
-	ProcessMove();
-	ProcessShot(); 
-	ProcessAtack();
-	ProcessBrink();
+
+	// 現在の状態に応じた更新処理
+	switch (currentState_)
+	{
+	case STATE::NONE:
+		break;
+
+	case STATE::STANDBY:
+		UpdateStandby();
+		break;
+	case STATE::KNOCKBACK:
+		UpdateKnockback();
+		break;
+	case STATE::ATTACK:
+		UpdateAttack();
+		break;
+	case STATE::SHOT:
+		UpdateShot();
+		break;
+	case STATE::DEAD:
+		UpdateDead();
+		break;
+	case STATE::END:
+		UpdateEnd();
+	case STATE::VICTORY:
+		UpdateVictory();
+		break;
+	}
+
 }
 
 void Player::Draw(void)
@@ -119,6 +148,13 @@ void Player::Draw(void)
 		"ジャンプ中　　　 ：%s",
 		isJump_ ? "Yes" : "No"
 	);
+
+	DrawFormatString(
+		0, 130, 0xffffff, 
+		"攻撃中: %s", 
+		isAtack_ ? "Yes" : "No"
+	);
+
 
 	//DrawFormatString(
 	//	0, 130, 0xffffff,
@@ -177,6 +213,9 @@ void Player::ChangeState(STATE newState)
 		// 攻撃状態に変更
 		ChangeAttack();
 		break;
+	case STATE::SHOT:
+		ChangeShot();
+		break;
 	case STATE::DEAD:
 		// 死亡状態に変更
 		ChangeDead();
@@ -212,9 +251,13 @@ void Player::ChangeAttack(void)
 	//// 武器を使用する
 	//useWeapon_->Use(pos_, moveDir_);
 
-	//// 攻撃アニメーション
-	//animationController_->Play(static_cast<int>(ANIM_TYPE::PUNCH), false);
+	// 攻撃アニメーション
+	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 
+}
+
+void Player::ChangeShot(void)
+{
 }
 
 void Player::ChangeDead(void)
@@ -234,6 +277,34 @@ void Player::ChangeVictory(void)
 
 }
 
+void Player::DrawStandby(void)
+{
+}
+
+void Player::DrawKnockback(void)
+{
+}
+
+void Player::DrawAttack(void)
+{
+}
+
+void Player::DrawShot(void)
+{
+}
+
+void Player::DrawDead(void)
+{
+}
+
+void Player::DrawEnd(void)
+{
+}
+
+void Player::DrawVictory(void)
+{
+}
+
 void Player::UpdateKnockback(void)
 {
 	// 着地したら通常状態に戻す
@@ -250,6 +321,44 @@ void Player::UpdateKnockback(void)
 	VECTOR movePow = VScale(knockBackDir_, SPEED_KNOCKBACK);
 	pos_ = VAdd(pos_, movePow);
 	MV1SetPosition(modelId_, pos_);
+}
+
+void Player::UpdateStandby(void)
+{
+	ProcessUp();
+	ProcessDown();
+	ProcessMove();
+	ProcessShot();
+	ProcessAtack();
+	ProcessBrink();
+}
+
+void Player::UpdateAttack(void)
+{
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::STANDBY);
+	}
+}
+
+void Player::UpdateShot(void)
+{
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::STANDBY);
+	}
+}
+
+void Player::UpdateDead(void)
+{
+}
+
+void Player::UpdateEnd(void)
+{
+}
+
+void Player::UpdateVictory(void)
+{
 }
 
 void Player::ProcessUp(void)
@@ -377,7 +486,7 @@ void Player::ProcessAtack(void)
 	if ((mouse & MOUSE_INPUT_LEFT) && !isAtack_)
 	{
 		isAtack_ = true;
-		animationController_->Play(static_cast<int>(ANIM_TYPE::ATACK), false); // 攻撃モーションを一度だけ再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false); // 攻撃モーションを一度だけ再生
 	}
 
 	// 攻撃中 → アニメーションが終わったら解除
@@ -387,9 +496,9 @@ void Player::ProcessAtack(void)
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); // 待機モーションへ戻す
 	}
 
-	animationController_->Update();
-
 	prevMouse = mouse;
+
+	AtackPlayerManager::GetInstance()->Update();
 }
 
 void Player::ProcessBrink(void)
