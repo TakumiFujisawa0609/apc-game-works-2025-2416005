@@ -38,9 +38,10 @@ void SlimeEnemy::Update()
     VECTOR playerPos = player.GetPos();
 
     // 他のスライムとの衝突回避
+    // 自分 → プレイヤーの方向を計算
     VECTOR dir = VSub(playerPos, GetPos());
 
-    // 他のスライムとの衝突回避
+    // --- 他のスライムとの衝突回避（完全非接触） ---
     SlimeManager* sm = SlimeManager::GetInstance();
     if (sm) {
         const auto& slimes = sm->GetSlimes();
@@ -80,6 +81,7 @@ void SlimeEnemy::Update()
 
     // 移動
     x += dir.x * enemymoove;
+    y += dir.y * enemymoove;
     z += dir.z * enemymoove;
 
     {
@@ -93,7 +95,7 @@ void SlimeEnemy::Update()
             VECTOR pushDir = VNorm(diff);
             float pushAmount = (minDist - dist);
 
-            // スライムだけ押し返す
+            // スライムだけ押し返す（プレイヤーは動かさない想定）
             x += pushDir.x * pushAmount;
             z += pushDir.z * pushAmount;
         }
@@ -104,6 +106,7 @@ void SlimeEnemy::Draw()
 {
 	// 当たり判定の可視化
 	DrawSphere3D(VGet(x, y, z), GetRadius(), 16, color, color, true);
+	DrawSphere3D(VGet(x, y, z), GetRadius(), 16, color, color, false);
 }
 
 void SlimeEnemy::Release() 

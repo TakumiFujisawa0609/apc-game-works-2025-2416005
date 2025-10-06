@@ -1,5 +1,3 @@
-#include "ShotPlayerManager.h"
-#include "AtackPlayerManager.h"
 #include "Player.h"
 #include "../../Manager/InputManager.h"
 #include "../../Utility/AnimationController.h"
@@ -9,6 +7,7 @@
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage.h"
+#include "ShotPlayerManager.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -80,8 +79,6 @@ void Player::Init(void)
 
 	 // カメラに自分自身を渡す
 	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
-
-	 AtackPlayerManager::CreateInstance();
 }
 
 void Player::Update(void)
@@ -122,13 +119,6 @@ void Player::Draw(void)
 		"ジャンプ中　　　 ：%s",
 		isJump_ ? "Yes" : "No"
 	);
-
-	DrawFormatString(
-		0, 130, 0xffffff, 
-		"攻撃中: %s", 
-		isAtack_ ? "Yes" : "No"
-	);
-
 
 	//DrawFormatString(
 	//	0, 130, 0xffffff,
@@ -397,9 +387,9 @@ void Player::ProcessAtack(void)
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); // 待機モーションへ戻す
 	}
 
-	prevMouse = mouse;
+	animationController_->Update();
 
-	AtackPlayerManager::GetInstance()->Update();
+	prevMouse = mouse;
 }
 
 void Player::ProcessBrink(void)
