@@ -1,0 +1,19 @@
+diff a/BaseProject/Src/Object/Player/Player.cpp b/BaseProject/Src/Object/Player/Player.cpp	(rejected hunks)
+@@ -222,15 +222,11 @@
+ 	//// �����g�p����
+ 	//useWeapon_->Use(pos_, moveDir_);
+ 
+-	// �U���A�j���[�V����
+-	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
++	//// �U���A�j���[�V����
++	//animationController_->Play(static_cast<int>(ANIM_TYPE::PUNCH), false);
+ 
+ }
+ 
+-void Player::ChangeShot(void)
+-{
+-}
+-
+ void Player::ChangeDead(void)
+ {
+ 	//// DEATH�A�j���[�V��������[�v�����ōĐ�
