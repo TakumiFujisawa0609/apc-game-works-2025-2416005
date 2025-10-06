@@ -67,7 +67,7 @@ public:
 		JUMP,
 		CAPO,
 		BAKA,
-		ATTACK,
+		ATACK,
 		MAX,
 	};
 
@@ -90,7 +90,6 @@ private:
 		STANDBY,
 		KNOCKBACK,
 		ATTACK,
-		SHOT,
 		DEAD,
 		END,
 		VICTORY,
@@ -112,33 +111,15 @@ private:
 
 	void ChangeState(STATE newState);
 
-	// åªç›ÇÃèÛë‘Ç…âûÇ∂ÇΩçXêVèàóù
-	void UpdateKnockback(void);
-	void UpdateStandby(void);
-	void UpdateAttack(void);
-	void UpdateShot(void);
-	void UpdateDead(void);
-	void UpdateEnd(void);
-	void UpdateVictory(void);
-
 	// èÛë‘ÇïœçXÇ∑ÇÈ
 	void ChangeKnockback(void);
 	void ChangeStandby(void);
 	void ChangeAttack(void);
-	void ChangeShot(void);
 	void ChangeDead(void);
 	void ChangeEnd(void);
 	void ChangeVictory(void);
 
-	// ï`âÊèàóù
-	void DrawStandby(void);
-	void DrawKnockback(void);
-	void DrawAttack(void);
-	void DrawShot(void);
-	void DrawDead(void);
-	void DrawEnd(void);
-	void DrawVictory(void);
-
+	void UpdateKnockback(void);
 
 	void ProcessUp(void);
 	void ProcessDown(void);
