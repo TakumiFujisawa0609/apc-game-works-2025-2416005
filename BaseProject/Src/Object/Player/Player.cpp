@@ -76,7 +76,12 @@ void Player::Init(void)
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
 		 Application::PATH_MODEL + "Player/Atack.mv1");
 
+	 animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
+		 Application::PATH_MODEL + "Player/Jump1.mv1");
+
 	 animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
+	 SHandle = LoadSoundMem("Date/Sound/粉砕玉砕大喝采.wav");
 
 	 // カメラに自分自身を渡す
 	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
@@ -128,6 +133,35 @@ void Player::Draw(void)
 	}
 
 	ShotPlayerManager::GetInstance().Draw();
+
+	switch (currentState_)
+	{
+	case Player::STATE::NONE:
+		break;
+	case Player::STATE::STANDBY:
+		DrawStandby();
+		break;
+	case Player::STATE::KNOCKBACK:
+		break;
+		DrawKnockback();
+	case Player::STATE::ATTACK:
+		break;
+		DrawAttack();
+	case Player::STATE::SHOT:
+		break;
+		DrawShot();
+	case Player::STATE::DEAD:
+		break;
+		DrawDead();
+	case Player::STATE::END:
+		break;
+		DrawEnd();
+	case Player::STATE::VICTORY:
+		break;
+		DrawVictory();
+	default:
+		break;
+	}
 	
 	DrawFormatString(
 		0, 50, 0xffffff,
@@ -398,6 +432,12 @@ void Player::ProcessDown(void)
 
 void Player::ProcessMove(void)
 {
+	if (isAtack_ || isJump_) {
+		// 攻撃中でもアニメーション更新は続ける
+		animationController_->Update();
+		return;
+	}
+
 	// 入力制御のインスタンスを取得
 	InputManager& ins = InputManager::GetInstance();
 
@@ -486,6 +526,12 @@ void Player::ProcessAtack(void)
 	if ((mouse & MOUSE_INPUT_LEFT) && !isAtack_)
 	{
 		isAtack_ = true;
+
+		// 読みこんだ音をノーマル再生します(『PlaySoundMem』関数使用)
+		PlaySoundMem(SHandle, DX_PLAYTYPE_NORMAL);
+
+		// サウンドハンドルの削除
+		DeleteSoundMem(SHandle);
 		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false); // 攻撃モーションを一度だけ再生
 	}
 

@@ -74,6 +74,25 @@ void AnimationController::Play(int type, bool isLoop)
 
 }
 
+void AnimationController::PlayBlend(int fromAnim, int toAnim, float t)
+{
+	// tは0.0f～1.0fの間（ブレンド率）
+
+	int fromAttach = MV1AttachAnim(modelId_, animHandles_[fromAnim]);
+	int toAttach = MV1AttachAnim(modelId_, animHandles_[toAnim]);
+
+	// ブレンド率設定
+	MV1SetAttachAnimBlendRate(modelId_, fromAttach, 1.0f - t);
+	MV1SetAttachAnimBlendRate(modelId_, toAttach, t);
+
+	// 再生時間を進行（ここでは単純に同じ進行）
+	float time = MV1GetAttachAnimTime(modelId_, fromAttach) + 1.0f / 60.0f;
+	MV1SetAttachAnimTime(modelId_, fromAttach, time);
+	MV1SetAttachAnimTime(modelId_, toAttach, time);
+
+	MV1RefreshCollInfo(modelId_); // ←必要なら更新
+}
+
 void AnimationController::Update(void)
 {
 

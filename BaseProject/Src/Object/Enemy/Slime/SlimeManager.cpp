@@ -52,7 +52,7 @@ void SlimeManager::Update()
 
             // 円周上に配置
             float sx = playerPos.x + cosf(angle) * spawnRadius;
-            float sy = playerPos.y; // 高さはプレイヤーと同じにす
+            float sy = playerPos.y; 
             float sz = playerPos.z + sinf(angle) * spawnRadius;
 
             Spawn(sx, sy, sz);

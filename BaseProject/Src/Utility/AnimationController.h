@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
 
 class AnimationController
 {
@@ -18,6 +19,13 @@ public:
 		float step = 0.0f;
 	};
 
+	struct BlendAnim {
+		int attachIndex = -1;
+		float blendRate = 0.0f;
+		float playTime = 0.0f;
+		bool isLoop = true;
+	};
+
 	// コンストラクタ
 	AnimationController(int modelId);
 
@@ -32,6 +40,9 @@ public:
 
 	// アニメーション再生
 	void Play(int type, bool isLoop = true);
+
+	// アニメーションブレンド再生
+	void PlayBlend(int fromAnim, int toAnim, float t); 
 
 	void Update(void);
 	void Release(void);
@@ -59,5 +70,17 @@ private:
 
 	// アニメーション追加の共通処理
 	void Add(int type, float speed, Animation& animation);
+
+	// 各アニメーションIDのモデルインデックス
+	std::map<int, int> animHandles_; 
+
+	// 現在ブレンド中のアニメーション
+	std::vector<BlendAnim> blends_;   
+
+	// 現在再生中のアニメーションID
+	int currentAnim_ = -1;
+
+	// アニメーション終了フラグ
+	bool isEnd_ = false;
 
 };

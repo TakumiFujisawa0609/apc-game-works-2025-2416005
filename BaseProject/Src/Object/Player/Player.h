@@ -177,5 +177,8 @@ private:
 	// ダッシュ体力
 	int dashTp;
 
+	// サウンドハンドル
+	int SHandle ;
+
 	VECTOR jumpForward_ = VGet(0.0f, 0.0f, 0.0f);  // 前方向のジャンプ移動量
 };

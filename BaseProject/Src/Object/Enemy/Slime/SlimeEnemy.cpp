@@ -80,6 +80,7 @@ void SlimeEnemy::Update()
 
     // ˆÚ“®
     x += dir.x * enemymoove;
+    y += dir.y * enemymoove;
     z += dir.z * enemymoove;
 
     {
