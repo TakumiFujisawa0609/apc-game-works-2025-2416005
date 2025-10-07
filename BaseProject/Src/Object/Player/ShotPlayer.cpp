@@ -1,6 +1,6 @@
 #include <DxLib.h>
 #include "ShotPlayer.h"
-#include "../../Object/Enemy/Slime/SlimeManager.h"
+#include "../../Object/Enemy/EnemyManager.h"
 #include "../../Object/Enemy/EnemyBase.h"
 #include "../../Object/Enemy/Slime/SlimeEnemy.h"
 #include "../../Utility/AsoUtility.h"
@@ -33,7 +33,7 @@ void ShotPlayer::Update(void)
         return;
     }
 
-    SlimeManager* sm = SlimeManager::GetInstance();
+    EnemyManager* sm = EnemyManager::GetInstance();
     if (!sm) return;
 
     const auto& slimes = sm->GetSlimes();
@@ -61,8 +61,8 @@ void ShotPlayer::Update(void)
         float dist = VSize(VSub(closest, c));
         if (dist <= r) {
             slime->Kill();
-            alive_ = false;
-            break;
+            //alive_ = false;
+            //break;
         }
     }
 }

@@ -80,16 +80,15 @@ void Application::Run(void)
 
 		ScreenFlip();
 
-	}
+		// フレーム終了時刻を取得
+		EndTime = GetNowCount();
+		TookTime = EndTime - StartTime;
 
-	// フレーム終了時刻を取得
-	EndTime = GetNowCount();
-	TookTime = EndTime - StartTime;
-
-	// 規定時間より処理が早ければ待機
-	if (TookTime < OneFrameTime)
-	{
-		Sleep(OneFrameTime - TookTime);
+		// 規定時間より処理が早ければ待機
+		if (TookTime < OneFrameTime)
+		{
+			Sleep(OneFrameTime - TookTime);
+		}
 	}
 }
 

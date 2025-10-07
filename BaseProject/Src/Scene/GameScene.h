@@ -1,7 +1,7 @@
 #pragma once
 class Grid;
 class Player;
-class SlimeManager;
+class EnemyManager;
 
 
 class GameScene : public SceneBase
@@ -33,6 +33,6 @@ Grid* grid_;
 
 Player* player_;
 
-SlimeManager* slime_;
+EnemyManager* enemy_;
 
 };

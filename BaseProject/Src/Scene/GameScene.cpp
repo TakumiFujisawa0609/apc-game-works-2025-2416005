@@ -7,8 +7,8 @@
 #include "../Object/Stage.h"
 #include "TitleScene.h"
 #include "../Object/Player/Player.h"
-#include "../Object/Enemy/Slime/SlimeManager.h"
 #include "GameScene.h"
+#include "../Object/Enemy/EnemyManager.h"
 
 GameScene::GameScene(void) : SceneBase()
 {
@@ -40,9 +40,9 @@ void GameScene::Init(void)
 	Player::CreateInstance();
 	Player::GetInstance()->Init();
 
-	slime_ = new SlimeManager();
-	SlimeManager::SetInstance(slime_);
-	slime_->Spawn(0.0f, 0.0f, 50.0f);
+	enemy_ = new EnemyManager();
+	EnemyManager::SetInstance(enemy_);
+	enemy_->Spawn(0.0f, 0.0f, 50.0f);
 }
 
 void GameScene::Update(void)
@@ -56,7 +56,7 @@ void GameScene::Update(void)
 	// プレイヤー更新
 	Player::GetInstance()->Update();
 
-	slime_->Update();
+	enemy_->Update();
 }
 
 void GameScene::Draw(void)
@@ -70,7 +70,7 @@ void GameScene::Draw(void)
 	// プレイヤー描画
 	Player::GetInstance()->Draw();
 
-	slime_->Draw();
+	enemy_->Draw();
 }
 
 void GameScene::Release(void)
@@ -87,6 +87,6 @@ void GameScene::Release(void)
 	Player::GetInstance()->Release();
 	Player::DeleteInstance();
 
-	slime_->Release();
-	SlimeManager::SetInstance(nullptr);
+	enemy_->Release();
+	EnemyManager::SetInstance(nullptr);
 }

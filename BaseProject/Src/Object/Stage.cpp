@@ -1,4 +1,5 @@
 #include "Stage.h"
+#include "../Object/Player/Player.h"
 
 Stage* Stage::instance_ = nullptr;
 
@@ -33,13 +34,19 @@ bool Stage::Init(void)
 
 void Stage::Update(void)
 {
+	// プレイヤーの移動ベクトルを取得
+	VECTOR playerMove = Player::GetInstance()->GetPos();
 
+	const float stageMoveSpeed = 0.1f; 
+
+	pos_.x += (playerMove.x - pos_.x) * stageMoveSpeed;
+	pos_.z += (playerMove.z - pos_.z) * stageMoveSpeed;
+
+	MV1SetPosition(modelId_, pos_);
 }
 
 void Stage::Draw(void)
 {
-	// ステージモデルの描画
-	MV1SetPosition(modelId_, pos_);
 	MV1DrawModel(modelId_);
 }
 

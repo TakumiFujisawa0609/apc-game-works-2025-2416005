@@ -3,7 +3,7 @@
 #include <vector>
 
 class EnemyBase;
-class SlimeManager;
+class EenmyManager;
 class ShotPlayer
 {
 public:
