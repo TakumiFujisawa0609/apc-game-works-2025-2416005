@@ -55,7 +55,8 @@ void Player::Init(void)
 	MV1SetPosition(modelId_, pos_);
 
 	// モデルのスケール設定
-	//VECTOR scale = VGet(10.0f, 10.0f, 10.0f); 
+	//float scalef = 0.5f;
+	//VECTOR scale = VGet(scalef, scalef, scalef);
 	//MV1SetScale(modelId_, scale);
 
 
@@ -532,6 +533,7 @@ void Player::ProcessAtack(void)
 
 		// サウンドハンドルの削除
 		DeleteSoundMem(SHandle);
+
 		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false); // 攻撃モーションを一度だけ再生
 	}
 

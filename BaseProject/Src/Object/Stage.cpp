@@ -16,14 +16,19 @@ Stage::~Stage(void)
 bool Stage::Init(void)
 {
 	// ステージモデルの読み込み
-	modelId_ = MV1LoadModel("Data/Model/Stage.mv1");
+	modelId_ = MV1LoadModel("Data/Model/SkyDome/SkyDome.mv1");
 	if (modelId_ == -1) {
 		MessageBoxA(NULL, "ステージモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	}
-	return false;
 
 	// ステージモデルの位置設定
 	MV1SetPosition(modelId_, pos_);
+
+	float scalef= 50.0f;
+	VECTOR scale = VGet(scalef, scalef, scalef);
+	MV1SetScale(modelId_, scale);
+
+	return true;
 }
 
 void Stage::Update(void)
@@ -33,9 +38,9 @@ void Stage::Update(void)
 
 void Stage::Draw(void)
 {
-	//// ステージモデルの描画
-	//MV1SetPosition(modelId_, pos_);
-	//MV1DrawModel(modelId_);
+	// ステージモデルの描画
+	MV1SetPosition(modelId_, pos_);
+	MV1DrawModel(modelId_);
 }
 
 void Stage::Release(void)

@@ -24,7 +24,7 @@ public:
 
 	// カメラのクリップ範囲
 	static constexpr float VIEW_NEAR = 1.0f;
-	static constexpr float VIEW_FAR = 5000.0f;
+	static constexpr float VIEW_FAR = 10000.0f;
 
 	static constexpr VECTOR FOLLOW_LOCAL_POS = { 0.0f,200.0f,-400.0f };
 
