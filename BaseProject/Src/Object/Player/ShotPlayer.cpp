@@ -49,7 +49,6 @@ void ShotPlayer::Update(void)
         if (dd == 0.0f) {
             if (VSize(VSub(prevPos_, c)) <= r) {
                 slime->Kill();
-                alive_ = false;
                 break;
             }
             continue;
@@ -60,9 +59,9 @@ void ShotPlayer::Update(void)
         VECTOR closest = VAdd(prevPos_, VScale(d, t));
         float dist = VSize(VSub(closest, c));
         if (dist <= r) {
+            slime->OnHit(pos_); 
             slime->Kill();
-            //alive_ = false;
-            //break;
+            break;
         }
     }
 }

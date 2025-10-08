@@ -17,16 +17,16 @@ public:
     virtual void Release(); // 解放処理
 
     bool GetAlive() const { return isAlive; }
-    void Kill() { isAlive = false; }
+    virtual void Kill() { isAlive = false; }
     VECTOR GetPos() const { return VGet(x, y, z); }
 
 
     VECTOR pos = VGet(x, y, z);
 
+    bool isAlive;    // 生存フラグ
+
 private:
 
 
     int hp;          // 体力
-    bool isAlive;    // 生存フラグ
-
 };

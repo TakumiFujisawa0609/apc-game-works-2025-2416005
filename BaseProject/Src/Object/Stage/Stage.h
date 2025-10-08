@@ -43,4 +43,16 @@ private:
 
 	// ステージモデルの位置
 	VECTOR pos_;
+
+	// 雲の画像ハンドルID
+	int kumoImageId_{ -1 };
+
+	// 雲の位置
+    VECTOR KumoPos_;
+
+	// 都市の画像ハンドルID
+	int toshiImageId_{ -1 };
+
+	// 都市の位置
+    VECTOR ToshiPos_;
 };

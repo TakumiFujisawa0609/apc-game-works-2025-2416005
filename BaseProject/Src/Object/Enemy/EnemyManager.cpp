@@ -63,13 +63,21 @@ void EnemyManager::Update()
     slimes.erase(
         std::remove_if(slimes.begin(), slimes.end(),
             [](SlimeEnemy* s) {
+                if (!s) return true;
+
+                if (s->IsDeadEffect()) {
+                    if (!s->GetAlive()) return true; // 点滅終了後は削除
+                    return false; // 点滅中は残す
+                }
                 if (!s->GetAlive()) {
                     delete s;
-                    return true; // erase 対象
+                    return true;
                 }
+
                 return false;
             }),
         slimes.end());
+
 }
 
 void EnemyManager::Draw()

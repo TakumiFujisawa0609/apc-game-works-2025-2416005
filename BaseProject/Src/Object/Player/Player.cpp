@@ -8,7 +8,7 @@
 #include "../../Application.h"
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
-#include "../../Object/Stage.h"
+#include "../../Object/Stage/Stage.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -74,7 +74,7 @@ void Player::Init(void)
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
 		 Application::PATH_MODEL + "Player/Silly Dancing.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
+	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 60.0f,
 		 Application::PATH_MODEL + "Player/Atack.mv1");
 
 	 animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
@@ -408,7 +408,7 @@ void Player::ProcessUp(void)
 	{
 		isJump_ = true;
 		jumpPow_ = JUMP_POW;
-		animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), false);
+		//animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), false);
 	}
 
 	// ˆÚ“®—Ê‚ð”½‰f

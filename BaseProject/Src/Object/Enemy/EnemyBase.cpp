@@ -16,7 +16,7 @@ void EnemyBase::Init(float _x, float _y, float _z)
     x = _x;
     y = _y;
     z = _z;
-    hp = 100;
+    pos = VGet(x, y, z);
     isAlive = true;
 }
 

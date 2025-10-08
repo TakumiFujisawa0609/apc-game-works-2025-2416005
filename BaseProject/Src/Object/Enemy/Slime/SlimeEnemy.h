@@ -16,16 +16,37 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+    void Kill() override;         // オーバーライド
+    void OnHit(const VECTOR& hitPos); // 弾から呼ばれる
 
     VECTOR pos = VGet(x, y, z);
 
     VECTOR GetPos() const { return VGet(x, y, z); }
     float GetRadius() const { return 15.0f; }
 
+    bool IsDeadEffect() const { return isDeadEffect_; }
+
 private:
     float moveSpeed;
     int color;
 
+    float enemymoove = 1.0f; // 追従速度
+
     // モデル情報
     int modelId_;
+
+    // ノックバック速度
+    VECTOR knockbackVel_;   
+
+    // 当たった弾の位置
+    VECTOR lastHitPos_;        
+
+    // 点滅中
+    bool isDeadEffect_ = false;        
+
+    // 点滅残りフレーム
+    int deadEffectTimer_ = 0;         
+
+    // ノックバック中か（点滅前）
+    bool isKnockbackOnly_ = false;    
 };

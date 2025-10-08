@@ -22,6 +22,8 @@
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayerManager.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Weapon.cpp" />
     <ClCompile Include="Src\Scene\GameOver.cpp" />
     <ClCompile Include="Src\Scene\GameClear.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
@@ -45,13 +47,15 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AnimationController.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
-    <ClCompile Include="Src\Object\Stage.cpp" />
+    <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayerManager.h" />
+    <ClInclude Include="Src\Object\Stage\Field.h" />
+    <ClInclude Include="Src\Object\Weapon\Weapon.h" />
     <ClInclude Include="Src\Scene\GameOver.h" />
     <ClInclude Include="Src\Scene\GameClear.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
@@ -75,7 +79,7 @@
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AnimationController.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />
-    <ClInclude Include="Src\Object\Stage.h" />
+    <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
