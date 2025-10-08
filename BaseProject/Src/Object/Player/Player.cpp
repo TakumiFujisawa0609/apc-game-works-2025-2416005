@@ -69,38 +69,38 @@ void Player::Init(void)
 
 	animationController_ = new AnimationController(modelId_);
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
-		 Application::PATH_MODEL + "Player/Idle.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
+		Application::PATH_MODEL + "Player/Idle.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), 30.0f,
-		 Application::PATH_MODEL + "Player/Walk.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), 30.0f,
+		Application::PATH_MODEL + "Player/Walk.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::CAPO), 50.0f,
-		 Application::PATH_MODEL + "Player/Capoeira.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::CAPO), 50.0f,
+		Application::PATH_MODEL + "Player/Capoeira.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
-		 Application::PATH_MODEL + "Player/Silly Dancing.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
+		Application::PATH_MODEL + "Player/Silly Dancing.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 60.0f,
-		 Application::PATH_MODEL + "Player/Atack.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 60.0f,
+		Application::PATH_MODEL + "Player/Atack.mv1");
 
-	 animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
-		 Application::PATH_MODEL + "Player/Jump1.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
+		Application::PATH_MODEL + "Player/Jump1.mv1");
 
-	 animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
-	 SHandle = LoadSoundMem("Date/Sound/粉砕玉砕大喝采.wav");
+	SHandle = LoadSoundMem("Date/Sound/粉砕玉砕大喝采.wav");
 
-	 // カメラに自分自身を渡す
-	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
+	// カメラに自分自身を渡す
+	SceneManager::GetInstance().GetCamera()->SetFollow(this);
 
-	 AtackPlayerManager::CreateInstance();
+	AtackPlayerManager::CreateInstance();
 
-	 weapon_ = new Weapon();
-	 weapon_->Init();
+	weapon_ = new Weapon();
+	weapon_->Init();
 
-	 // 初期状態
-	 ChangeState(STATE::STANDBY);
+	// 初期状態
+	ChangeState(STATE::STANDBY);
 }
 
 void Player::Update(void)
@@ -177,7 +177,35 @@ void Player::Draw(void)
 	}
 
 	weapon_->Draw();
-	
+
+	{
+		const int gaugeX = 50;      // 左上X位置
+		const int gaugeY = 600;     // 左上Y位置
+		const int gaugeWidth = 300; // ゲージ全体の幅
+		const int gaugeHeight = 20; // ゲージの高さ
+
+		// TP割合（0.0～1.0）
+		float ratio = (float)dashTp / (float)DASH_TP_MAX;
+		if (ratio < 0.0f) ratio = 0.0f;
+		if (ratio > 1.0f) ratio = 1.0f;
+
+		// 背景（グレー）
+		DrawBox(gaugeX, gaugeY, gaugeX + gaugeWidth, gaugeY + gaugeHeight, GetColor(80, 80, 80), TRUE);
+
+		// スタミナ本体（緑～赤）
+		int r = (int)(255 * (1.0f - ratio));
+		int g = (int)(255 * ratio);
+		int color = GetColor(r, g, 0);
+
+		DrawBox(gaugeX, gaugeY, gaugeX + (int)(gaugeWidth * ratio), gaugeY + gaugeHeight, color, TRUE);
+
+		// 枠線
+		DrawBox(gaugeX, gaugeY, gaugeX + gaugeWidth, gaugeY + gaugeHeight, GetColor(255, 255, 255), FALSE);
+
+		// 数値表示（デバッグ用）
+		DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
+	}
+
 	DrawFormatString(
 		0, 50, 0xffffff,
 		"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
@@ -199,8 +227,8 @@ void Player::Draw(void)
 	);
 
 	DrawFormatString(
-		0, 130, 0xffffff, 
-		"攻撃中: %s", 
+		0, 130, 0xffffff,
+		"攻撃中: %s",
 		isAtack_ ? "Yes" : "No"
 	);
 
@@ -240,7 +268,7 @@ VECTOR Player::GetAngles(void)
 
 float Player::GetRadius() const {
 	// プレイヤーの当たり判定半径
-	return 30.0f; 
+	return 30.0f;
 }
 
 void Player::ChangeState(STATE newState)
@@ -416,27 +444,59 @@ void Player::ProcessUp(void)
 {
 	InputManager& ins = InputManager::GetInstance();
 
-	// 重力を適用
-	jumpPow_ -= GRAVITY_POW;
+	const float riseSpeed = 10.0f;   // 上昇スピード
+	const float gravity = GRAVITY_POW; // 落下重力
+	const int tpUsePerFrame = 10;     // 上昇時のスタミナ消費量
 
-	// ジャンプ開始
-	if (ins.IsTrgDown(KEY_INPUT_LSHIFT) && !isJump_)
+
+	if (CheckHitKey(KEY_INPUT_LSHIFT) && dashTp > 0)
 	{
-		isJump_ = true;
-		jumpPow_ = JUMP_POW;
-		//animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), false);
+		isJump_ = true;          // 空中状態ON
+		pos_.y += riseSpeed;     // 上昇
+		dashTp -= tpUsePerFrame; // TPを消費
+
+		if (dashTp < 0)
+			dashTp = 0;
+
+		MV1SetPosition(modelId_, pos_);
+		return; // 落下処理に行かない
 	}
 
-	// 移動量を反映
-	pos_.y += jumpPow_;
-
-	// ★ ステージとの当たり判定
-	float groundY = Stage::GetInstance()->GetGroundHeight(pos_.x, pos_.z);
-	if (pos_.y <= groundY)
+	if (isJump_)
 	{
-		pos_.y = groundY;     // 地面に固定
-		isJump_ = false;      // 着地
-		jumpPow_ = 0.0f;      // 落下速度リセット
+		// 重力を適用して落下
+		jumpPow_ -= gravity;
+		pos_.y += jumpPow_;
+
+		// 地面との当たり判定
+		float groundY = Stage::GetInstance()->GetGroundHeight(pos_.x, pos_.z);
+		if (pos_.y <= groundY)
+		{
+			pos_.y = groundY;
+			isJump_ = false;
+			jumpPow_ = 0.0f;
+		}
+
+		MV1SetPosition(modelId_, pos_);
+		return;
+	}
+
+
+	static int tpRecoverCounter = 0;
+	if (!isJump_ && !isBrinkAction_)  // ← このフラグをProcessBrink側で管理
+	{
+		tpRecoverCounter++;
+		if (tpRecoverCounter >= 5)
+		{
+			dashTp += DASH_TP_RECOVER;
+			if (dashTp > DASH_TP_MAX)
+				dashTp = DASH_TP_MAX;
+			tpRecoverCounter = 0;
+		}
+	}
+	else
+	{
+		tpRecoverCounter = 0; // 空中やブースト中はカウントリセット
 	}
 
 	MV1SetPosition(modelId_, pos_);
@@ -575,25 +635,111 @@ void Player::ProcessAtack(void)
 
 void Player::ProcessBrink(void)
 {
-	int moveSpeed = SPEED_MOVE;
-	bool isDashing = false;
-	static int dashTpRecoverCounter = 0;
+	static int lastPressFrame = -999;
+	static bool canDash = false;
+	static bool isDash = false;
+	static bool isBoost = false;
+	static int dashTimer = 0;
+	static int boostCooldown = 0;
+	static int tpRecoverCounter = 0;
 
-	// ダッシュ判定（元のダッシュ処理をここに）
-	if (CheckHitKey(KEY_INPUT_SPACE) && dashTp > 0) {
-		moveSpeed = DASH_SPEED;
-		isDashing = true;
-		dashTp -= DASH_TP_USE;
-		if (dashTp < 0) dashTp = 0;
-	}
-	else {
-		// ダッシュしていない場合は体力を回復
-		dashTpRecoverCounter++;
-		if (dashTpRecoverCounter >= 5) {
-			dashTp += DASH_TP_RECOVER;
-			if (dashTp > DASH_TP_MAX) dashTp = DASH_TP_MAX;
-			dashTpRecoverCounter = 0;
+	InputManager& ins = InputManager::GetInstance();
+	int nowFrame = GetNowCount();
+	const int doubleTapThreshold = 300;
+	const int boostDuration = 10;
+	const float boostPower = 60.0f;
+	const float dashSpeed = 35.0f;
+	const int dashTpCost = 1;
+
+	// --- 状態リセット ---
+	isBrinkAction_ = (isDash || isBoost);  // ← これが上昇中回復制御に使える
+
+	if (boostCooldown > 0) boostCooldown--;
+
+	// --- 入力 ---
+	if (ins.IsTrgDown(KEY_INPUT_SPACE) && boostCooldown <= 0)
+	{
+		if (nowFrame - lastPressFrame <= doubleTapThreshold)
+			canDash = true;
+		else
+		{
+			isBoost = true;
+			dashTimer = boostDuration;
 		}
+
+		lastPressFrame = nowFrame;
+		boostCooldown = 10;
 	}
 
+	bool isHolding = CheckHitKey(KEY_INPUT_SPACE) != 0;
+
+	// --- ダッシュ開始 ---
+	if (canDash && isHolding && dashTp > 0)
+	{
+		isDash = true;
+		isBoost = false;
+		canDash = false;
+	}
+
+	// --- ブーストダッシュ中 ---
+	if (isDash)
+	{
+		if (dashTp > 0 && isHolding)
+		{
+			VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
+			pos_ = VAdd(pos_, VScale(dir, dashSpeed));
+			dashTp -= dashTpCost;
+			if (dashTp < 0) dashTp = 0;
+			MV1SetPosition(modelId_, pos_);
+		}
+		else
+		{
+			isDash = false;
+		}
+		isBrinkAction_ = true;
+		return;
+	}
+
+	// --- 単発ブースト中 ---
+	if (isBoost && dashTimer > 0)
+	{
+		// --- 調整パラメータ ---
+		const float boostPower = 200.0f;   // ← 距離を伸ばしたいなら↑ここを上げる（元60）
+		const int boostDuration = 10;      // ← 継続フレーム（短くすればより瞬間的に）
+		const int boostTpCost = 30;        // ← 1回の単発ブーストで減るTP量を追加
+
+		// 向いている方向へ瞬間的に移動
+		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
+		pos_ = VAdd(pos_, VScale(dir, boostPower / boostDuration));
+
+		// TP消費（1回だけ）
+		if (dashTimer == boostDuration)  // 最初のフレームのみ消費
+		{
+			dashTp -= boostTpCost;
+			if (dashTp < 0) dashTp = 0;
+		}
+
+		dashTimer--;
+
+		if (dashTimer <= 0)
+		{
+			isBoost = false;
+		}
+
+		MV1SetPosition(modelId_, pos_);
+		isBrinkAction_ = true;
+		return;
+	}
+
+	// --- 通常回復 ---
+	isBrinkAction_ = false;  // ← 通常状態に戻す
+	tpRecoverCounter++;
+	if (tpRecoverCounter >= 5)
+	{
+		dashTp += DASH_TP_RECOVER;
+		if (dashTp > DASH_TP_MAX) dashTp = DASH_TP_MAX;
+		tpRecoverCounter = 0;
+	}
 }
+
+

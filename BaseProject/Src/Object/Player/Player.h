@@ -51,13 +51,13 @@ public:
 	static constexpr float DASH_SPEED = 6.0f;
 	
 	// ダッシュ体力最大値
-	static constexpr int DASH_TP_MAX = 100;  
+	static constexpr int DASH_TP_MAX = 500;  
 
 	// 1フレームで消費する体力
 	static constexpr int DASH_TP_USE = 1;   
 
 	// 1フレームで回復する体力
-	static constexpr int DASH_TP_RECOVER = 1; 
+	static constexpr int DASH_TP_RECOVER = 10; 
 
 
 	// アニメーション種別
@@ -188,4 +188,6 @@ private:
 	bool isDash_ = false;  // ダッシュ中か
 
 	Weapon* weapon_;
+
+	bool isBrinkAction_ = false;  // ブースト中 or ダッシュ中フラグ
 };

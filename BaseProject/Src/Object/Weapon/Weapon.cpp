@@ -48,7 +48,7 @@ void Weapon::Update()
         MATRIX rotation = MGetRotX(DX_PI_F);
 
         // 位置オフセット（Y値を負にすると下に移動）
-        VECTOR offset = VGet(0.0f, -30.0f, 0.0f);
+        VECTOR offset = VGet(0.0f, -90.0f, 0.0f);
         MATRIX offsetMat = MGetTranslate(offset);
 
         // オフセット→回転→手の位置の順に適用
