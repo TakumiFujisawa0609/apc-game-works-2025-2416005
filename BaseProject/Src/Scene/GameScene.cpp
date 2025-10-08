@@ -41,9 +41,6 @@ void GameScene::Init(void)
 	Player::CreateInstance();
 	Player::GetInstance()->Init();
 
-	weapon_ = new Weapon();
-	weapon_->Init();
-
 	enemy_ = new EnemyManager();
 	EnemyManager::SetInstance(enemy_);
 	enemy_->Spawn(0.0f, 0.0f, 50.0f);
@@ -60,8 +57,6 @@ void GameScene::Update(void)
 	// プレイヤー更新
 	Player::GetInstance()->Update();
 
-	weapon_->Update();
-
 	enemy_->Update();
 }
 
@@ -75,8 +70,6 @@ void GameScene::Draw(void)
 
 	// プレイヤー描画
 	Player::GetInstance()->Draw();
-
-	weapon_->Draw();
 
 	enemy_->Draw();
 }
@@ -94,9 +87,6 @@ void GameScene::Release(void)
 	// プレイヤー解放
 	Player::GetInstance()->Release();
 	Player::DeleteInstance();
-
-	weapon_->Release();
-	delete weapon_;
 
 	enemy_->Release();
 	EnemyManager::SetInstance(nullptr);

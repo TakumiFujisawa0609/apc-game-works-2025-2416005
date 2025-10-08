@@ -1,20 +1,40 @@
 #pragma once
+#include <DxLib.h>
+#include <set>
+#include "../../Object/Enemy/Slime/SlimeEnemy.h"
 
+class SlimeEnemy;
 class Weapon
 {
-public:
-	Weapon();
-	~Weapon();
-
-	void Init();
-	void Update();
-	void Draw();
-	void Release();
-
 private:
+    int modelId_;
+    VECTOR pos_;
 
-	int modelId_;
+    // 当たり判定用
+    VECTOR swordTip_;     // 剣の先端座標
+    VECTOR swordBase_;    // 剣の根元座標
+    bool isAttacking_;    // 攻撃中かどうか
+    std::set<SlimeEnemy*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
 
-	VECTOR pos_;
+    // 線分と球の当たり判定
+    bool CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
+        const VECTOR& spherePos, float sphereRadius);
+
+    // 敵との当たり判定チェック
+    void CheckCollision();
+
+public:
+    Weapon();
+    ~Weapon();
+
+    void Init();
+    void Update();
+    void Draw();
+    void Release();
+
+    // 攻撃開始・終了
+    void StartAttack();
+    void EndAttack();
+
+    bool IsAttacking() const { return isAttacking_; }
 };
-

@@ -142,13 +142,13 @@ void SlimeEnemy::Draw()
     {
         if ((deadEffectTimer_ / 5) % 2 == 0)
         {
-            DrawSphere3D(VGet(x, y, z), GetRadius(), 4, GetColor(255, 0, 0), GetColor(255, 128, 128), true);
+            DrawSphere3D(VGet(x, y, z), GetRadius2(), 4, GetColor(255, 0, 0), GetColor(255, 128, 128), true);
         }
         return;
     }
 
 	// “–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, true);
+	DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, false);
 }
 
 void SlimeEnemy::Release() 
@@ -179,4 +179,20 @@ void SlimeEnemy::OnHit(const VECTOR& hitPos)
 
     isKnockbackOnly_ = true;
     lastHitPos_ = hitPos; // ‹L˜^‚µ‚Ä‚¨‚­
+}
+
+void SlimeEnemy::TakeDamage(int damage)
+{
+    if (!isAlive) return;
+    if (isDeadEffect_) return;
+    //if (isKnockbackOnly_) return; // ƒmƒbƒNƒoƒbƒN’†‚Í–³“G
+
+    hp_ -= damage;
+
+    // HP‚ª0ˆÈ‰º‚É‚È‚Á‚½‚çŽ€–S
+    if (hp_ <= 0)
+    {
+        hp_ = 0;
+        Kill();
+    }
 }

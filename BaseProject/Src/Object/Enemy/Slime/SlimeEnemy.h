@@ -19,12 +19,16 @@ public:
     void Kill() override;         // オーバーライド
     void OnHit(const VECTOR& hitPos); // 弾から呼ばれる
 
+    void TakeDamage(int damage);
+
     VECTOR pos = VGet(x, y, z);
 
     VECTOR GetPos() const { return VGet(x, y, z); }
-    float GetRadius() const { return 15.0f; }
+    float GetRadius() const { return 20.0f; }
+	float GetRadius2() const { return 20.0f; }
 
     bool IsDeadEffect() const { return isDeadEffect_; }
+    int GetHP() const { return hp_; }
 
 private:
     float moveSpeed;
@@ -49,4 +53,6 @@ private:
 
     // ノックバック中か（点滅前）
     bool isKnockbackOnly_ = false;    
+
+	int hp_ = 1;  // 体力
 };

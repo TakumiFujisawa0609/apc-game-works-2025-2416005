@@ -9,6 +9,7 @@
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage/Stage.h"
+#include "../../Object/Weapon/Weapon.h"
 
 Player* Player::instance_ = nullptr;
 
@@ -59,6 +60,12 @@ void Player::Init(void)
 	//VECTOR scale = VGet(scalef, scalef, scalef);
 	//MV1SetScale(modelId_, scale);
 
+	//int frameNum = MV1GetFrameNum(modelId_);
+	//for (int i = 0; i < frameNum; i++) {
+	//	const char* frameName = MV1GetFrameName(modelId_, i);
+	//	printfDx("Frame %d: %s\n", i, frameName);
+	//}
+
 
 	animationController_ = new AnimationController(modelId_);
 
@@ -88,6 +95,9 @@ void Player::Init(void)
 	 SceneManager::GetInstance().GetCamera()->SetFollow(this);
 
 	 AtackPlayerManager::CreateInstance();
+
+	 weapon_ = new Weapon();
+	 weapon_->Init();
 
 	 // 初期状態
 	 ChangeState(STATE::STANDBY);
@@ -123,6 +133,8 @@ void Player::Update(void)
 		UpdateVictory();
 		break;
 	}
+
+	weapon_->Update();
 
 }
 
@@ -163,6 +175,8 @@ void Player::Draw(void)
 	default:
 		break;
 	}
+
+	weapon_->Draw();
 	
 	DrawFormatString(
 		0, 50, 0xffffff,
@@ -210,6 +224,8 @@ void Player::Release(void)
 		MV1DeleteModel(modelId_);
 		modelId_ = -1;
 	}
+
+	weapon_->Release();
 }
 
 VECTOR Player::GetPos(void)
@@ -528,20 +544,28 @@ void Player::ProcessAtack(void)
 	{
 		isAtack_ = true;
 
-		// 読みこんだ音をノーマル再生します(『PlaySoundMem』関数使用)
-		PlaySoundMem(SHandle, DX_PLAYTYPE_NORMAL);
+		// 武器の攻撃開始
+		if (weapon_) {
+			weapon_->StartAttack();
+		}
 
-		// サウンドハンドルの削除
+		PlaySoundMem(SHandle, DX_PLAYTYPE_NORMAL);
 		DeleteSoundMem(SHandle);
 
-		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false); // 攻撃モーションを一度だけ再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 	}
 
 	// 攻撃中 → アニメーションが終わったら解除
 	if (isAtack_ && animationController_->IsEnd())
 	{
 		isAtack_ = false;
-		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); // 待機モーションへ戻す
+
+		// 武器の攻撃終了
+		if (weapon_) {
+			weapon_->EndAttack();
+		}
+
+		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 	}
 
 	prevMouse = mouse;

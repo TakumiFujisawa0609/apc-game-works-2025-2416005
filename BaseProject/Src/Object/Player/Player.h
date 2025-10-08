@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 
+class Weapon;
 class AnimationController;
 class Player
 {
@@ -81,6 +82,8 @@ public:
 	VECTOR GetAngles(void);
 
 	float GetRadius() const;
+
+	int GetModelId(void) const { return modelId_; }
 
 private:
 
@@ -181,4 +184,8 @@ private:
 	int SHandle ;
 
 	VECTOR jumpForward_ = VGet(0.0f, 0.0f, 0.0f);  // 前方向のジャンプ移動量
+
+	bool isDash_ = false;  // ダッシュ中か
+
+	Weapon* weapon_;
 };
