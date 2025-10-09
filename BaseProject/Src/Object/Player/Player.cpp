@@ -2,6 +2,7 @@
 #include "AtackPlayerManager.h"
 #include "Player.h"
 #include "../../Manager/InputManager.h"
+#include"../../Manager/Input/KeyManager.h"
 #include "../../Utility/AnimationController.h"
 #include "../../Manager/SceneManager.h"
 #include "../../Utility/AsoUtility.h"
@@ -519,11 +520,22 @@ void Player::ProcessMove(void)
 	InputManager& ins = InputManager::GetInstance();
 
 	// ˆÚ“®•ûŒü‚ðŒˆ‚ß‚é
-	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
-	if (ins.IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
-	if (ins.IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
-	if (ins.IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
-	if (ins.IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
+	VECTOR moveDir = { KEY::GetIns().GetLeftStickVec().x,0.0f,-KEY::GetIns().GetLeftStickVec().y };
+
+	if (AsoUtility::EqualsVZero(moveDir))
+	{
+		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_UP).now) { moveDir = AsoUtility::DIR_F; }
+		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_DOWN).now) { moveDir = AsoUtility::DIR_B; }
+		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_LEFT).now) { moveDir = AsoUtility::DIR_L; }
+		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_RIGHT).now) { moveDir = AsoUtility::DIR_R; }
+		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_UP).now) { moveDir.z++; }
+		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_DOWN).now) { moveDir.z--; }
+		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_LEFT).now) { moveDir.x--; }
+		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_RIGHT).now) { moveDir.x++; }
+
+		moveDir = AsoUtility::VNormalize(moveDir);
+	}
+
 
 	if (AsoUtility::EqualsVZero(moveDir))
 	{

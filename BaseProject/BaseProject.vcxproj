@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayerManager.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Input\KeyManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayerManager.h" />

@@ -141,7 +141,7 @@ void SceneManager::Draw(void)
 	camera_->DrawDebug();
 
 	// ƒ~ƒjƒJƒƒ‰
-	miniCamera_->Draw();
+	//miniCamera_->Draw();
 
 	// ˆÃ“]E–¾“]
 	fader_->Draw();

@@ -469,6 +469,18 @@ VECTOR AsoUtility::Normalize(const Vector2& v)
     return ret;
 }
 
+Vector2 AsoUtility::Normalize(const Vector2I& v)
+{
+	Vector2 ret = Vector2(
+		static_cast<float>(v.x),
+		static_cast<float>(v.y)
+	);
+
+    if (ret == 0.0f) { return { 0.0f,0.0f }; }
+
+    return ret / static_cast<float>(Magnitude(ret));
+}
+
 VECTOR AsoUtility::VNormalize(const VECTOR& v)
 {
     if (AsoUtility::EqualsVZero(v))

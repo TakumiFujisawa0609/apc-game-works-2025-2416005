@@ -105,6 +105,7 @@ public:
 
 	// 正規化
 	static VECTOR Normalize(const Vector2& v);
+	static Vector2 Normalize(const Vector2I& v);
 	static VECTOR VNormalize(const VECTOR& v);
 
 	// 2つのベクトルの間の角度

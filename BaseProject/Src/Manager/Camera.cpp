@@ -1,5 +1,6 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/Input/KeyManager.h"
 #include "Camera.h"
 #include "../Object/Player/Player.h"
 
@@ -251,6 +252,13 @@ void Camera::SetBeforeDrawFollow(void)
 	int deltaX = mouseX - centerX;
 	int deltaY = mouseY - centerY;
 
+	if (deltaX == 0 && deltaY == 0)
+	{
+		deltaX = KEY::GetIns().GetRightStickVec().x;
+		deltaY = KEY::GetIns().GetRightStickVec().y;
+		deltaX *= 8; deltaY *= 8;
+	}
+
 	// Ž‹“_‰ñ“]
 	angles_.y += deltaX * mouseSensitivity_; // ¶‰E
 	angles_.x += deltaY * mouseSensitivity_; // ã‰º
@@ -296,6 +304,77 @@ void Camera::SetBeforeDrawFollow(void)
 		{ 0.0f, 1.0f, 0.0f }
 	);
 }
+
+//void Camera::SetBeforeDrawFollow(void)
+//
+//{
+//
+//	if (lookAt_ == nullptr) { return; }
+//
+//	auto& key = KEY::GetIns();
+//
+//	// ’Ç]‘ÎÛ‚ÌÀ•W: lookAt_ (VECTORŒ^)
+//
+//	// ƒJƒƒ‰‚ÌYŽ²‰ñ“]Šp“x: yAngle_ (floatŒ^)
+//
+//	VECTOR vec = {};
+//
+//	vec = { key.GetRightStickVec().y,key.GetRightStickVec().x,0.0f };
+//
+//	if (Utility::VZERO(vec)) {
+//
+//		vec = { key.GetMouceMove().y,key.GetMouceMove().x,0.0f };
+//
+//	}
+//
+//	if (Utility::VZERO(vec)) {
+//
+//		if (key.GetInfo(KEY_TYPE::CAMERA_UP).now) { vec.x++; }
+//
+//		if (key.GetInfo(KEY_TYPE::CAMERA_DOWN).now) { vec.x--; }
+//
+//		if (key.GetInfo(KEY_TYPE::CAMERA_RIGHT).now) { vec.y++; }
+//
+//		if (key.GetInfo(KEY_TYPE::CAMERA_LEFT).now) { vec.y--; }
+//
+//	}
+//
+//	float rotPow = 3.5f * DX_PI_F / 180.0f;
+//
+//	if (!Utility::VZERO(vec)) {
+//
+//		vec = Utility::Normalize(vec);
+//
+//		vec = VScale(vec, rotPow);
+//
+//		angles_ = VAdd(angles_, vec);
+//
+//		if (angles_.y >= Utility::Deg2RadF(360.0f)) { angles_.y -= Utility::Deg2RadF(360.0f); }
+//
+//		if (angles_.y <= Utility::Deg2RadF(0.0f)) { angles_.y += Utility::Deg2RadF(360.0f); }
+//
+//		if (angles_.x < Utility::Deg2RadF(-30.0f)) { angles_.x = Utility::Deg2RadF(-30.0f); }
+//
+//		if (angles_.x > Utility::Deg2RadF(60.0f)) { angles_.x = Utility::Deg2RadF(60.0f); }
+//
+//	}
+//
+//	MATRIX mat = MGetIdent();
+//
+//	mat = MMult(mat, MGetRotX(angles_.x));
+//
+//	mat = MMult(mat, MGetRotY(angles_.y));
+//
+//	pos_ = VAdd(targetPos_, VTransform(LOOKAT_DIFF, mat));
+//
+//	mat = MGetIdent();
+//
+//	mat = MMult(mat, MGetRotY(angles_.y));
+//
+//	lookAtMultPos_ = VAdd(*lookAt_, VTransform(LOOKAT_DIFF, mat));
+//
+//}
+
 
 void Camera::SetFollow(Player* follow)
 {

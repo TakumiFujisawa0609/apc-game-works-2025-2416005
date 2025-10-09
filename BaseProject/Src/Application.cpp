@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "Manager/InputManager.h"
+#include "Manager/Input/KeyManager.h"
 #include "Manager/SceneManager.h"
 #include "Application.h"
 
@@ -54,6 +55,8 @@ void Application::Init(void)
 	SetUseDirectInputFlag(true);
 	InputManager::CreateInstance();
 
+	KEY::CreateIns();
+
 	// ƒV[ƒ“ŠÇ—‰Šú‰»
 	SceneManager::CreateInstance();
 
@@ -74,6 +77,7 @@ void Application::Run(void)
 		StartTime = GetNowCount();
 
 		inputManager.Update();
+		KEY::GetIns().Update();
 		sceneManager.Update();
 
 		sceneManager.Draw();
@@ -100,6 +104,7 @@ void Application::Destroy(void)
 
 	// “ü—Í§Œä‰ğ•ú
 	InputManager::GetInstance().Destroy();
+	KEY::DeleteIns();
 
 	// DxLibI—¹
 	if (DxLib_End() == -1)

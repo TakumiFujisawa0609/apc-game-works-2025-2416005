@@ -68,10 +68,12 @@ void GameScene::Draw(void)
 	// ステージ描画
 	Stage::GetInstance()->Draw();
 
+	enemy_->Draw();
+
 	// プレイヤー描画
 	Player::GetInstance()->Draw();
 
-	enemy_->Draw();
+
 }
 
 void GameScene::Release(void)

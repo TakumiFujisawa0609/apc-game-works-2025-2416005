@@ -147,7 +147,7 @@ private:
 	void ProcessDown(void);
 	void ProcessMove(void);
 	void ProcessShot(void);
-	void ProcessAtack(void);
+	void ProcessAtack	(void);
 	void ProcessBrink(void);
 
 
