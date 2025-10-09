@@ -10,6 +10,7 @@
 #include "GameScene.h"
 #include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Weapon/Weapon.h"
+#include "../Object/Stage/Field.h"
 
 GameScene::GameScene(void) : SceneBase()
 {
@@ -33,9 +34,13 @@ void GameScene::Init(void)
 	grid_ = new Grid();
 	grid_->Init();
 
-	//// ステージ初期化
+	// ステージ初期化
 	Stage::CreateInstance();
 	Stage::GetInstance()->Init();
+
+	// フィールド初期化
+	field_ = new Field();
+	field_->Init();
 
 	// プレイヤー初期化
 	Player::CreateInstance();
@@ -54,6 +59,9 @@ void GameScene::Update(void)
 	// ステージ更新
 	Stage::GetInstance()->Update();
 
+	// フィールド更新
+	field_->Update();
+
 	// プレイヤー更新
 	Player::GetInstance()->Update();
 
@@ -67,6 +75,9 @@ void GameScene::Draw(void)
 
 	// ステージ描画
 	Stage::GetInstance()->Draw();
+
+	// フィールド描画
+	field_->Draw();
 
 	enemy_->Draw();
 
@@ -85,6 +96,10 @@ void GameScene::Release(void)
 	// ステージ解放
 	Stage::GetInstance()->Release();
 	Stage::DeleteInstance();
+
+	// フィールド解放
+	field_->Release();
+	delete field_;
 
 	// プレイヤー解放
 	Player::GetInstance()->Release();

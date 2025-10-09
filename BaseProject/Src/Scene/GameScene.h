@@ -3,6 +3,7 @@ class Grid;
 class Player;
 class EnemyManager;
 class Weapon;
+class Field;
 
 
 class GameScene : public SceneBase
@@ -37,5 +38,7 @@ Player* player_;
 EnemyManager* enemy_;
 
 Weapon* weapon_;
+
+Field* field_;
 
 };

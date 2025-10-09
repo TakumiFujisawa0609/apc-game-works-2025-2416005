@@ -126,39 +126,33 @@ void Weapon::CheckCollision()
     EnemyManager* enemyManager = EnemyManager::GetInstance();
     if (!enemyManager) return;
 
-    // 全てのスライムをチェック
     auto& slimes = enemyManager->GetSlimes();
 
     for (auto slime : slimes) {
-        if (!slime || !slime->GetAlive()) continue;
+        if (!slime) continue;
+        if (!slime->CanBeHit()) continue; // ← 点滅中など無敵状態をスキップ
 
-        // 同じ攻撃で同じ敵に複数回ヒットしないようにする
-        if (hitEnemies_.find(slime) != hitEnemies_.end()) {
-            continue;
-        }
+        if (hitEnemies_.find(slime) != hitEnemies_.end()) continue;
 
         VECTOR enemyPos = slime->GetPos();
         float enemyRadius = slime->GetRadius();
 
-        // 線分（剣）と球（敵）の当たり判定
         if (CheckLineToSphereCollision(swordBase_, swordTip_, enemyPos, enemyRadius)) {
-            // この攻撃で当たった敵として記録
             hitEnemies_.insert(slime);
 
-            // 剣の中心点を計算してノックバックを適用
             VECTOR swordCenter = VScale(VAdd(swordBase_, swordTip_), 0.5f);
             slime->OnHit(swordCenter);
-
-            // ダメージを与えて、HPが0以下なら倒す
             slime->TakeDamage(30);
+
             if (slime->GetHP() <= 0) {
                 slime->Kill();
             }
 
-            break; // 1回の攻撃で1体だけヒット
+            break;
         }
     }
 }
+
 
 bool Weapon::CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
     const VECTOR& spherePos, float sphereRadius)

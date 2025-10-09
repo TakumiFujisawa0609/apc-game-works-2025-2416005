@@ -39,6 +39,7 @@ void ShotPlayer::Update(void)
     const auto& slimes = sm->GetSlimes();
     for (auto slime : slimes) {
         if (!slime) continue;
+        if (!slime->CanBeHit()) continue; 
         if (!slime->GetAlive()) continue;
 
         VECTOR c = slime->GetPos();

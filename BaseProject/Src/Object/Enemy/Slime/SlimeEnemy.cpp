@@ -196,3 +196,9 @@ void SlimeEnemy::TakeDamage(int damage)
         Kill();
     }
 }
+
+bool SlimeEnemy::CanBeHit() const
+{
+    // ¶‚«‚Ä‚¢‚ÄA“_–Å’†‚Å‚È‚¢ê‡‚Ì‚İ“–‚½‚è”»’è‚ğ‚Â
+    return isAlive && !isDeadEffect_;
+}

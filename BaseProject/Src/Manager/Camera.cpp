@@ -308,7 +308,6 @@ void Camera::SetBeforeDrawFollow(void)
 //void Camera::SetBeforeDrawFollow(void)
 //
 //{
-//
 //	if (lookAt_ == nullptr) { return; }
 //
 //	auto& key = KEY::GetIns();

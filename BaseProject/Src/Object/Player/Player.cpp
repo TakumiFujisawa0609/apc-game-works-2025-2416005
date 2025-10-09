@@ -244,6 +244,7 @@ void Player::Release(void)
 {
 	// アニメーションコントローラの解放
 	if (animationController_) {
+		animationController_->Release();
 		delete animationController_;
 		animationController_ = nullptr;
 	}

@@ -30,6 +30,8 @@ public:
     bool IsDeadEffect() const { return isDeadEffect_; }
     int GetHP() const { return hp_; }
 
+    bool CanBeHit() const;
+
 private:
     float moveSpeed;
     int color;

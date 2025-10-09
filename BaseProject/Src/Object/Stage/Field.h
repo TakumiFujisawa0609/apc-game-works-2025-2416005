@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <DxLib.h>
 
 class Field
@@ -14,5 +15,11 @@ public:
 
 private:
 
+	int modelId_;
+	int modelId2_;
+	VECTOR pos_;
+	VECTOR pos2_;
+
+	std::vector<VECTOR> fieldPositions_;
 };
 
