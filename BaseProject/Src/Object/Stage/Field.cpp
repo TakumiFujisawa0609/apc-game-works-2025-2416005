@@ -10,6 +10,7 @@ Field::~Field()
 
 void Field::Init()
 {
+	// フィールドモデルの読み込み
 	//modelId_ = MV1LoadModel("Data/Model/術式反転赤/術式反転赤/術式反転赤.mv1");
 	//if (modelId_ == -1) {
 	//	MessageBoxA(NULL, "ステージモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
@@ -37,7 +38,7 @@ void Field::Update()
 
 void Field::Draw()
 {
-	
+	// for文で回して描画
 	//for (auto v : fieldPositions_)
 	//{
 	//	DrawSphere3D(v, 300.0f, 8, GetColor(255, 0, 0), GetColor(255, 100, 100), FALSE);
@@ -48,12 +49,12 @@ void Field::Draw()
 
 void Field::Release()
 {
-	if (modelId_ != -1) {
-		MV1DeleteModel(modelId_);
-		modelId_ = -1;
-	}
-	if (modelId2_ != -1) {
-		MV1DeleteModel(modelId2_);
-		modelId2_ = -1;
-	}
+	//if (modelId_ != -1) {
+	//	MV1DeleteModel(modelId_);
+	//	modelId_ = -1;
+	//}
+	//if (modelId2_ != -1) {
+	//	MV1DeleteModel(modelId2_);
+	//	modelId2_ = -1;
+	//}
 }

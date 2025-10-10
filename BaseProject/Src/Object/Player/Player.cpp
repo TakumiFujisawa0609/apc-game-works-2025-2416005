@@ -483,7 +483,7 @@ void Player::ProcessUp(void)
 
 
 	static int tpRecoverCounter = 0;
-	if (!isJump_ && !isBrinkAction_)  // ← このフラグをProcessBrink側で管理
+	if (!isJump_ && !isBrinkAction_)  
 	{
 		tpRecoverCounter++;
 		if (tpRecoverCounter >= 5)
@@ -509,7 +509,7 @@ void Player::ProcessDown(void)
 
 void Player::ProcessMove(void)
 {
-	if (isAtack_ || isJump_) {
+	if (isAtack_) {
 		// 攻撃中でもアニメーション更新は続ける
 		animationController_->Update();
 		return;

@@ -23,18 +23,15 @@ bool Stage::Init(void)
 		MessageBoxA(NULL, "ステージモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	}
 
+	// 雲と街の画像読み込み
 	kumoImageId_ = LoadGraph("Data/Image/kumo.png");
-
 	toshiImageId_ = LoadGraph("Data/Image/tosi.png");
 
-	// ステージモデルの位置設定
+	// ステージモデルの位置、スケール設定
 	MV1SetPosition(modelId_, pos_);
-
 	float scalef= 1.0f;
 	VECTOR scale = VGet(scalef, scalef, scalef);
 	MV1SetScale(modelId_, scale);
-
-
 	MV1SetRotationXYZ(modelId_, {AsoUtility::Deg2RadF(-90.0f),0.0f, 0.0f});
 
 	return true;
@@ -42,18 +39,22 @@ bool Stage::Init(void)
 
 void Stage::Update(void)
 {
+	// プレイヤーの位置に合わせてステージを移動させる
 	pos_ = Player::GetInstance()->GetPos();
-	KumoPos_ = pos_;
-	KumoPos_.y += 5050.0f;
 
-	ToshiPos_ = pos_;
-	ToshiPos_.y += -4000.0f;
+	// プレイヤーの位置に合わせて雲と街を移動させる
+	//KumoPos_ = pos_;
+	//KumoPos_.y += 5050.0f;
+
+	//ToshiPos_ = pos_;
+	//ToshiPos_.y += -4000.0f;
 
 	MV1SetPosition(modelId_, pos_);
 }
 
 void Stage::Draw(void)
 {
+	// ステージモデルの描画
 	MV1DrawModel(modelId_);
 
 	//// 雲の描画
@@ -63,6 +64,7 @@ void Stage::Draw(void)
 	//	600.0f, -400.0f,
 	//	-600.0f, -400.0f, kumoImageId_, true);
 
+	//// 街の描画
 	//DrawModiBillboard3D(VGet(ToshiPos_.x, ToshiPos_.y, ToshiPos_.z),
 	//-600.0f, 400.0f,
 	//600.0f, 400.0f,

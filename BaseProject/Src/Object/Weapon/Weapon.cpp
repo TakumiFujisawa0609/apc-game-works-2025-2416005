@@ -15,11 +15,13 @@ Weapon::~Weapon()
 
 void Weapon::Init()
 {
+	// 武器モデルの読み込み
     modelId_ = MV1LoadModel("Data/Model/Weapon/Sword/sword.mv1");
     if (modelId_ == -1) {
         MessageBoxA(NULL, "武器モデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
     }
 
+	// モデルのスケール設定   
     float scalef = 2.0f;
     VECTOR scale = VGet(scalef, scalef, scalef);
     MV1SetScale(modelId_, scale);
@@ -27,6 +29,7 @@ void Weapon::Init()
 
 void Weapon::Update()
 {
+	// プレイヤーの右手に追従させる
     Player* player = Player::GetInstance();
     int playerModelId = player->GetModelId();
 
@@ -70,11 +73,13 @@ void Weapon::Update()
 
 void Weapon::Draw()
 {
+	// モデルの描画
     MV1DrawModel(modelId_);
 
-    const float capsuleRadius = 30.0f; // カプセルの半径
+    // カプセルの半径
+    const float capsuleRadius = 30.0f; 
 
-    // 当たり判定を可視化（常に表示）
+    // 当たり判定を可視化
     if (isAttacking_) {
         // 剣の線を赤で表示
         DrawLine3D(swordBase_, swordTip_, GetColor(255, 0, 0));
@@ -92,7 +97,7 @@ void Weapon::Draw()
         // 攻撃していない時は青で表示
         DrawLine3D(swordBase_, swordTip_, GetColor(0, 0, 255));
 
-        // カプセルを表現（青）
+        // カプセルを表現
         int segments = 5;
         for (int i = 0; i <= segments; i++) {
             float t = (float)i / (float)segments;
@@ -104,6 +109,7 @@ void Weapon::Draw()
 
 void Weapon::Release()
 {
+	// モデルの解放
     if (modelId_ != -1) {
         MV1DeleteModel(modelId_);
         modelId_ = -1;
@@ -118,11 +124,12 @@ void Weapon::StartAttack()
 void Weapon::EndAttack()
 {
     isAttacking_ = false;
-    hitEnemies_.clear(); // 攻撃終了時に当たった敵のリストをクリア
+    hitEnemies_.clear(); 
 }
 
 void Weapon::CheckCollision()
 {
+	// 敵管理クラスからスライムのリストを取得
     EnemyManager* enemyManager = EnemyManager::GetInstance();
     if (!enemyManager) return;
 
@@ -130,7 +137,7 @@ void Weapon::CheckCollision()
 
     for (auto slime : slimes) {
         if (!slime) continue;
-        if (!slime->CanBeHit()) continue; // ← 点滅中など無敵状態をスキップ
+        if (!slime->CanBeHit()) continue; 
 
         if (hitEnemies_.find(slime) != hitEnemies_.end()) continue;
 
@@ -157,7 +164,7 @@ void Weapon::CheckCollision()
 bool Weapon::CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
     const VECTOR& spherePos, float sphereRadius)
 {
-    // カプセルの半径（剣の太さ）
+    // カプセルの半径
     const float capsuleRadius = 100.0f;
 
     // 線分の方向ベクトル
