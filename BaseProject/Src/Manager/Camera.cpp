@@ -219,24 +219,13 @@ const VECTOR& Camera::GetTargetPos(void) const
 	return targetPos_;
 }
 
-//void Camera::SetFollow(Player* player)
-//{
-//	player_ = player;
-//}
-
 void Camera::SetBeforeDrawFollow(void)
 {
 	auto& ins = InputManager::GetInstance();
 	if (GetJoypadNum() == 0)
 	{
-		// 方向回転によるXYZの移動
 		MoveXYZDirection();
 	}
-	//else
-	//{
-	//	// 方向回転によるXYZの移動(ゲームパッド)
-	//	MoveXYZDirectionPad();
-	//}
 		// 画面サイズ取得
 	int screenW, screenH;
 	GetScreenState(&screenW, &screenH, nullptr);

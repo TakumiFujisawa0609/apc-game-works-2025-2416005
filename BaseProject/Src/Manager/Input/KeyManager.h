@@ -27,9 +27,11 @@ public:
 		MOVE_RIGHT,
 		MOVE_LEFT,
 		ATTACK,
-		GOUGE,
-		JUMP,
-		EVASION,
+		SHOT,
+		DASH,
+		SP,
+		UP,
+		GARD,
 
 		// ƒJƒƒ‰‘€ì
 		CAMERA_UP,

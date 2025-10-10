@@ -451,7 +451,7 @@ void Player::ProcessUp(void)
 	const int tpUsePerFrame = 10;     // 上昇時のスタミナ消費量
 
 
-	if (CheckHitKey(KEY_INPUT_LSHIFT) && dashTp > 0)
+	if ((KEY::GetIns().GetInfo(KEY_TYPE::UP).now) && dashTp > 0)
 	{
 		isJump_ = true;          // 空中状態ON
 		pos_.y += riseSpeed;     // 上昇
@@ -585,12 +585,7 @@ void Player::ProcessMove(void)
 
 void Player::ProcessShot(void)
 {
-	InputManager& ins = InputManager::GetInstance();
-
-	static int prevMouse = 0;
-
-	int mouse = GetMouseInput();
-	if ((mouse & MOUSE_INPUT_RIGHT) && !(prevMouse & MOUSE_INPUT_RIGHT))
+	if ((KEY::GetIns().GetInfo(KEY_TYPE::SHOT).down))
 	{
 		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
 		dir = VNorm(dir);
@@ -602,18 +597,13 @@ void Player::ProcessShot(void)
 		ShotPlayerManager::GetInstance().AddShot(shotPos, dir);
 	}
 
-	prevMouse = mouse;
-
 	ShotPlayerManager::GetInstance().Update();
 }
 
 void Player::ProcessAtack(void)
 {
-	static int prevMouse = 0;
-	int mouse = GetMouseInput();
-
 	// 左クリックで攻撃開始
-	if ((mouse & MOUSE_INPUT_LEFT) && !isAtack_)
+	if ((KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) && !isAtack_)
 	{
 		isAtack_ = true;
 
@@ -640,8 +630,6 @@ void Player::ProcessAtack(void)
 
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 	}
-
-	prevMouse = mouse;
 
 	AtackPlayerManager::GetInstance()->Update();
 }
@@ -670,7 +658,7 @@ void Player::ProcessBrink(void)
 	if (boostCooldown > 0) boostCooldown--;
 
 	// --- 入力 ---
-	if (ins.IsTrgDown(KEY_INPUT_SPACE) && boostCooldown <= 0)
+	if ((KEY::GetIns().GetInfo(KEY_TYPE::DASH).down) && boostCooldown <= 0)
 	{
 		if (nowFrame - lastPressFrame <= doubleTapThreshold)
 			canDash = true;
@@ -684,7 +672,7 @@ void Player::ProcessBrink(void)
 		boostCooldown = 10;
 	}
 
-	bool isHolding = CheckHitKey(KEY_INPUT_SPACE) != 0;
+	bool isHolding = (KEY::GetIns().GetInfo(KEY_TYPE::DASH).prev) != 0;
 
 	// --- ダッシュ開始 ---
 	if (canDash && isHolding && dashTp > 0)
