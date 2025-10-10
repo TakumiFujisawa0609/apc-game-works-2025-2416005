@@ -1,7 +1,6 @@
 #include "ShotPlayerManager.h"
 #include "AtackPlayerManager.h"
 #include "Player.h"
-#include "../../Manager/InputManager.h"
 #include"../../Manager/Input/KeyManager.h"
 #include "../../Utility/AnimationController.h"
 #include "../../Manager/SceneManager.h"
@@ -444,7 +443,6 @@ void Player::UpdateVictory(void)
 
 void Player::ProcessUp(void)
 {
-	InputManager& ins = InputManager::GetInstance();
 
 	const float riseSpeed = 10.0f;   // 上昇スピード
 	const float gravity = GRAVITY_POW; // 落下重力
@@ -517,8 +515,6 @@ void Player::ProcessMove(void)
 		return;
 	}
 
-	// 入力制御のインスタンスを取得
-	InputManager& ins = InputManager::GetInstance();
 
 	// 移動方向を決める
 	VECTOR moveDir = { KEY::GetIns().GetLeftStickVec().x,0.0f,-KEY::GetIns().GetLeftStickVec().y };
@@ -644,7 +640,6 @@ void Player::ProcessBrink(void)
 	static int boostCooldown = 0;
 	static int tpRecoverCounter = 0;
 
-	InputManager& ins = InputManager::GetInstance();
 	int nowFrame = GetNowCount();
 	const int doubleTapThreshold = 300;
 	const int boostDuration = 10;

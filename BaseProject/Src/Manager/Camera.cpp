@@ -1,5 +1,4 @@
 #include "../Utility/AsoUtility.h"
-#include "../Manager/InputManager.h"
 #include "../Manager/Input/KeyManager.h"
 #include "Camera.h"
 #include "../Object/Player/Player.h"
@@ -88,44 +87,44 @@ void Camera::SetBeforeDrawFixedPoint(void)
 
 void Camera::SetBeforeDrawFree(void)
 {
-	auto& ins = InputManager::GetInstance();
+	//auto& ins = InputManager::GetInstance();
 
-	// マウス座標取得
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
+	//// マウス座標取得
+	//int mouseX, mouseY;
+	//GetMousePoint(&mouseX, &mouseY);
 
-	if (firstMouse_) {
-		prevMouseX_ = mouseX;
-		prevMouseY_ = mouseY;
-		firstMouse_ = false;
-	}
+	//if (firstMouse_) {
+	//	prevMouseX_ = mouseX;
+	//	prevMouseY_ = mouseY;
+	//	firstMouse_ = false;
+	//}
 
-	// マウス移動量
-	int deltaX = mouseX - prevMouseX_;
-	int deltaY = mouseY - prevMouseY_;
+	//// マウス移動量
+	//int deltaX = mouseX - prevMouseX_;
+	//int deltaY = mouseY - prevMouseY_;
 
-	prevMouseX_ = mouseX;
-	prevMouseY_ = mouseY;
+	//prevMouseX_ = mouseX;
+	//prevMouseY_ = mouseY;
 
-	// マウス移動をカメラ回転に反映
-	angles_.y += deltaX * mouseSensitivity_; // 左右回転
-	angles_.x += deltaY * mouseSensitivity_; // 上下回転
+	//// マウス移動をカメラ回転に反映
+	//angles_.y += deltaX * mouseSensitivity_; // 左右回転
+	//angles_.x += deltaY * mouseSensitivity_; // 上下回転
 
-	// ピッチ角制限（上下向きすぎ防止）
-	if (angles_.x > DX_PI_F / 2.0f) angles_.x = DX_PI_F / 2.0f;
-	if (angles_.x < -DX_PI_F / 2.0f) angles_.x = -DX_PI_F / 2.0f;
+	//// ピッチ角制限（上下向きすぎ防止）
+	//if (angles_.x > DX_PI_F / 2.0f) angles_.x = DX_PI_F / 2.0f;
+	//if (angles_.x < -DX_PI_F / 2.0f) angles_.x = -DX_PI_F / 2.0f;
 
-	// WASD で移動
-	float movePow = 3.0f;
-	if (ins.IsNew(KEY_INPUT_W)) { pos_.z += movePow; }
-	if (ins.IsNew(KEY_INPUT_A)) { pos_.x -= movePow; }
-	if (ins.IsNew(KEY_INPUT_S)) { pos_.z -= movePow; }
-	if (ins.IsNew(KEY_INPUT_D)) { pos_.x += movePow; }
-	if (ins.IsNew(KEY_INPUT_Q)) { pos_.y += movePow; }
-	if (ins.IsNew(KEY_INPUT_E)) { pos_.y -= movePow; }
+	//// WASD で移動
+	//float movePow = 3.0f;
+	//if (ins.IsNew(KEY_INPUT_W)) { pos_.z += movePow; }
+	//if (ins.IsNew(KEY_INPUT_A)) { pos_.x -= movePow; }
+	//if (ins.IsNew(KEY_INPUT_S)) { pos_.z -= movePow; }
+	//if (ins.IsNew(KEY_INPUT_D)) { pos_.x += movePow; }
+	//if (ins.IsNew(KEY_INPUT_Q)) { pos_.y += movePow; }
+	//if (ins.IsNew(KEY_INPUT_E)) { pos_.y -= movePow; }
 
-	// XYZ方向移動（既存処理）
-	MoveXYZDirection();
+	//// XYZ方向移動（既存処理）
+	//MoveXYZDirection();
 }
 
 void Camera::DrawDebug(void)
@@ -178,40 +177,40 @@ void Camera::ChangeMode(MODE mode)
 
 void Camera::MoveXYZDirection(void)
 {
-	auto& ins = InputManager::GetInstance();
+	//auto& ins = InputManager::GetInstance();
 
-	// 矢印キーでカメラの角度を変える
-	float rotPow = 1.0f * DX_PI_F / 180.0f;
-	if (ins.IsNew(KEY_INPUT_DOWN)) { angles_.x += rotPow; }
-	if (ins.IsNew(KEY_INPUT_UP)) { angles_.x -= rotPow; }
-	if (ins.IsNew(KEY_INPUT_RIGHT)) { angles_.y += rotPow; }
-	if (ins.IsNew(KEY_INPUT_LEFT)) { angles_.y -= rotPow; }
+	//// 矢印キーでカメラの角度を変える
+	//float rotPow = 1.0f * DX_PI_F / 180.0f;
+	//if (ins.IsNew(KEY_INPUT_DOWN)) { angles_.x += rotPow; }
+	//if (ins.IsNew(KEY_INPUT_UP)) { angles_.x -= rotPow; }
+	//if (ins.IsNew(KEY_INPUT_RIGHT)) { angles_.y += rotPow; }
+	//if (ins.IsNew(KEY_INPUT_LEFT)) { angles_.y -= rotPow; }
 
-	// WASDでカメラを移動させる
-	const float movePow = 3.0f;
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	//// WASDでカメラを移動させる
+	//const float movePow = 3.0f;
+	//VECTOR dir = AsoUtility::VECTOR_ZERO;
 
-	if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-	if (ins.IsNew(KEY_INPUT_A)) { dir = { -1.0f, 0.0f, 0.0f }; }
-	if (ins.IsNew(KEY_INPUT_S)) { dir = { 0.0f, 0.0f, -1.0f }; }
-	if (ins.IsNew(KEY_INPUT_D)) { dir = { 1.0f, 0.0f, 0.0f }; }
+	//if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
+	//if (ins.IsNew(KEY_INPUT_A)) { dir = { -1.0f, 0.0f, 0.0f }; }
+	//if (ins.IsNew(KEY_INPUT_S)) { dir = { 0.0f, 0.0f, -1.0f }; }
+	//if (ins.IsNew(KEY_INPUT_D)) { dir = { 1.0f, 0.0f, 0.0f }; }
 
-	if (!AsoUtility::EqualsVZero(dir))
+	//if (!AsoUtility::EqualsVZero(dir))
 
-	{
-		// XYZの回転行列
-		// XZ平面移動にする場合は、XZの回転を考慮しないようにする
-		MATRIX mat = MGetIdent();
-		//mat = MMult(mat, MGetRotX(angles_.x));
-		mat = MMult(mat, MGetRotY(angles_.y));
-		//mat = MMult(mat, MGetRotZ(angles_.z));
-		// 
-		// 回転行列を使用して、ベクトルを回転させる
-		VECTOR moveDir = VTransform(dir, mat);
+	//{
+	//	// XYZの回転行列
+	//	// XZ平面移動にする場合は、XZの回転を考慮しないようにする
+	//	MATRIX mat = MGetIdent();
+	//	//mat = MMult(mat, MGetRotX(angles_.x));
+	//	mat = MMult(mat, MGetRotY(angles_.y));
+	//	//mat = MMult(mat, MGetRotZ(angles_.z));
+	//	// 
+	//	// 回転行列を使用して、ベクトルを回転させる
+	//	VECTOR moveDir = VTransform(dir, mat);
 
-		// 方向×スピードで移動量を作って、座標に足して移動
-		pos_ = VAdd(pos_, VScale(moveDir, movePow));
-	}
+	//	// 方向×スピードで移動量を作って、座標に足して移動
+	//	pos_ = VAdd(pos_, VScale(moveDir, movePow));
+	//}
 }
 
 const VECTOR& Camera::GetTargetPos(void) const
@@ -221,7 +220,6 @@ const VECTOR& Camera::GetTargetPos(void) const
 
 void Camera::SetBeforeDrawFollow(void)
 {
-	auto& ins = InputManager::GetInstance();
 	if (GetJoypadNum() == 0)
 	{
 		MoveXYZDirection();

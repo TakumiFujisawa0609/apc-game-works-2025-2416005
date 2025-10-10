@@ -53,7 +53,6 @@ void Application::Init(void)
 
 	// “ü—Í§Œä‰Šú‰»
 	SetUseDirectInputFlag(true);
-	InputManager::CreateInstance();
 
 	KEY::CreateIns();
 
@@ -65,7 +64,6 @@ void Application::Init(void)
 void Application::Run(void)
 {
 
-	InputManager& inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	int StartTime, EndTime, TookTime;
@@ -76,7 +74,6 @@ void Application::Run(void)
 
 		StartTime = GetNowCount();
 
-		inputManager.Update();
 		KEY::GetIns().Update();
 		sceneManager.Update();
 
@@ -103,7 +100,6 @@ void Application::Destroy(void)
 	SceneManager::GetInstance().Destroy();
 
 	// “ü—Í§Œä‰ğ•ú
-	InputManager::GetInstance().Destroy();
 	KEY::DeleteIns();
 
 	// DxLibI—¹
