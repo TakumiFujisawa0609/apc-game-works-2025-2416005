@@ -1,4 +1,4 @@
-#include "Field.h"
+ï»¿#include "Field.h"
 
 Field::Field()
 {
@@ -10,22 +10,26 @@ Field::~Field()
 
 void Field::Init()
 {
-	// ƒtƒB[ƒ‹ƒhƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
-	//modelId_ = MV1LoadModel("Data/Model/p®”½“]Ô/p®”½“]Ô/p®”½“]Ô.mv1");
-	//if (modelId_ == -1) {
-	//	MessageBoxA(NULL, "ƒXƒe[ƒWƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½BƒpƒX‚âƒtƒ@ƒCƒ‹‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B", "ƒGƒ‰[", MB_OK);
-	//}
+	// ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
+	modelId_ = MV1LoadModel("Data/Model/Field/Wall.mv1");
+	if (modelId_ == -1) {
+		MessageBoxA(NULL, "ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚ãƒ‘ã‚¹ã‚„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚", "ã‚¨ãƒ©ãƒ¼", MB_OK);
+	}
 
-	//modelId2_ = MV1LoadModel("Data/Model/p®”½“]Ô/p®”½“]Ô/p®”½“]Â.mv1");
-	//if (modelId2_ == -1) {
-	//	MessageBoxA(NULL, "ƒXƒe[ƒWƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½BƒpƒX‚âƒtƒ@ƒCƒ‹‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B", "ƒGƒ‰[", MB_OK);
-	//}
+	modelId2_ = MV1LoadModel("Data/Model/Field/Line.mv1");
+	if (modelId2_ == -1) {
+		MessageBoxA(NULL, "ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚ãƒ‘ã‚¹ã‚„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚", "ã‚¨ãƒ©ãƒ¼", MB_OK);
+	}
 
-	//MV1SetPosition(modelId_, VGet(0.0f, 0.0f, 0.0f));
+	float scalef = 3.0f;
+	VECTOR scale = VGet(scalef, 1.0f, scalef);
+	MV1SetScale(modelId_, scale);
+	MV1SetScale(modelId2_, scale);
 
 
 
-	//fieldPositions_.emplace_back(VGet(0.0f, 0.0f, 0.0f));
+
+	fieldPositions_.emplace_back(VGet(0.0f, 200.0f, 0.0f));
 	//fieldPositions_.emplace_back(VGet(1000.0f, 0.0f, 0.0f));
 	//fieldPositions_.emplace_back(VGet(200.0f, 0.0f, 800.0f));
 
@@ -38,13 +42,14 @@ void Field::Update()
 
 void Field::Draw()
 {
-	// for•¶‚Å‰ñ‚µ‚Ä•`‰æ
-	//for (auto v : fieldPositions_)
-	//{
-	//	DrawSphere3D(v, 300.0f, 8, GetColor(255, 0, 0), GetColor(255, 100, 100), FALSE);
-	//	MV1SetPosition(modelId2_, v);
-	//	MV1DrawModel(modelId2_);
-	//}
+	// foræ–‡ã§å›ã—ã¦æç”»
+	for (auto v : fieldPositions_)
+	{
+		MV1SetPosition(modelId2_, v);
+		MV1DrawModel(modelId2_);
+	}
+
+	MV1SetPosition(modelId_, VGet(0.0f, 0.0f, 0.0f));
 }
 
 void Field::Release()
@@ -53,8 +58,8 @@ void Field::Release()
 	//	MV1DeleteModel(modelId_);
 	//	modelId_ = -1;
 	//}
-	//if (modelId2_ != -1) {
-	//	MV1DeleteModel(modelId2_);
-	//	modelId2_ = -1;
-	//}
+	if (modelId2_ != -1) {
+		MV1DeleteModel(modelId2_);
+		modelId2_ = -1;
+	}
 }

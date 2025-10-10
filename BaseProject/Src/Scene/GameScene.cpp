@@ -1,6 +1,5 @@
 #include <cmath>
 #include <DxLib.h>
-#include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Grid.h"
@@ -31,8 +30,8 @@ void GameScene::Init(void)
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 
 	// グリッド初期化
-	grid_ = new Grid();
-	grid_->Init();
+	//grid_ = new Grid();
+	//grid_->Init();
 
 	// ステージ初期化
 	Stage::CreateInstance();
@@ -54,7 +53,7 @@ void GameScene::Init(void)
 void GameScene::Update(void)
 {
 	// グリッド更新
-	grid_->Update();
+	//grid_->Update();
 
 	// ステージ更新
 	Stage::GetInstance()->Update();
@@ -71,7 +70,7 @@ void GameScene::Update(void)
 void GameScene::Draw(void)
 {
 	// グリッド描画
-	grid_->Draw();
+	//grid_->Draw();
 
 	// ステージ描画
 	Stage::GetInstance()->Draw();
@@ -90,8 +89,8 @@ void GameScene::Draw(void)
 void GameScene::Release(void)
 {
 	// グリッド解放
-	grid_->Release();
-	delete grid_;
+	//grid_->Release();
+	//delete grid_;
 
 	// ステージ解放
 	Stage::GetInstance()->Release();

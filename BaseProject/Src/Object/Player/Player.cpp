@@ -202,8 +202,8 @@ void Player::Draw(void)
 		// 枠線
 		DrawBox(gaugeX, gaugeY, gaugeX + gaugeWidth, gaugeY + gaugeHeight, GetColor(255, 255, 255), FALSE);
 
-		// 数値表示（デバッグ用）
-		DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
+		//// 数値表示（デバッグ用）
+		//DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
 	}
 
 	DrawFormatString(

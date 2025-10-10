@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Src\Object\UI\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayerManager.cpp" />
     <ClCompile Include="Src\Object\Stage\Field.cpp" />
+    <ClCompile Include="Src\Object\UI\UI.cpp" />
     <ClCompile Include="Src\Object\Weapon\Weapon.cpp" />
     <ClCompile Include="Src\Scene\GameOver.cpp" />
     <ClCompile Include="Src\Scene\GameClear.cpp" />
@@ -53,9 +55,11 @@
   <ItemGroup>
     <ClInclude Include="Src\Manager\Input\KeyManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
+    <ClInclude Include="Src\Object\UI\MiniMap.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayerManager.h" />
     <ClInclude Include="Src\Object\Stage\Field.h" />
+    <ClInclude Include="Src\Object\UI\UI.h" />
     <ClInclude Include="Src\Object\Weapon\Weapon.h" />
     <ClInclude Include="Src\Scene\GameOver.h" />
     <ClInclude Include="Src\Scene\GameClear.h" />

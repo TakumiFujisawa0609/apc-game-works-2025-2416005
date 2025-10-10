@@ -1,6 +1,5 @@
 #include <cmath>
 #include <DxLib.h>
-#include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Grid.h"

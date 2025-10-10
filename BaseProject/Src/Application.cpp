@@ -1,5 +1,4 @@
 #include <DxLib.h>
-#include "Manager/InputManager.h"
 #include "Manager/Input/KeyManager.h"
 #include "Manager/SceneManager.h"
 #include "Application.h"
