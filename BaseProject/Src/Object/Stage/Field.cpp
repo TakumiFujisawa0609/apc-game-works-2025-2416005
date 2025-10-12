@@ -1,5 +1,8 @@
 ﻿#include "Field.h"
 
+Field* Field::instance_ = nullptr;
+
+
 Field::Field()
 {
 }

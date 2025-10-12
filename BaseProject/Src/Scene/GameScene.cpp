@@ -38,8 +38,8 @@ void GameScene::Init(void)
 	Stage::GetInstance()->Init();
 
 	// フィールド初期化
-	field_ = new Field();
-	field_->Init();
+	Field::CreateInstance();
+	Field::GetInstance()->Init();
 
 	// プレイヤー初期化
 	Player::CreateInstance();
@@ -48,6 +48,7 @@ void GameScene::Init(void)
 	enemy_ = new EnemyManager();
 	EnemyManager::SetInstance(enemy_);
 	enemy_->Spawn(0.0f, 0.0f, 50.0f);
+	enemy_->Init();
 }
 
 void GameScene::Update(void)
@@ -59,7 +60,7 @@ void GameScene::Update(void)
 	Stage::GetInstance()->Update();
 
 	// フィールド更新
-	field_->Update();
+	Field::GetInstance()->Update();
 
 	// プレイヤー更新
 	Player::GetInstance()->Update();
@@ -76,7 +77,7 @@ void GameScene::Draw(void)
 	Stage::GetInstance()->Draw();
 
 	// フィールド描画
-	field_->Draw();
+	Field::GetInstance()->Draw();
 
 	enemy_->Draw();
 
@@ -97,8 +98,8 @@ void GameScene::Release(void)
 	Stage::DeleteInstance();
 
 	// フィールド解放
-	field_->Release();
-	delete field_;
+	Field::GetInstance()->Release();
+	Field::DeleteInstance();
 
 	// プレイヤー解放
 	Player::GetInstance()->Release();
