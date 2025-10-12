@@ -14,7 +14,7 @@ public:
     EnemyManager();
     ~EnemyManager();
 
-    void Spawn(float x, float y, float z);
+    void Init(float x, float y, float z);
     void Update();
     void Draw();
     void Release();

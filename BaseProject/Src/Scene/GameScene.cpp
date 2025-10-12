@@ -29,10 +29,6 @@ void GameScene::Init(void)
 	camera->SetFollow(player_);
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 
-	// グリッド初期化
-	//grid_ = new Grid();
-	//grid_->Init();
-
 	// ステージ初期化
 	Stage::CreateInstance();
 	Stage::GetInstance()->Init();
@@ -47,15 +43,11 @@ void GameScene::Init(void)
 
 	enemy_ = new EnemyManager();
 	EnemyManager::SetInstance(enemy_);
-	enemy_->Spawn(0.0f, 0.0f, 50.0f);
-	enemy_->Init();
+	enemy_->Init(0.0f, 0.0f, 50.0f);
 }
 
 void GameScene::Update(void)
 {
-	// グリッド更新
-	//grid_->Update();
-
 	// ステージ更新
 	Stage::GetInstance()->Update();
 
@@ -70,9 +62,6 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
-	// グリッド描画
-	//grid_->Draw();
-
 	// ステージ描画
 	Stage::GetInstance()->Draw();
 
@@ -83,16 +72,10 @@ void GameScene::Draw(void)
 
 	// プレイヤー描画
 	Player::GetInstance()->Draw();
-
-
 }
 
 void GameScene::Release(void)
 {
-	// グリッド解放
-	//grid_->Release();
-	//delete grid_;
-
 	// ステージ解放
 	Stage::GetInstance()->Release();
 	Stage::DeleteInstance();

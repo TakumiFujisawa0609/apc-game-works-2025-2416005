@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+class FpsControl;
+
 class Application
 {
 
@@ -45,6 +47,7 @@ public:
 
 private:
 
+
 	// 静的インスタンス
 	static Application* instance_;
 
@@ -64,4 +67,6 @@ private:
 	// デストラクタも同様
 	~Application(void) = default;
 
+	// FPS制御クラス
+	FpsControl* fps_;
 };

@@ -35,7 +35,6 @@ public:
 	void Draw();
 	void Release();
 
-    // --- フィールド範囲を返す関数を追加 ---
     float GetMinX() const { return -1500.0f; } 
     float GetMaxX() const { return 1500.0f; }
     float GetMinZ() const { return -1500.0f; }

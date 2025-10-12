@@ -232,9 +232,8 @@ void Player::Draw(void)
 		isAtack_ ? "Yes" : "No"
 	);
 
-
 	//DrawFormatString(
-	//	0, 130, 0xffffff,
+	//	0, 150, 0xffffff,
 	//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
 	//);
 }
@@ -394,9 +393,11 @@ void Player::UpdateKnockback(void)
 		return;
 	}
 	cntKnockBack_++;
+
 	// ジャンプする
 	jumpPow_ -= GRAVITY_POW;
 	pos_.y += jumpPow_;
+
 	// ノックバック方向に移動させる
 	VECTOR movePow = VScale(knockBackDir_, SPEED_KNOCKBACK);
 	pos_ = VAdd(pos_, movePow);
@@ -521,10 +522,6 @@ void Player::ProcessMove(void)
 
 	if (AsoUtility::EqualsVZero(moveDir))
 	{
-		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_UP).now) { moveDir = AsoUtility::DIR_F; }
-		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_DOWN).now) { moveDir = AsoUtility::DIR_B; }
-		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_LEFT).now) { moveDir = AsoUtility::DIR_L; }
-		//if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_RIGHT).now) { moveDir = AsoUtility::DIR_R; }
 		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_UP).now) { moveDir.z++; }
 		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_DOWN).now) { moveDir.z--; }
 		if (KEY::GetIns().GetInfo(KEY_TYPE::MOVE_LEFT).now) { moveDir.x--; }
@@ -575,12 +572,14 @@ void Player::ProcessMove(void)
 		}
 	}
 
+	// アニメーションの更新
 	animationController_->Update();
 
 }
 
 void Player::ProcessShot(void)
 {
+	// スペースキーで弾を発射
 	if ((KEY::GetIns().GetInfo(KEY_TYPE::SHOT).down))
 	{
 		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
@@ -593,6 +592,7 @@ void Player::ProcessShot(void)
 		ShotPlayerManager::GetInstance().AddShot(shotPos, dir);
 	}
 
+	// 弾の更新
 	ShotPlayerManager::GetInstance().Update();
 }
 
@@ -627,6 +627,7 @@ void Player::ProcessAtack(void)
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 	}
 
+	// アニメーションの更新
 	AtackPlayerManager::GetInstance()->Update();
 }
 

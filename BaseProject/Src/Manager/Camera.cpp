@@ -307,13 +307,13 @@ void Camera::SetBeforeDrawFollow(void)
 //
 //	vec = { key.GetRightStickVec().y,key.GetRightStickVec().x,0.0f };
 //
-//	if (Utility::VZERO(vec)) {
+//	if (AsoUtility::VZERO(vec)) {
 //
 //		vec = { key.GetMouceMove().y,key.GetMouceMove().x,0.0f };
 //
 //	}
 //
-//	if (Utility::VZERO(vec)) {
+//	if (AsoUtility::VZERO(vec)) {
 //
 //		if (key.GetInfo(KEY_TYPE::CAMERA_UP).now) { vec.x++; }
 //
@@ -327,21 +327,21 @@ void Camera::SetBeforeDrawFollow(void)
 //
 //	float rotPow = 3.5f * DX_PI_F / 180.0f;
 //
-//	if (!Utility::VZERO(vec)) {
+//	if (!AsoUtility::VZERO(vec)) {
 //
-//		vec = Utility::Normalize(vec);
+//		vec = AsoUtility::Normalize(vec);
 //
 //		vec = VScale(vec, rotPow);
 //
 //		angles_ = VAdd(angles_, vec);
 //
-//		if (angles_.y >= Utility::Deg2RadF(360.0f)) { angles_.y -= Utility::Deg2RadF(360.0f); }
+//		if (angles_.y >= AsoUtility::Deg2RadF(360.0f)) { angles_.y -= AsoUtility::Deg2RadF(360.0f); }
 //
-//		if (angles_.y <= Utility::Deg2RadF(0.0f)) { angles_.y += Utility::Deg2RadF(360.0f); }
+//		if (angles_.y <= AsoUtility::Deg2RadF(0.0f)) { angles_.y += AsoUtility::Deg2RadF(360.0f); }
 //
-//		if (angles_.x < Utility::Deg2RadF(-30.0f)) { angles_.x = Utility::Deg2RadF(-30.0f); }
+//		if (angles_.x < AsoUtility::Deg2RadF(-30.0f)) { angles_.x = AsoUtility::Deg2RadF(-30.0f); }
 //
-//		if (angles_.x > Utility::Deg2RadF(60.0f)) { angles_.x = Utility::Deg2RadF(60.0f); }
+//		if (angles_.x > AsoUtility::Deg2RadF(60.0f)) { angles_.x = AsoUtility::Deg2RadF(60.0f); }
 //
 //	}
 //

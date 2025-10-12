@@ -5,10 +5,12 @@ Field* Field::instance_ = nullptr;
 
 Field::Field()
 {
+
 }
 
 Field::~Field()
 {
+
 }
 
 void Field::Init()
@@ -29,13 +31,9 @@ void Field::Init()
 	MV1SetScale(modelId_, scale);
 	MV1SetScale(modelId2_, scale);
 
-
-
-
 	fieldPositions_.emplace_back(VGet(0.0f, 200.0f, 0.0f));
 	//fieldPositions_.emplace_back(VGet(1000.0f, 0.0f, 0.0f));
 	//fieldPositions_.emplace_back(VGet(200.0f, 0.0f, 800.0f));
-
 }
 
 void Field::Update()

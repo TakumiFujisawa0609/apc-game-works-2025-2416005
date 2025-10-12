@@ -22,7 +22,7 @@ EnemyManager::~EnemyManager()
 }
 
 
-void EnemyManager::Spawn(float x, float y, float z)
+void EnemyManager::Init(float x, float y, float z)
 {
     SlimeEnemy* slime = new SlimeEnemy();
     slime->Init(x, y, z);
@@ -55,7 +55,7 @@ void EnemyManager::Update()
             float sy = playerPos.y;
             float sz = playerPos.z + sinf(angle) * spawnRadius;
 
-            Spawn(sx, sy, sz);
+            Init(sx, sy, sz);
         }
     }
 
