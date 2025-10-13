@@ -27,4 +27,16 @@ private:
     int framesSinceLastSpawn = 0;
     int spawnInterval = 1;
     float spawnRadius = 1000.0f;
+
+    // “|‚µ‚½“G‚Ì—İŒv
+    int killedCount = 0;
+
+    // “|‚µ‚½”‚ğ‘‚â‚·
+    void AddKilledCount(int n = 1) { killedCount += n; }
+
+    // “|‚µ‚½”‚ğæ“¾
+    int GetKilledCount() const { return killedCount; }
+
+    // “|‚µ‚½”‚ğƒŠƒZƒbƒg
+    void ResetKilledCount() { killedCount = 0; }
 };

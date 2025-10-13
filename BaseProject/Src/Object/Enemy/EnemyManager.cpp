@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 #include  "../Player/Player.h"
+#include "../../Manager/SceneManager.h"
 #include <cmath>
 
 #ifndef M_PI
@@ -62,22 +63,45 @@ void EnemyManager::Update()
     // 死んだ敵を削除
     slimes.erase(
         std::remove_if(slimes.begin(), slimes.end(),
-            [](SlimeEnemy* s) {
+            [this](SlimeEnemy* s) {
+
                 if (!s) return true;
 
+                // 死亡エフェクト
                 if (s->IsDeadEffect()) {
-                    if (!s->GetAlive()) return true; // 点滅終了後は削除
+                    if (!s->GetAlive()) {
+                        AddKilledCount(1);
+
+                        // ゲームクリア判定
+                        if (GetKilledCount() >= 250) {
+                            // シーン切替
+                            SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
+
+                        }
+
+                        delete s;
+                        return true;
+                    }
                     return false; // 点滅中は残す
                 }
+
+                // 通常の即時死亡
                 if (!s->GetAlive()) {
+                    AddKilledCount(1);
+
+                    if (GetKilledCount() >= 250) {
+                        SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
+                    }
+
                     delete s;
                     return true;
                 }
 
                 return false;
-            }),
-        slimes.end());
-
+            }
+        ),
+        slimes.end()
+    );
 }
 
 void EnemyManager::Draw()
@@ -100,4 +124,6 @@ void EnemyManager::Release()
     slimes.clear();
     spawnedCount = 0;
     framesSinceLastSpawn = 0;
+
+    ResetKilledCount();
 }

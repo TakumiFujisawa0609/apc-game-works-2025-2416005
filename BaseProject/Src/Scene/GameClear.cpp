@@ -24,6 +24,8 @@ void GameClear::Update(void)
 
 void GameClear::Draw(void)
 {
+    DrawString(100, 100, "Game Clear!", GetColor(255, 255, 255));
+	DrawString(100, 150, "Press SPACE to return to Title", GetColor(255, 255, 255));
 }
 
 void GameClear::Release(void)

@@ -31,6 +31,8 @@ void TitleScene::Update(void)
 
 void TitleScene::Draw(void)
 {
+	DrawString(100, 100, "TitleScene", GetColor(255, 255, 255));
+	DrawString(100, 200, "Press Space Key", GetColor(255, 255, 255));
 }
 
 void TitleScene::Release(void)
