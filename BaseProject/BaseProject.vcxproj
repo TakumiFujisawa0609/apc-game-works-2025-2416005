@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppSystem\FpsControl\FpsControl.cpp" />
+    <ClCompile Include="Src\Loading\Loading.cpp" />
     <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\UI\MiniMap.cpp" />
@@ -44,9 +45,9 @@
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Manager\Camera.cpp" />
     <ClCompile Include="Src\Manager\MiniCamera.cpp" />
-    <ClCompile Include="Src\Manager\SceneManager.cpp" />
     <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
+    <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AnimationController.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
@@ -55,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppSystem\FpsControl\FpsControl.h" />
+    <ClInclude Include="Src\Loading\Loading.h" />
     <ClInclude Include="Src\Manager\Input\KeyManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\UI\MiniMap.h" />
@@ -79,9 +81,9 @@
     <ClInclude Include="Src\main.h" />
     <ClInclude Include="Src\Manager\Camera.h" />
     <ClInclude Include="Src\Manager\MiniCamera.h" />
-    <ClInclude Include="Src\Manager\SceneManager.h" />
     <ClInclude Include="Src\Object\Grid.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
+    <ClInclude Include="Src\Scene\SceneManager.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AnimationController.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />

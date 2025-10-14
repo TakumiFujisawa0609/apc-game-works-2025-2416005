@@ -1,6 +1,6 @@
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
 #include "AnimationController.h"
+#include "../Scene/SceneManager.h"
 
 AnimationController::AnimationController(int modelId)
 {
@@ -33,7 +33,7 @@ void AnimationController::AddInFbx(int type, float speed, int animIndex)
 void AnimationController::Play(int type, bool isLoop)
 {
 
-	if (playType_ == type)
+ 	if (playType_ == type)
 	{
 		// 同じアニメーションだったら再生を継続する
 		return;
@@ -97,7 +97,7 @@ void AnimationController::Update(void)
 {
 
 	// 経過時間の取得
-	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
+	float deltaTime = SceneManager::GetInstance()->GetDeltaTime();
 
 	// 再生
 	playAnim_.step += (deltaTime * playAnim_.speed);

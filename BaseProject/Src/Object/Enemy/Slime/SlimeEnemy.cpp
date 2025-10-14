@@ -10,10 +10,11 @@
 std::vector<SlimeEnemy*> slimes;
 std::vector<ShotPlayer*> shots;
 
-SlimeEnemy::SlimeEnemy()
+SlimeEnemy::SlimeEnemy(Player* player)
     : moveSpeed(0.1f), color(GetColor(0, 255, 0)),
     isDeadEffect_(false), deadEffectTimer_(0), knockbackVel_(VGet(0, 0, 0)), lastHitPos_(VGet(0, 0, 0))
 {
+	player_ = player;
 }
 
 
@@ -34,7 +35,7 @@ void SlimeEnemy::Update()
 {
     if (!isAlive) return;
 
-    VECTOR playerPos = Player::GetInstance()->GetPos();
+    VECTOR playerPos = player_->GetPos();
 
     // ノックバック処理
     if (isKnockbackOnly_)
@@ -65,7 +66,7 @@ void SlimeEnemy::Update()
         VECTOR diff = VSub(GetPos(), playerPos);
         diff.y = 0.0f;
         float dist = VSize(diff);
-        float minDist = GetRadius() + Player::GetInstance()->GetRadius();
+        float minDist = GetRadius() + player_->GetRadius();
 
         if (dist < minDist && dist > 0.0001f)
         {

@@ -1,7 +1,7 @@
 #include <DxLib.h>
 #include "Manager/Input/KeyManager.h"
-#include "Manager/SceneManager.h"
 #include "Application.h"
+#include "Scene/SceneManager.h"
 
 Application* Application::instance_ = nullptr;
 
@@ -57,13 +57,14 @@ void Application::Init(void)
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();
+	SceneManager::GetInstance()->Init();
 
 }
 
 void Application::Run(void)
 {
 
-	SceneManager& sceneManager = SceneManager::GetInstance();
+	SceneManager* sceneManager = SceneManager::GetInstance();
 
 	int StartTime, EndTime, TookTime;
 
@@ -74,9 +75,11 @@ void Application::Run(void)
 		StartTime = GetNowCount();
 
 		KEY::GetIns().Update();
-		sceneManager.Update();
+		sceneManager->Update();
 
-		sceneManager.Draw();
+
+		ClearDrawScreen();
+		sceneManager->Draw();
 
 		ScreenFlip();
 
@@ -94,10 +97,6 @@ void Application::Run(void)
 
 void Application::Destroy(void)
 {
-
-	// シーン管理解放
-	SceneManager::GetInstance().Destroy();
-
 	// 入力制御解放
 	KEY::DeleteIns();
 

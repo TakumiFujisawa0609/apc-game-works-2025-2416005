@@ -41,6 +41,7 @@ public:
 
 		// システム操作
 		GAME_END,
+		GAME_NEXT,
 
 		// デバッグキー
 		DEBUG_VOXEl_CREATE,

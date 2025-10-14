@@ -3,6 +3,7 @@
 #include <set>
 #include "../../Object/Enemy/Slime/SlimeEnemy.h"
 
+class Player;
 class SlimeEnemy;
 class Weapon
 {
@@ -24,7 +25,7 @@ private:
     void CheckCollision();
 
 public:
-    Weapon();
+	Weapon(Player* player);
     ~Weapon();
 
     void Init();
@@ -37,4 +38,6 @@ public:
     void EndAttack();
 
     bool IsAttacking() const { return isAttacking_; }
+
+	Player* player_;  // プレイヤーへのポインタ
 };

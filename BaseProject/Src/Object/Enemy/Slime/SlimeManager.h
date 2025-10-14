@@ -2,6 +2,7 @@
 #include <vector>
 #include "SlimeEnemy.h"
 
+class player;
 class SlimeManager {
 public:
     static SlimeManager* GetInstance();
@@ -11,7 +12,7 @@ private:
     std::vector<SlimeEnemy*> slimes;
 
 public:
-    SlimeManager();
+    SlimeManager(Player* player);
     ~SlimeManager();
 
     void Spawn(float x, float y, float z);
@@ -27,4 +28,6 @@ private:
     int framesSinceLastSpawn = 0;
     int spawnInterval = 1;
     float spawnRadius = 1000.0f;
+
+	Player* player_ = nullptr;
 };

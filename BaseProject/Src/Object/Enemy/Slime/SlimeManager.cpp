@@ -11,9 +11,12 @@ SlimeManager* g_slime_manager_instance = nullptr;
 SlimeManager* SlimeManager::GetInstance() { return g_slime_manager_instance; }
 void SlimeManager::SetInstance(SlimeManager* instance) { g_slime_manager_instance = instance; }
 
-SlimeManager::SlimeManager() 
+SlimeManager::SlimeManager(Player* player)
 {
-
+	slimes.clear();
+	spawnedCount = 0;
+	framesSinceLastSpawn = 0;
+	player_ = player;
 }
 
 SlimeManager::~SlimeManager() 
@@ -24,7 +27,7 @@ SlimeManager::~SlimeManager()
 
 void SlimeManager::Spawn(float x, float y, float z)
 {
-    SlimeEnemy* slime = new SlimeEnemy();
+    SlimeEnemy* slime = new SlimeEnemy(player_);
     slime->Init(x, y, z);
     slimes.push_back(slime);
 
@@ -34,7 +37,7 @@ void SlimeManager::Spawn(float x, float y, float z)
 void SlimeManager::Update() 
 {
     // プレイヤー位置取得
-    VECTOR playerPos = Player::GetInstance()->GetPos();
+    VECTOR playerPos = player_->GetPos();
 
     // スライムの更新
     for (auto slime : slimes) {

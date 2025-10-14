@@ -3,15 +3,14 @@
 #include "Player.h"
 #include"../../Manager/Input/KeyManager.h"
 #include "../../Utility/AnimationController.h"
-#include "../../Manager/SceneManager.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Application.h"
 #include "../../Utility/MatrixUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Object/Stage/Stage.h"
 #include "../../Object/Weapon/Weapon.h"
+#include "../../Scene/SceneManager.h"
 
-Player* Player::instance_ = nullptr;
 
 Player::Player(void)
 {
@@ -92,11 +91,11 @@ void Player::Init(void)
 	SHandle = LoadSoundMem("Date/Sound/粉砕玉砕大喝采.wav");
 
 	// カメラに自分自身を渡す
-	SceneManager::GetInstance().GetCamera()->SetFollow(this);
+	SceneManager::GetInstance()->GetCamera()->SetFollow(this);
 
 	AtackPlayerManager::CreateInstance();
 
-	weapon_ = new Weapon();
+	weapon_ = new Weapon(this);
 	weapon_->Init();
 
 	// 初期状態
@@ -136,6 +135,7 @@ void Player::Update(void)
 
 	weapon_->Update();
 
+	animationController_->Update();
 }
 
 void Player::Draw(void)
@@ -207,7 +207,7 @@ void Player::Draw(void)
 	}
 
 	DrawFormatString(
-		0, 50, 0xffffff,
+		0, 10, 0xffffff,
 		"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
 		AsoUtility::Rad2DegF(angles_.x),
 		AsoUtility::Rad2DegF(angles_.y),
@@ -215,19 +215,19 @@ void Player::Draw(void)
 	);
 
 	DrawFormatString(
-		0, 70, 0xffffff,
+		0, 30, 0xffffff,
 		"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
 		pos_.x, pos_.y, pos_.z
 	);
 
 	DrawFormatString(
-		0, 110, 0xffffff,
+		0, 50, 0xffffff,
 		"ジャンプ中　　　 ：%s",
 		isJump_ ? "Yes" : "No"
 	);
 
 	DrawFormatString(
-		0, 130, 0xffffff,
+		0, 90, 0xffffff,
 		"攻撃中: %s",
 		isAtack_ ? "Yes" : "No"
 	);
@@ -539,7 +539,7 @@ void Player::ProcessMove(void)
 	else
 	{
 
-		Camera* camera = SceneManager::GetInstance().GetCamera();
+		Camera* camera = SceneManager::GetInstance()->GetCamera();
 
 		VECTOR angle = camera->GetAngles();
 
@@ -573,7 +573,7 @@ void Player::ProcessMove(void)
 	}
 
 	// アニメーションの更新
-	animationController_->Update();
+	//animationController_->Update();
 
 }
 

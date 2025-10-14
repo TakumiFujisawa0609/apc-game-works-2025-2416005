@@ -3,10 +3,15 @@
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
 
-Weapon::Weapon()
+Weapon::Weapon(Player* player)
 {
     modelId_ = -1;
-    isAttacking_ = false;
+	pos_ = VGet(0.0f, 0.0f, 0.0f);
+	swordTip_ = VGet(0.0f, 0.0f, 0.0f);
+	swordBase_ = VGet(0.0f, 0.0f, 0.0f);
+	isAttacking_ = false;
+	player_ = player;
+	hitEnemies_.clear();
 }
 
 Weapon::~Weapon()
@@ -30,8 +35,7 @@ void Weapon::Init()
 void Weapon::Update()
 {
 	// プレイヤーの右手に追従させる
-    Player* player = Player::GetInstance();
-    int playerModelId = player->GetModelId();
+    int playerModelId = player_->GetModelId();
 
     // 右手のフレーム番号を取得
     int rightHandFrame = MV1SearchFrame(playerModelId, "mixamorig:RightHand");

@@ -1,7 +1,8 @@
 #include "EnemyManager.h"
 #include  "../Player/Player.h"
-#include "../../Manager/SceneManager.h"
 #include <cmath>
+#include "../../Scene/SceneManager.h"
+#include "../../Scene/GameClear.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -12,9 +13,13 @@ EnemyManager* g_enemy_manager_instance = nullptr;
 EnemyManager* EnemyManager::GetInstance() { return g_enemy_manager_instance; }
 void EnemyManager::SetInstance(EnemyManager* instance) { g_enemy_manager_instance = instance; }
 
-EnemyManager::EnemyManager()
+EnemyManager::EnemyManager(Player* player)
 {
-
+	slimes.clear();
+	spawnedCount = 0;
+	framesSinceLastSpawn = 0;
+	killedCount = 0;
+	player_ = player;
 }
 
 EnemyManager::~EnemyManager()
@@ -25,7 +30,7 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::Init(float x, float y, float z)
 {
-    SlimeEnemy* slime = new SlimeEnemy();
+    SlimeEnemy* slime = new SlimeEnemy(player_);
     slime->Init(x, y, z);
     slimes.push_back(slime);
 
@@ -35,7 +40,7 @@ void EnemyManager::Init(float x, float y, float z)
 void EnemyManager::Update()
 {
     // プレイヤー位置取得
-    VECTOR playerPos = Player::GetInstance()->GetPos();
+    VECTOR playerPos = player_->GetPos();
 
     // スライムの更新
     for (auto slime : slimes) {
@@ -75,8 +80,7 @@ void EnemyManager::Update()
                         // ゲームクリア判定
                         if (GetKilledCount() >= 250) {
                             // シーン切替
-                            SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
-
+                            SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
                         }
 
                         delete s;
@@ -90,7 +94,7 @@ void EnemyManager::Update()
                     AddKilledCount(1);
 
                     if (GetKilledCount() >= 250) {
-                        SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
+                        SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
                     }
 
                     delete s;
@@ -111,7 +115,7 @@ void EnemyManager::Draw()
     }
 
     DrawFormatString(
-        0, 90, 0xffffff,
+        0, 70, 0xffffff,
         "スライム数 : %d / %d", (int)slimes.size(), maxSlimes
     );
 }

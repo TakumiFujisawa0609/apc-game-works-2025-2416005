@@ -40,7 +40,7 @@ bool Stage::Init(void)
 void Stage::Update(void)
 {
 	// プレイヤーの位置に合わせてステージを移動させる
-	pos_ = Player::GetInstance()->GetPos();
+	pos_ = player_->GetPos();
 
 	// プレイヤーの位置に合わせて雲と街を移動させる
 	//KumoPos_ = pos_;

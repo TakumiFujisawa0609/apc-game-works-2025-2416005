@@ -1,6 +1,9 @@
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
 #include "GameClear.h"
+#include "../Manager/Input/KeyManager.h"
+#include "../Scene/SceneManager.h"
+#include "../Scene/TitleScene.h"
+
 
 GameClear::GameClear(void)
 {
@@ -16,16 +19,25 @@ void GameClear::Init(void)
 
 void GameClear::Update(void)
 {
-    if (CheckHitKey(KEY_INPUT_SPACE))
+    if (CheckHitKey(KEY_INPUT_SPACE) || (KEY::GetIns().GetInfo(KEY_TYPE::GAME_NEXT).down))
     {
-        SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+        // スペースキーが押下されたら、ゲームシーンへ遷移する
+        SceneManager::GetInstance()->ChangeScene(std::make_shared<TitleScene>());
     }
+}
+
+void GameClear::Load(void)
+{
+}
+
+void GameClear::LoadEnd(void)
+{
 }
 
 void GameClear::Draw(void)
 {
     DrawString(100, 100, "Game Clear!", GetColor(255, 255, 255));
-	DrawString(100, 150, "Press SPACE to return to Title", GetColor(255, 255, 255));
+	DrawString(100, 150, "Press A Button to return to Title", GetColor(255, 255, 255));
 }
 
 void GameClear::Release(void)

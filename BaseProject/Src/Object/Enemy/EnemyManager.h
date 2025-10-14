@@ -2,6 +2,7 @@
 #include <vector>
 #include "../Enemy/Slime/SlimeEnemy.h"
 
+class Player;
 class EnemyManager {
 public:
     static EnemyManager* GetInstance();
@@ -11,7 +12,7 @@ private:
     std::vector<SlimeEnemy*> slimes;
 
 public:
-    EnemyManager();
+    EnemyManager(Player* player);
     ~EnemyManager();
 
     void Init(float x, float y, float z);
@@ -39,4 +40,6 @@ private:
 
     // “|‚µ‚½”‚ğƒŠƒZƒbƒg
     void ResetKilledCount() { killedCount = 0; }
+
+	Player* player_ = nullptr;
 };

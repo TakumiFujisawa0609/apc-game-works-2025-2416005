@@ -4,12 +4,13 @@
 #include <vector>
 #include "../../Player/ShotPlayer.h"
 
+class Player;
 class SlimeEnemy : public EnemyBase {
 public:
 
     bool isCounted = false;
 
-    SlimeEnemy();
+    SlimeEnemy(Player* player);
     ~SlimeEnemy();
 
     void Init(float _x, float _y, float _z) override;
@@ -57,4 +58,6 @@ private:
     bool isKnockbackOnly_ = false;    
 
 	int hp_ = 1;  // ‘Ì—Í
+
+	Player* player_ = nullptr;
 };

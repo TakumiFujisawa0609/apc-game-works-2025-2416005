@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 
+class Player;
 class Stage
 {
 public:
@@ -37,6 +38,8 @@ public:
 
     float GetGroundHeight(float x, float z); // 地面の高さを返す
 
+	void SetPlayer(Player* player) { player_ = player; }
+
 private:
 	// ステージモデルのハンドルID
 	int modelId_;
@@ -55,4 +58,6 @@ private:
 
 	// 都市の位置
     VECTOR ToshiPos_;
+
+	Player* player_{ nullptr };
 };

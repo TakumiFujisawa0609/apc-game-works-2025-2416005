@@ -1,6 +1,5 @@
 #include <cmath>
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Grid.h"
 #include "../Object/Stage/Stage.h"
@@ -10,6 +9,7 @@
 #include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Weapon/Weapon.h"
 #include "../Object/Stage/Field.h"
+#include "../Scene/SceneManager.h"
 
 GameScene::GameScene(void) : SceneBase()
 {
@@ -24,26 +24,7 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
-	// カメラモード変更
-	Camera* camera = SceneManager::GetInstance().GetCamera();
-	camera->SetFollow(player_);
-	camera->ChangeMode(Camera::MODE::FOLLOW);
 
-	// ステージ初期化
-	Stage::CreateInstance();
-	Stage::GetInstance()->Init();
-
-	// フィールド初期化
-	Field::CreateInstance();
-	Field::GetInstance()->Init();
-
-	// プレイヤー初期化
-	Player::CreateInstance();
-	Player::GetInstance()->Init();
-
-	enemy_ = new EnemyManager();
-	EnemyManager::SetInstance(enemy_);
-	enemy_->Init(0.0f, 0.0f, 50.0f);
 }
 
 void GameScene::Update(void)
@@ -55,9 +36,40 @@ void GameScene::Update(void)
 	Field::GetInstance()->Update();
 
 	// プレイヤー更新
-	Player::GetInstance()->Update();
+	player_->Update();
 
 	enemy_->Update();
+}
+
+void GameScene::Load(void)
+{
+	// プレイヤー初期化
+	player_ = new Player();
+	player_->Init();
+
+	// カメラモード変更
+	Camera* camera = SceneManager::GetInstance()->GetCamera();
+	camera->SetFollow(player_);
+	camera->ChangeMode(Camera::MODE::FOLLOW);
+
+	// ステージ初期化
+	Stage::CreateInstance();
+	Stage::GetInstance()->Init();
+	Stage::GetInstance()->SetPlayer(player_);
+
+	// フィールド初期化
+	Field::CreateInstance();
+	Field::GetInstance()->Init();
+
+
+	enemy_ = new EnemyManager(player_);
+	EnemyManager::SetInstance(enemy_);
+	enemy_->Init(0.0f, 0.0f, 50.0f);
+}
+
+void GameScene::LoadEnd(void)
+{
+
 }
 
 void GameScene::Draw(void)
@@ -71,7 +83,11 @@ void GameScene::Draw(void)
 	enemy_->Draw();
 
 	// プレイヤー描画
-	Player::GetInstance()->Draw();
+	player_->Draw();
+
+	Camera* camera = SceneManager::GetInstance()->GetCamera();
+	camera->DrawDebug();
+	camera->SetBeforeDraw();
 }
 
 void GameScene::Release(void)
@@ -85,8 +101,7 @@ void GameScene::Release(void)
 	Field::DeleteInstance();
 
 	// プレイヤー解放
-	Player::GetInstance()->Release();
-	Player::DeleteInstance();
+	player_->Release();
 
 	enemy_->Release();
 	EnemyManager::SetInstance(nullptr);

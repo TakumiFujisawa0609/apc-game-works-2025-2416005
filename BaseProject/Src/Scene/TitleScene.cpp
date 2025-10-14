@@ -1,12 +1,14 @@
 #include <cmath>
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Grid.h"
 #include "../Object/Stage/Stage.h"
 #include "TitleScene.h"
 #include "../Object/Player/Player.h"
 #include "../Object/Enemy/Slime/SlimeManager.h"
+#include "../Manager/Input/KeyManager.h"
+#include "../Scene/SceneManager.h"
+#include "../Scene/GameScene.h"
 
 TitleScene::TitleScene(void) : SceneBase()
 {
@@ -22,17 +24,26 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
-
-	if (CheckHitKey(KEY_INPUT_SPACE))
+	if (CheckHitKey(KEY_INPUT_SPACE) || (KEY::GetIns().GetInfo(KEY_TYPE::GAME_NEXT).down))
 	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+		// スペースキーが押下されたら、ゲームシーンへ遷移する
+		SceneManager::GetInstance()->ChangeScene(std::make_shared<GameScene>());
 	}
+}
+
+void TitleScene::Load(void)
+{
+}
+
+void TitleScene::LoadEnd(void)
+{
 }
 
 void TitleScene::Draw(void)
 {
-	DrawString(100, 100, "TitleScene", GetColor(255, 255, 255));
-	DrawString(100, 200, "Press Space Key", GetColor(255, 255, 255));
+	DrawString(100, 100, "TitleScene", GetColor(255, 0, 0));
+	DrawString(100, 200, "Press A Button", GetColor(255, 0, 0));
+	DrawString(100, 250, "このゲームはPADでやって下さい", GetColor(255, 0, 0));
 }
 
 void TitleScene::Release(void)

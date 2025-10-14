@@ -21,6 +21,12 @@ public:
 	// 更新ステップ
 	void Update(void)override;
 
+	// 読み込み
+	void Load(void) override;
+
+	// 読み込み後の初期化
+	void LoadEnd(void) override;
+
 	// 描画処理
 	void Draw(void)override;
 

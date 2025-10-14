@@ -6,31 +6,6 @@ class AnimationController;
 class Player
 {
 public:
-	// シングルトン（生成・取得・削除）
-	static void CreateInstance(void) { if (instance_ == nullptr) { instance_ = new Player(); } };
-	static Player* GetInstance(void) { return instance_; };
-	static void DeleteInstance(void) { if (instance_ != nullptr) { delete instance_; instance_ = nullptr; } }
-
-private:
-	// 静的インスタンス
-	static Player* instance_;
-private:
-	// デフォルトコンストラクタをprivateにして、外部から生成できない様にする
-	Player(void);
-	// デストラクタも同様
-	~Player(void);
-
-	// コピー・ムーブ操作を禁止
-	Player(const Player&) = delete;
-	Player& operator=(const Player&) = delete;
-	Player(Player&&) = delete;
-	Player& operator=(Player&&) = delete;
-
-	// 下記をコンパイルエラーさせるため 上記を追加
-	// Item copy = *Item::GetInstance();
-	// Item copied(*Item::GetInstance());
-	// Item moved = std::move(*Item::GetInstance());
-public:
 
 	// アニメーションの再生速度
 	static constexpr float SPEED_ANIM = 20.0f;
@@ -72,6 +47,8 @@ public:
 		MAX,
 	};
 
+	Player(void);
+	~Player(void);
 	void Init(void);
 	void Update(void);
 	void Draw(void);
