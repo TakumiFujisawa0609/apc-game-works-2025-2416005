@@ -261,6 +261,11 @@ VECTOR Player::GetPos(void)
 	return pos_;
 }
 
+VECTOR* Player::GetPosPtr(void)
+{
+	return &pos_;
+}
+
 VECTOR Player::GetAngles(void)
 {
 	return angles_;

@@ -5,7 +5,6 @@
 #include "../Object/Stage/Stage.h"
 #include "TitleScene.h"
 #include "../Object/Player/Player.h"
-#include "../Object/Enemy/Slime/SlimeManager.h"
 #include "../Manager/Input/KeyManager.h"
 #include "../Scene/SceneManager.h"
 #include "../Scene/GameScene.h"

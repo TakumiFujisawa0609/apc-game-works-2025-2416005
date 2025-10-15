@@ -28,6 +28,8 @@ public:
 
 	static constexpr VECTOR FOLLOW_LOCAL_POS = { 0.0f,200.0f,-400.0f };
 
+	static constexpr VECTOR LOOKAT_DIFF = { 0.0f, 200.0f, -400.0f };
+
 	// カメラモード
 	enum class MODE
 	{
@@ -99,6 +101,10 @@ private:
 
 	// カメラの角度
 	VECTOR angles_;
+
+	VECTOR* lookAt_;
+
+	VECTOR lookAtMultPos_;
 
 	// カメラのマウス操作関係
 	int prevMouseX_ = 0;

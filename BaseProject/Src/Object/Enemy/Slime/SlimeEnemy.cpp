@@ -3,7 +3,6 @@
 #include "../../../Application.h"
 #include "../../Player/Player.h"
 #include "../Slime/SlimeEnemy.h"
-#include "../Slime/SlimeManager.h"
 #include "../EnemyManager.h"
 #include "../EnemyBase.h"
 
@@ -179,15 +178,13 @@ void SlimeEnemy::OnHit(const VECTOR& hitPos)
     knockbackVel_ = VScale(diff, 8.0f); // 適切な速度に調整
 
     isKnockbackOnly_ = true;
-    lastHitPos_ = hitPos; // 記録しておく
+    lastHitPos_ = hitPos;
 }
 
 void SlimeEnemy::TakeDamage(int damage)
 {
     if (!isAlive) return;
     if (isDeadEffect_) return;
-    //if (isKnockbackOnly_) return; // ノックバック中は無敵
-
     hp_ -= damage;
 
     // HPが0以下になったら死亡
@@ -200,6 +197,5 @@ void SlimeEnemy::TakeDamage(int damage)
 
 bool SlimeEnemy::CanBeHit() const
 {
-    // 生きていて、点滅中でない場合のみ当たり判定を持つ
     return isAlive && !isDeadEffect_;
 }

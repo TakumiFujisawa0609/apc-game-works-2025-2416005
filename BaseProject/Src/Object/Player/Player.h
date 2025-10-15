@@ -55,6 +55,7 @@ public:
 	void Release(void);
 
 	VECTOR GetPos(void);
+	VECTOR* GetPosPtr(void);
 
 	VECTOR GetAngles(void);
 

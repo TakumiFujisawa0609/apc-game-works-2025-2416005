@@ -2,6 +2,7 @@
 #include "Manager/Input/KeyManager.h"
 #include "Application.h"
 #include "Scene/SceneManager.h"
+#include "AppSystem/FpsControl/FpsControl.h"
 
 Application* Application::instance_ = nullptr;
 
@@ -59,6 +60,9 @@ void Application::Init(void)
 	SceneManager::CreateInstance();
 	SceneManager::GetInstance()->Init();
 
+	// FPS初期化
+	fps_ = new FpsControl;
+	fps_->Init();
 }
 
 void Application::Run(void)
@@ -66,32 +70,36 @@ void Application::Run(void)
 
 	SceneManager* sceneManager = SceneManager::GetInstance();
 
-	int StartTime, EndTime, TookTime;
+	//int StartTime, EndTime, TookTime;
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 
-		StartTime = GetNowCount();
+		//StartTime = GetNowCount();
 
 		KEY::GetIns().Update();
 		sceneManager->Update();
 
+		if (!fps_->UpdateFrameRate()) continue;
 
 		ClearDrawScreen();
 		sceneManager->Draw();
 
+		fps_->CalcFrameRate();	// フレームレート計算
+		fps_->DrawFrameRate();	// フレームレート描画
+
 		ScreenFlip();
 
-		// フレーム終了時刻を取得
-		EndTime = GetNowCount();
-		TookTime = EndTime - StartTime;
+		//// フレーム終了時刻を取得
+		//EndTime = GetNowCount();
+		//TookTime = EndTime - StartTime;
 
-		// 規定時間より処理が早ければ待機
-		if (TookTime < OneFrameTime)
-		{
-			Sleep(OneFrameTime - TookTime);
-		}
+		//// 規定時間より処理が早ければ待機
+		//if (TookTime < OneFrameTime)
+		//{
+		//	Sleep(OneFrameTime - TookTime);
+		//}
 	}
 }
 
@@ -99,6 +107,13 @@ void Application::Destroy(void)
 {
 	// 入力制御解放
 	KEY::DeleteIns();
+
+	// フレームレート解放
+	delete fps_;
+
+	// シーン管理解放
+	SceneManager::GetInstance()->Release();
+	SceneManager::DeleteInstance();
 
 	// DxLib終了
 	if (DxLib_End() == -1)
@@ -125,4 +140,5 @@ Application::Application(void)
 {
 	isInitFail_ = false;
 	isReleaseFail_ = false;
+	fps_ = nullptr;
 }

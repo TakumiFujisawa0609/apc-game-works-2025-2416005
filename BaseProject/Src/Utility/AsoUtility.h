@@ -117,5 +117,9 @@ public:
 
 	static float Dot(const VECTOR& a, const VECTOR& b);
 
+	static inline bool VZERO(const VECTOR& v)
+	{
+		return (v.x == 0.0f && v.y == 0.0f && v.z == 0.0f);
+	}
 };
 
