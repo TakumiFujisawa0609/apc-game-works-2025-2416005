@@ -550,3 +550,8 @@ float AsoUtility::Dot(const VECTOR& a, const VECTOR& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+float AsoUtility::LerpAngle(float from, float to, float t)
+{
+    float diff = NormalizeAngle(to - from); // Å’ZŒo˜H‚ÌŠp“x·‚ğŒvZ
+    return from + diff * t; // ·•ª‚¾‚¯•âŠÔ‚µ‚Ä‘«‚·
+}

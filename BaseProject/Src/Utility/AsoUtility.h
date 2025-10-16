@@ -121,5 +121,20 @@ public:
 	{
 		return (v.x == 0.0f && v.y == 0.0f && v.z == 0.0f);
 	}
+
+	static float LerpAngle(float from, float to, float t);
+
+	static float NormalizeAngle(float rad)
+	{
+		while (rad > DX_PI)
+		{
+			rad -= DX_TWO_PI;
+		}
+		while (rad < -DX_PI)
+		{
+			rad += DX_TWO_PI;
+		}
+		return rad;
+	}
 };
 

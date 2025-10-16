@@ -22,6 +22,7 @@
     <ClCompile Include="Src\AppSystem\FpsControl\FpsControl.cpp" />
     <ClCompile Include="Src\Loading\Loading.cpp" />
     <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
+    <ClCompile Include="Src\Object\Actor\ActorBase.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\UI\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Src\AppSystem\FpsControl\FpsControl.h" />
     <ClInclude Include="Src\Loading\Loading.h" />
     <ClInclude Include="Src\Manager\Input\KeyManager.h" />
+    <ClInclude Include="Src\Object\Actor\ActorBase.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\UI\MiniMap.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
