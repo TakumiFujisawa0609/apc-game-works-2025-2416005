@@ -2,7 +2,7 @@
 #include <vector>
 #include <DxLib.h>
 
-class Field
+class Field 
 {
 public:
     // シングルトン（生成・取得・削除）
