@@ -25,8 +25,8 @@ public:
     VECTOR pos = VGet(x, y, z);
 
     VECTOR GetPos() const { return VGet(x, y, z); }
-    float GetRadius() const { return 20.0f; }
-	float GetRadius2() const { return 20.0f; }
+    float GetRadius() const { return 40.0f; }
+	float GetRadius2() const { return 40.0f; }
 
     bool IsDeadEffect() const { return isDeadEffect_; }
     int GetHP() const { return hp_; }

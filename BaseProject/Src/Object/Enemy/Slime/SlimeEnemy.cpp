@@ -29,7 +29,7 @@ void SlimeEnemy::Init(float _x, float _y, float _z)
     color = GetColor(0, 106, 182);
 	isAlive = true;
 
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Enemy/Enemy.mv1").c_str());
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/slime.mv1").c_str());
 }
 
 void SlimeEnemy::Update()
@@ -95,8 +95,8 @@ void SlimeEnemy::Update()
     }
 
     // 通常の移動処理（上下運動・プレイヤー追従・スライム同士の衝突）
-    y += moveSpeed;
-    if (y > 50.0f || y < 0.0f) moveSpeed *= -1.0f;
+    //y += moveSpeed;
+    //if (y > 50.0f || y < 0.0f) moveSpeed *= -1.0f;
 
     VECTOR dir = VSub(playerPos, GetPos());
     dir = VNorm(dir);
@@ -149,9 +149,12 @@ void SlimeEnemy::Draw()
 	// 当たり判定の可視化
 	//DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, false);
 
-	if (modelId_ != -1) {
-		MV1SetPosition(modelId_, VGet(x, y - 10.0f, z)); // 少し下に調整
-		float scale = 0.5f; // スケールを調整
+	if (modelId_ != -1)
+	{
+		MV1SetPosition(modelId_, VGet(x, y, z));
+		float scale = 0.3f;
+        VECTOR rot = VGet(0.0f, DX_PI_F, 0.0f); // DX_PI_F = 180度
+        MV1SetRotationXYZ(modelId_, rot);
 		MV1SetScale(modelId_, VGet(scale, scale, scale));
 		MV1DrawModel(modelId_);
 	}
