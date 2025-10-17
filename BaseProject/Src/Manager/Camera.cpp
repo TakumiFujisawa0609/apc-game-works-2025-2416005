@@ -224,150 +224,132 @@ const VECTOR& Camera::GetTargetPos(void) const
 	return targetPos_;
 }
 
+//void Camera::SetBeforeDrawFollow(void)
+//{
+//	if (GetJoypadNum() == 0)
+//	{
+//		MoveXYZDirection();
+//	}
+//		// 画面サイズ取得
+//	int screenW, screenH;
+//	GetScreenState(&screenW, &screenH, nullptr);
+//
+//	int mouseX, mouseY;
+//	GetMousePoint(&mouseX, &mouseY);
+//
+//	// 画面中央
+//	int centerX = screenW / 2;
+//	int centerY = screenH / 2;
+//
+//	// マウス移動量（差分）
+//	int deltaX = mouseX - centerX;
+//	int deltaY = mouseY - centerY;
+//
+//	if (deltaX == 0 && deltaY == 0)
+//	{
+//		deltaX = KEY::GetIns().GetRightStickVec().x;
+//		deltaY = KEY::GetIns().GetRightStickVec().y;
+//		deltaX *= 8; deltaY *= 8;
+//	}
+//
+//	// 視点回転
+//	angles_.y += deltaX * mouseSensitivity_; // 左右
+//	angles_.x += deltaY * mouseSensitivity_; // 上下
+//
+//	// ピッチ制限
+//	if (angles_.x > DX_PI_F / 2.0f) angles_.x = DX_PI_F / 2.0f;
+//	if (angles_.x < -DX_PI_F / 2.0f) angles_.x = -DX_PI_F / 2.0f;
+//
+//	// マウスを中央に戻す（カーソルは固定される）
+//	SetMousePoint(centerX, centerY);
+//
+//	// 注視点の移動
+//	VECTOR followPos = follow_->GetPos();
+//	targetPos_ = followPos;
+//
+//	// カメラの移動
+//	// カメラの回転行列を作成
+//	MATRIX mat = MGetIdent();
+//	mat = MMult(mat, MGetRotX(angles_.x));
+//	mat = MMult(mat, MGetRotY(angles_.y));
+//	//mat = MMult(mat, MGetRotZ(angles_.z));
+//
+//	VECTOR targetLocalRotPos = VTransform(FOLLOW_TARGET_LOCAL_POS, mat);
+//	targetPos_ = VAdd(followPos, targetLocalRotPos);
+//
+//	// カメラの移動
+//	// 相対座標を回転させて、回転後の相対座標を取得する
+//	VECTOR cameraLocalRotPos = VTransform(FOLLOW_CAMERA_LOCAL_POS, mat);
+//
+//	// 相対座標からワールド座標に直して、カメラ座標とする
+//	pos_ = VAdd(followPos, cameraLocalRotPos);
+//
+//	// 相対座標を回転させて、回転後の相対座標を取得する
+//	VECTOR localRotPos = VTransform(FOLLOW_LOCAL_POS, mat);
+//
+//	// 相対座標からワールド座標に直して、カメラ座標とする
+//	pos_ = VAdd(followPos, localRotPos);
+//
+//	// カメラの設定(位置と注視点による制御)
+//	SetCameraPositionAndTargetAndUpVec(
+//		pos_,
+//		targetPos_,
+//		{ 0.0f, 1.0f, 0.0f }
+//	);
+//}
+
 void Camera::SetBeforeDrawFollow(void)
+
 {
-	if (GetJoypadNum() == 0)
-	{
-		MoveXYZDirection();
+	if (lookAt_ == nullptr || follow_ == nullptr) { return; }
+
+	auto& key = KEY::GetIns();
+
+	// 入力ベクトル（右スティック→マウス→キーボード）
+	VECTOR vec = { key.GetRightStickVec().y, key.GetRightStickVec().x, 0.0f };
+
+	if (AsoUtility::VZERO(vec)) {
+		vec = { key.GetMouceMove().y, key.GetMouceMove().x, 0.0f };
 	}
-		// 画面サイズ取得
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
-
-	// 画面中央
-	int centerX = screenW / 2;
-	int centerY = screenH / 2;
-
-	// マウス移動量（差分）
-	int deltaX = mouseX - centerX;
-	int deltaY = mouseY - centerY;
-
-	if (deltaX == 0 && deltaY == 0)
-	{
-		deltaX = KEY::GetIns().GetRightStickVec().x;
-		deltaY = KEY::GetIns().GetRightStickVec().y;
-		deltaX *= 8; deltaY *= 8;
+	if (AsoUtility::VZERO(vec)) {
+		if (key.GetInfo(KEY_TYPE::CAMERA_UP).now) { vec.x++; }
+		if (key.GetInfo(KEY_TYPE::CAMERA_DOWN).now) { vec.x--; }
+		if (key.GetInfo(KEY_TYPE::CAMERA_RIGHT).now) { vec.y++; }
+		if (key.GetInfo(KEY_TYPE::CAMERA_LEFT).now) { vec.y--; }
 	}
 
-	// 視点回転
-	angles_.y += deltaX * mouseSensitivity_; // 左右
-	angles_.x += deltaY * mouseSensitivity_; // 上下
+	float rotPow = 3.5f * DX_PI_F / 180.0f;
 
-	// ピッチ制限
-	if (angles_.x > DX_PI_F / 2.0f) angles_.x = DX_PI_F / 2.0f;
-	if (angles_.x < -DX_PI_F / 2.0f) angles_.x = -DX_PI_F / 2.0f;
+	if (!AsoUtility::VZERO(vec)) {
+		vec = AsoUtility::VNormalize(vec); 
+		vec = VScale(vec, rotPow);
+		angles_ = VAdd(angles_, vec);
 
-	// マウスを中央に戻す（カーソルは固定される）
-	SetMousePoint(centerX, centerY);
+		// ヨー角度の範囲制限
+		if (angles_.y >= AsoUtility::Deg2RadF(360.0f)) { angles_.y -= AsoUtility::Deg2RadF(360.0f); }
+		if (angles_.y <= AsoUtility::Deg2RadF(0.0f)) { angles_.y += AsoUtility::Deg2RadF(360.0f); }
+		// ピッチ角度の範囲制限
+		if (angles_.x < AsoUtility::Deg2RadF(-30.0f)) { angles_.x = AsoUtility::Deg2RadF(-30.0f); }
+		if (angles_.x > AsoUtility::Deg2RadF(60.0f)) { angles_.x = AsoUtility::Deg2RadF(60.0f); }
+	}
 
-	// 注視点の移動
-	VECTOR followPos = follow_->GetPos();
-	targetPos_ = followPos;
-
-	// カメラの移動
-	// カメラの回転行列を作成
+	// カメラ座標・注視点計算
 	MATRIX mat = MGetIdent();
 	mat = MMult(mat, MGetRotX(angles_.x));
 	mat = MMult(mat, MGetRotY(angles_.y));
-	//mat = MMult(mat, MGetRotZ(angles_.z));
 
-	VECTOR targetLocalRotPos = VTransform(FOLLOW_TARGET_LOCAL_POS, mat);
-	targetPos_ = VAdd(followPos, targetLocalRotPos);
+	// カメラ座標（プレイヤーからのオフセット）
+	pos_ = VAdd(*lookAt_, VTransform(LOOKAT_DIFF, mat));
+	// 注視点（プレイヤー座標）
+	targetPos_ = *lookAt_;
 
-	// カメラの移動
-	// 相対座標を回転させて、回転後の相対座標を取得する
-	VECTOR cameraLocalRotPos = VTransform(FOLLOW_CAMERA_LOCAL_POS, mat);
-
-	// 相対座標からワールド座標に直して、カメラ座標とする
-	pos_ = VAdd(followPos, cameraLocalRotPos);
-
-	// 相対座標を回転させて、回転後の相対座標を取得する
-	VECTOR localRotPos = VTransform(FOLLOW_LOCAL_POS, mat);
-
-	// 相対座標からワールド座標に直して、カメラ座標とする
-	pos_ = VAdd(followPos, localRotPos);
-
-	// カメラの設定(位置と注視点による制御)
+	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(
 		pos_,
 		targetPos_,
 		{ 0.0f, 1.0f, 0.0f }
 	);
 }
-
-//void Camera::SetBeforeDrawFollow(void)
-//
-//{
-//	if (lookAt_ == nullptr) { return; }
-//
-//	auto& key = KEY::GetIns();
-//
-//	// 追従対象の座標: lookAt_ (VECTOR型)
-//
-//	// カメラのY軸回転角度: yAngle_ (float型)
-//
-//	VECTOR vec = {};
-//
-//	Vector2 vector;
-//
-//	vec = { key.GetRightStickVec().y,key.GetRightStickVec().x,0.0f };
-//
-//	if (AsoUtility::VZERO(vec)) {
-//
-//		vec = { key.GetMouceMove().y,key.GetMouceMove().x,0.0f };
-//
-//	}
-//
-//	if (AsoUtility::VZERO(vec)) {
-//
-//		if (key.GetInfo(KEY_TYPE::CAMERA_UP).now) { vec.x++; }
-//
-//		if (key.GetInfo(KEY_TYPE::CAMERA_DOWN).now) { vec.x--; }
-//
-//		if (key.GetInfo(KEY_TYPE::CAMERA_RIGHT).now) { vec.y++; }
-//
-//		if (key.GetInfo(KEY_TYPE::CAMERA_LEFT).now) { vec.y--; }
-//
-//	}
-//
-//	float rotPow = 3.5f * DX_PI_F / 180.0f;
-//
-//	if (!AsoUtility::VZERO(vec)) {
-//
-//		vec = AsoUtility::Normalize(vector);
-//
-//		vec = VScale(vec, rotPow);
-//
-//		angles_ = VAdd(angles_, vec);
-//
-//		if (angles_.y >= AsoUtility::Deg2RadF(360.0f)) { angles_.y -= AsoUtility::Deg2RadF(360.0f); }
-//
-//		if (angles_.y <= AsoUtility::Deg2RadF(0.0f)) { angles_.y += AsoUtility::Deg2RadF(360.0f); }
-//
-//		if (angles_.x < AsoUtility::Deg2RadF(-30.0f)) { angles_.x = AsoUtility::Deg2RadF(-30.0f); }
-//
-//		if (angles_.x > AsoUtility::Deg2RadF(60.0f)) { angles_.x = AsoUtility::Deg2RadF(60.0f); }
-//
-//	}
-//
-//	MATRIX mat = MGetIdent();
-//
-//	mat = MMult(mat, MGetRotX(angles_.x));
-//
-//	mat = MMult(mat, MGetRotY(angles_.y));
-//
-//	pos_ = VAdd(targetPos_, VTransform(LOOKAT_DIFF, mat));
-//
-//	mat = MGetIdent();
-//
-//	mat = MMult(mat, MGetRotY(angles_.y));
-//
-//	lookAtMultPos_ = VAdd(*lookAt_, VTransform(LOOKAT_DIFF, mat));
-//
-//}
 
 
 void Camera::SetFollow(Player* follow)

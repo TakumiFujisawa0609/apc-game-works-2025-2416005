@@ -1,6 +1,7 @@
 #include "FieldBase.h"
 
-FieldBase::FieldBase()
+
+FieldBase::FieldBase(float x, float y, float z)
 {
 }
 

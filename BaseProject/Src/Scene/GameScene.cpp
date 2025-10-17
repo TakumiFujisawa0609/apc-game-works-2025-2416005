@@ -8,7 +8,7 @@
 #include "GameScene.h"
 #include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Weapon/Weapon.h"
-#include "../Object/Stage/Field.h"
+#include "../Object/Stage/Field/Field.h"
 #include "../Scene/SceneManager.h"
 
 GameScene::GameScene(void) : SceneBase()
@@ -74,6 +74,10 @@ void GameScene::LoadEnd(void)
 
 void GameScene::Draw(void)
 {
+
+	Camera* camera = SceneManager::GetInstance()->GetCamera();
+	camera->SetBeforeDraw();
+
 	// ステージ描画
 	Stage::GetInstance()->Draw();
 
@@ -85,9 +89,7 @@ void GameScene::Draw(void)
 	// プレイヤー描画
 	player_->Draw();
 
-	Camera* camera = SceneManager::GetInstance()->GetCamera();
 	camera->DrawDebug();
-	camera->SetBeforeDraw();
 }
 
 void GameScene::Release(void)

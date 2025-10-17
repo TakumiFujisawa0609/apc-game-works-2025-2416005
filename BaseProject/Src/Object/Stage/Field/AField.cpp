@@ -1,6 +1,7 @@
 #include "AField.h"
 
 AField::AField()
+	: FieldBase(0.0f, 0.0f, 0.0f)
 {
 }
 

@@ -14,6 +14,9 @@ SceneManager* SceneManager::instance_ = nullptr;
 SceneManager::SceneManager(void)
 {
 	isGameEnd_ = false;
+
+	deltaTime_ = 1.0f / 60.0f;
+
 }
 
 // デストラクタ
@@ -34,7 +37,10 @@ void SceneManager::Init(void)
 	camera_->Init();
 
 	// 最初はタイトル画面から
-	ChangeScene(std::make_shared<TitleScene>());
+	ChangeScene(std::make_shared<GameScene>());
+
+	// デルタタイム
+	preTime_ = std::chrono::system_clock::now();
 }
 
 void SceneManager::Init3D(void)
@@ -66,6 +72,11 @@ void SceneManager::Init3D(void)
 // 更新
 void SceneManager::Update(void)
 {
+	auto nowTime = std::chrono::system_clock::now();
+	deltaTime_ = static_cast<float>(
+		std::chrono::duration_cast<std::chrono::nanoseconds>(nowTime - preTime_).count() / 1000000000.0);
+	preTime_ = nowTime;
+
 	// シーンがなければ終了
 	if (scenes_.empty())
 		return;
@@ -175,8 +186,8 @@ void SceneManager::JumpScene(std::shared_ptr<SceneBase> scene)
 
 float SceneManager::GetDeltaTime(void) const
 {
-	//return deltaTime_;
-	return 1 / 60.0f;
+	return deltaTime_;
+	//return 1 / 60.0f;
 }
 
 Camera* SceneManager::GetCamera(void) const

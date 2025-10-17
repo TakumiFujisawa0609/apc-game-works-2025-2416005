@@ -28,6 +28,8 @@ void SlimeEnemy::Init(float _x, float _y, float _z)
     moveSpeed = 5.0f;
     color = GetColor(0, 106, 182);
 	isAlive = true;
+
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Enemy/Enemy.mv1").c_str());
 }
 
 void SlimeEnemy::Update()
@@ -131,9 +133,6 @@ void SlimeEnemy::Update()
     }
 }
 
-
-
-
 void SlimeEnemy::Draw()
 {
     if (!isAlive) return;
@@ -148,7 +147,14 @@ void SlimeEnemy::Draw()
     }
 
 	// ìñÇΩÇËîªíËÇÃâ¬éãâª
-	DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, false);
+	//DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, false);
+
+	if (modelId_ != -1) {
+		MV1SetPosition(modelId_, VGet(x, y - 10.0f, z)); // è≠Çµâ∫Ç…í≤êÆ
+		float scale = 0.5f; // ÉXÉPÅ[ÉãÇí≤êÆ
+		MV1SetScale(modelId_, VGet(scale, scale, scale));
+		MV1DrawModel(modelId_);
+	}
 }
 
 void SlimeEnemy::Release() 

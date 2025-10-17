@@ -81,10 +81,12 @@ void Application::Run(void)
 		KEY::GetIns().Update();
 		sceneManager->Update();
 
-		if (!fps_->UpdateFrameRate()) continue;
-
+		SetDrawScreen(DX_SCREEN_BACK);
 		ClearDrawScreen();
 		sceneManager->Draw();
+
+		if (!fps_->UpdateFrameRate()) continue;
+
 
 		fps_->CalcFrameRate();	// フレームレート計算
 		fps_->DrawFrameRate();	// フレームレート描画
