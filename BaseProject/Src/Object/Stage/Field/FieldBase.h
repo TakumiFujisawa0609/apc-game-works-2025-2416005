@@ -1,15 +1,10 @@
 #pragma once
 #include <DxLib.h>
+#include <string>
 
 class FieldBase
 {
 public:
-
-	enum class TYPE
-	{
-		A_FIELD,
-		B_FIELD
-	};
 
 	// モデルの大きさ
 	static constexpr VECTOR SCALES = { 3.0f, 3.0f, 3.0f };
@@ -19,7 +14,7 @@ public:
 
 
 	// コンストラクタ
-	FieldBase(float x, float y, float z);
+	FieldBase(float x = 0, float y = 0, float z = 0);
 
 	// デストラクタ
 	virtual ~FieldBase(void) = 0;
@@ -39,6 +34,14 @@ public:
 	// フィールドのスケール取得
 	VECTOR scales_;
 
+
+	bool IsCleared() const { return isCleared_; }
+	const std::string& GetName() const { return name_; }
+
 private:
 
+	std::string name_;
+	VECTOR center_;
+	float radius_;
+	bool isCleared_;
 };

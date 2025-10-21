@@ -29,7 +29,7 @@ public:
 	static constexpr int DASH_TP_MAX = 500;  
 
 	// 1フレームで消費する体力
-	static constexpr int DASH_TP_USE = 0.5;   
+	static constexpr int DASH_TP_USE = 0.1;   
 
 	// 1フレームで回復する体力
 	static constexpr int DASH_TP_RECOVER = 10; 

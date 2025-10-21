@@ -80,7 +80,7 @@ void Player::Init(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::BAKA), 30.0f,
 		Application::PATH_MODEL + "Player/Silly Dancing.mv1");
 
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 60.0f,
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
 		Application::PATH_MODEL + "Player/Atack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
