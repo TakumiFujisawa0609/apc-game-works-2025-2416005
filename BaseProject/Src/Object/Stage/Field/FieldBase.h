@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <DxLib.h>
 #include <string>
 
@@ -6,53 +6,42 @@ class FieldBase
 {
 public:
 
-	// ƒ‚ƒfƒ‹‚Ì‘å‚«‚³
-	static constexpr VECTOR SCALES = { 3.0f, 3.0f, 3.0f };
+    enum class FieldState
+    {
+        NEUTRAL,  // ä¸­ç«‹
+        ENEMY,    // æ•µå´
+        PLAYER    // å‘³æ–¹å´
+    };
 
-	// ‰ŠúˆÊ’u
-	static constexpr VECTOR DEFAULT_POS = { 300.0f, 10.0f, 300.0f };
+    static constexpr VECTOR SCALES = { 3.0f, 3.0f, 3.0f };
+    static constexpr VECTOR DEFAULT_POS = { 300.0f, 10.0f, 300.0f };
 
-	// ˆÊ’u
-	float x, y, z;
+    FieldBase(void);
+    virtual ~FieldBase(void);
 
+  virtual void Init(float _x, float _y, float _z) = 0;
+    virtual void Update(void) = 0;
+    virtual void Draw(void) = 0;
+    virtual void Release(void) = 0;
 
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	FieldBase(void);
+    void Damage(int dmg);
+    void StartCapture(FieldState capturer);
+    void UpdateCapture(float delta);
 
-	// ƒfƒXƒgƒ‰ƒNƒ^
-	virtual ~FieldBase(void) = 0;
+    bool IsCapturedBy(FieldState team) const { return state_ == team; }
+    FieldState GetState() const { return state_; }
+    VECTOR GetPos() const { return pos_; }
+    bool IsCleared() const { return isCleared_; }
+    const std::string& GetName() const { return name_; }
 
-	// ‰Šú‰»ˆ—
-	virtual void Init(float _x, float _y, float _z) = 0;
-
-	// XVƒXƒeƒbƒv
-	virtual void Update(void) = 0;
-
-	// •`‰æˆ—
-	virtual void Draw(void) = 0;
-
-	// ‰ğ•úˆ—
-	virtual void Release(void) = 0;
-
-	// ƒ_ƒ[ƒWˆ—
-	void Damage(int dmg);
-
-	// ƒtƒB[ƒ‹ƒh‚ÌƒXƒP[ƒ‹æ“¾
-	VECTOR scales_;
-
-	// ƒtƒB[ƒ‹ƒh‚Ì’†SˆÊ’u‚Æ”¼Œa
-	VECTOR pos = VGet(x, y, z);
-
-
-	bool IsCleared() const { return isCleared_; }
-	const std::string& GetName() const { return name_; }
-
-private:
-
-	std::string name_;
-	VECTOR center_;
-	float radius_;
-	bool isCleared_;
-
-	int durability_;
+protected:
+    VECTOR pos_;          // ä½ç½®ï¼ˆVGet(_x, _y, _z)ï¼‰
+    VECTOR scales_;       // ãƒ¢ãƒ‡ãƒ«ã‚¹ã‚±ãƒ¼ãƒ«
+    float radius_;        // åˆ¶åœ§ç¯„å›²
+    int durability_;      // åˆ¶åœ§è€ä¹…
+    FieldState state_;    // æ‰€å±çŠ¶æ…‹
+    bool isCapturing_;    // åˆ¶åœ§ä¸­ã‹ï¼Ÿ
+    float captureProgress_;  // åˆ¶åœ§ã‚²ãƒ¼ã‚¸ (0ã€œ100)
+    bool isCleared_;      // ã‚¯ãƒªã‚¢æ¸ˆã¿ã‹ï¼Ÿ
+    std::string name_;    // æ‹ ç‚¹åãªã©
 };

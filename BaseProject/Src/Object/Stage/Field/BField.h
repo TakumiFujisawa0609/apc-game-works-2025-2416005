@@ -1,6 +1,7 @@
 #pragma once
 #include "FieldBase.h"
 
+class Player;
 class BField : public FieldBase
 {
 public:
@@ -24,5 +25,5 @@ public:
 	void Release(void)override;
 
 private:
-
+	Player* player;
 };
