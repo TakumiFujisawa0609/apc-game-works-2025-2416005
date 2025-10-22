@@ -78,7 +78,7 @@ void EnemyManager::Update()
                         AddKilledCount(1);
 
                         // ゲームクリア判定
-                        if (GetKilledCount() >= 250) {
+                        if (GetKilledCount() >= 50) {
                             // シーン切替
                             SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
                         }

@@ -12,15 +12,18 @@ public:
 	// 初期位置
 	static constexpr VECTOR DEFAULT_POS = { 300.0f, 10.0f, 300.0f };
 
+	// 位置
+	float x, y, z;
+
 
 	// コンストラクタ
-	FieldBase(float x = 0, float y = 0, float z = 0);
+	FieldBase(void);
 
 	// デストラクタ
 	virtual ~FieldBase(void) = 0;
 
 	// 初期化処理
-	virtual void Init(void) = 0;
+	virtual void Init(float _x, float _y, float _z) = 0;
 
 	// 更新ステップ
 	virtual void Update(void) = 0;
@@ -31,8 +34,14 @@ public:
 	// 解放処理
 	virtual void Release(void) = 0;
 
+	// ダメージ処理
+	void Damage(int dmg);
+
 	// フィールドのスケール取得
 	VECTOR scales_;
+
+	// フィールドの中心位置と半径
+	VECTOR pos = VGet(x, y, z);
 
 
 	bool IsCleared() const { return isCleared_; }
@@ -44,4 +53,6 @@ private:
 	VECTOR center_;
 	float radius_;
 	bool isCleared_;
+
+	int durability_;
 };

@@ -1,7 +1,6 @@
 #include "BField.h"
 
 BField::BField()
-	: FieldBase(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -9,7 +8,7 @@ BField::~BField()
 {
 }
 
-void BField::Init(void)
+void BField::Init(float _x, float _y, float _z)
 {
 
 }

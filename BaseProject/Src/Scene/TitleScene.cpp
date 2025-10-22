@@ -42,7 +42,7 @@ void TitleScene::Draw(void)
 {
 	DrawString(100, 100, "TitleScene", GetColor(255, 0, 0));
 	DrawString(100, 200, "Press A Button", GetColor(255, 0, 0));
-	DrawString(100, 250, "Ç±ÇÃÉQÅ[ÉÄÇÕPADÇ≈Ç‚Ç¡Çƒâ∫Ç≥Ç¢", GetColor(255, 0, 0));
+	DrawString(100, 300, "Press SPACE", GetColor(255, 0, 0));
 }
 
 void TitleScene::Release(void)

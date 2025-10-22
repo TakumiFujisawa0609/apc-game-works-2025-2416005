@@ -1,7 +1,6 @@
 #include "AField.h"
 
 AField::AField()
-	: FieldBase(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -9,7 +8,7 @@ AField::~AField()
 {
 }
 
-void AField::Init(void)
+void AField::Init(float _x, float _y, float _z)
 {
 }
 

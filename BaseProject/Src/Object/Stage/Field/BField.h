@@ -12,7 +12,7 @@ public:
 	~BField()override;
 
 	// 初期化処理
-	void Init(void)override;
+	void Init(float _x, float _y, float _z)override;
 
 	// 更新ステップ
 	void Update(void)override;
