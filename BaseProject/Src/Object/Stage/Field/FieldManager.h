@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 
+class FieldBase;
 class FieldManager
 {
 public:
@@ -40,5 +41,6 @@ private:
 	std::map<FieldID, std::unique_ptr<FieldBase>> fields_;
 	FieldID currentField_ = FieldID::A_FIELD;
 
+	FieldBase* fieldbase;
 };
 

@@ -2,6 +2,8 @@
 #include <DxLib.h>
 #include <string>
 
+class Player;
+
 class FieldBase
 {
 public:
@@ -28,11 +30,16 @@ public:
     void StartCapture(FieldState capturer);
     void UpdateCapture(float delta);
 
+    void OnEnterField();
+
+    void OnExitField();
+
     bool IsCapturedBy(FieldState team) const { return state_ == team; }
     FieldState GetState() const { return state_; }
     VECTOR GetPos() const { return pos_; }
     bool IsCleared() const { return isCleared_; }
     const std::string& GetName() const { return name_; }
+    bool IsCapturing() const { return isCapturing_; }
 
 protected:
     VECTOR pos_;          // 位置（VGet(_x, _y, _z)）
@@ -40,8 +47,13 @@ protected:
     float radius_;        // 制圧範囲
     int durability_;      // 制圧耐久
     FieldState state_;    // 所属状態
-    bool isCapturing_;    // 制圧中か？
+    FieldState capturer_;     // 今制圧を仕掛けている勢力
+    bool isCapturing_;    // 制圧中か
     float captureProgress_;  // 制圧ゲージ (0〜100)
-    bool isCleared_;      // クリア済みか？
+    bool isCleared_;      // クリア済みか
     std::string name_;    // 拠点名など
+    int modelHandle_;  // フィールドの範囲モデル
+
+	Player* player_; // プレイヤーへの参照
+    bool wasInside_;  // プレイヤーがフィールド内にいるか
 };

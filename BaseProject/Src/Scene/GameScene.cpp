@@ -8,8 +8,8 @@
 #include "GameScene.h"
 #include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Weapon/Weapon.h"
-#include "../Object/Stage/Field/Field.h"
 #include "../Scene/SceneManager.h"
+#include "../Object/Stage/Field/FieldManager.h"
 
 GameScene::GameScene(void) : SceneBase()
 {
@@ -32,8 +32,8 @@ void GameScene::Update(void)
 	// ステージ更新
 	Stage::GetInstance()->Update();
 
-	// フィールド更新
-	Field::GetInstance()->Update();
+	// フィールドの更新
+	fieldManager_->Update();
 
 	// プレイヤー更新
 	player_->Update();
@@ -57,11 +57,11 @@ void GameScene::Load(void)
 	Stage::GetInstance()->Init();
 	Stage::GetInstance()->SetPlayer(player_);
 
-	// フィールド初期化
-	Field::CreateInstance();
-	Field::GetInstance()->Init();
+	// フィールドの初期化
+	fieldManager_ = new FieldManager();
+	fieldManager_->Init();
 
-
+	// 敵初期化
 	enemy_ = new EnemyManager(player_);
 	EnemyManager::SetInstance(enemy_);
 	enemy_->Init(0.0f, 0.0f, 50.0f);
@@ -82,8 +82,9 @@ void GameScene::Draw(void)
 	Stage::GetInstance()->Draw();
 
 	// フィールド描画
-	Field::GetInstance()->Draw();
+	fieldManager_->Draw();
 
+	// 敵描画
 	enemy_->Draw();
 
 	// プレイヤー描画
@@ -99,12 +100,13 @@ void GameScene::Release(void)
 	Stage::DeleteInstance();
 
 	// フィールド解放
-	Field::GetInstance()->Release();
-	Field::DeleteInstance();
+	fieldManager_->Release();
+	delete fieldManager_;
 
 	// プレイヤー解放
 	player_->Release();
 
+	// 敵の解放
 	enemy_->Release();
 	EnemyManager::SetInstance(nullptr);
 }

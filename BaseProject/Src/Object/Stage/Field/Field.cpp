@@ -16,10 +16,10 @@ Field::~Field()
 void Field::Init()
 {
 	// フィールドモデルの読み込み
-	modelId_ = MV1LoadModel("Data/Model/Field/Wall.mv1");
-	if (modelId_ == -1) {
-		MessageBoxA(NULL, "ステージモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
-	}
+	//modelId_ = MV1LoadModel("Data/Model/Field/Wall.mv1");
+	//if (modelId_ == -1) {
+	//	MessageBoxA(NULL, "ステージモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
+	//}
 
 	modelId2_ = MV1LoadModel("Data/Model/Field/Line.mv1");
 	if (modelId2_ == -1) {

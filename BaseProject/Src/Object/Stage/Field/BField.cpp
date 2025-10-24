@@ -11,29 +11,27 @@ BField::~BField()
 
 void BField::Init(float _x, float _y, float _z)
 {
-    pos_ = VGet(_x, _y, _z);
-	radius_ = 100.0f;  // 仮の半径
+    // 親クラス初期化
+    FieldBase::Init(_x, _y, _z);
+
+    // 固有設定
+    state_ = FieldState::ENEMY;     // 最初は敵拠点
+    radius_ = 200.0f;               // フィールド範囲
+    durability_ = 150;              // 耐久値
+
 }
 
 void BField::Update(void)
 {
-    VECTOR playerPos = player->GetPos();
-
-    // プレイヤーが範囲内に入ったら制圧開始
-    float dist = VSize(VSub(playerPos, pos_));
-    if (dist < radius_)
-    {
-        StartCapture(FieldState::PLAYER);
-        UpdateCapture(1.0f);  // 仮：1フレームごとに1%進行
-    }
+    FieldBase::Update();
 }
 
 void BField::Draw(void)
 {
-
+    FieldBase::Draw();
 }
 
 void BField::Release(void)
 {
-
+    FieldBase::Release();
 }

@@ -1,5 +1,5 @@
 #include "FieldBase.h"
-
+#include "../../Player/Player.h"
 
 FieldBase::FieldBase(void)
 {
@@ -18,22 +18,39 @@ FieldBase::~FieldBase(void)
 
 void FieldBase::Init(float _x, float _y, float _z)
 {
-
+	pos_ = VGet(_x, _y, _z);
+	modelHandle_ = MV1LoadModel("Data/Model/FIeld/Line.mv1"); 
+	MV1SetPosition(modelHandle_, pos_);
 }
 
 void FieldBase::Update(void)
 {
+	VECTOR playerPos = player_->GetPos();
 
+	float dist = VSize(VSub(playerPos, pos_));
+	bool isInside = (dist <= radius_);
+
+	if (isInside)
+	{
+		// フィールド内に入っている
+		if (!wasInside_) {
+			wasInside_ = true;
+			OnEnterField();
+		}
+	}
+	else
+	{
+		// 外に出た
+		if (wasInside_) {
+			wasInside_ = false;
+			OnExitField();
+		}
+	}
 }
 
 void FieldBase::Draw(void)
 {
-	// フィールド位置を円で描画（仮の視覚化）
-	unsigned int color = GetColor(255, 0, 0); // 敵拠点: 赤
-	if (state_ == FieldState::PLAYER) color = GetColor(0, 0, 255); // 青
-	if (state_ == FieldState::NEUTRAL) color = GetColor(255, 255, 255); // 白
 
-	DrawCircle((int)pos_.x, (int)pos_.z, (int)radius_, color, FALSE);
 }
 
 void FieldBase::Release(void)
@@ -57,21 +74,36 @@ void FieldBase::Damage(int dmg)
 
 void FieldBase::StartCapture(FieldState capturer)
 {
-	if (state_ == capturer) return; // すでに味方のもの
+	if (isCapturing_) return; // すでに制圧中なら無視
 	isCapturing_ = true;
+	captureProgress_ = 0.0f;
+	capturer_ = capturer;
 }
 
 void FieldBase::UpdateCapture(float delta)
 {
 	if (!isCapturing_) return;
 
+	// 制圧進行（deltaは時間差、または固定値）
 	captureProgress_ += delta;
 
-	if (captureProgress_ >= 100.0f)
-	{
-		state_ = (state_ == FieldState::ENEMY) ? FieldState::PLAYER : FieldState::ENEMY;
-		captureProgress_ = 0.0f;
+	if (captureProgress_ >= 100.0f) {
+		// 完了
+		state_ = capturer_;
 		isCapturing_ = false;
-		durability_ = 100;
+		captureProgress_ = 0.0f;
+		durability_ = 100; // 制圧後に耐久リセット
 	}
+}
+
+void FieldBase::OnEnterField()
+{
+	// 制圧開始などの処理
+	StartCapture(FieldState::PLAYER);
+}
+
+void FieldBase::OnExitField()
+{
+	// 制圧中断など
+	isCapturing_ = false;
 }
