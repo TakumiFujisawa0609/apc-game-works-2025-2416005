@@ -17,8 +17,7 @@ FieldManager::~FieldManager()
 
 void FieldManager::Init(void)
 {
-    fields_[FieldID::B_FIELD] = std::make_unique<BField>();
-    fields_[FieldID::B_FIELD]->Init(300.0f, 0.0f, 0.0f);
+
 }
 
 void FieldManager::Update(void)

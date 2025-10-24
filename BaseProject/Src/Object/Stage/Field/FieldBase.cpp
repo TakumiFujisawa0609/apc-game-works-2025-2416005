@@ -29,7 +29,7 @@ void FieldBase::Update(void)
 
 	float dist = VSize(VSub(playerPos, pos_));
 	bool isInside = (dist <= radius_);
-
+	
 	if (isInside)
 	{
 		// フィールド内に入っている
@@ -50,7 +50,11 @@ void FieldBase::Update(void)
 
 void FieldBase::Draw(void)
 {
-
+	MV1SetPosition(modelHandle_, pos_);
+	float scalef = 3.0f;
+	VECTOR scale = VGet(scalef, 1.0f, scalef);
+	MV1SetScale(modelHandle_, scale);
+	MV1DrawModel(modelHandle_);
 }
 
 void FieldBase::Release(void)
