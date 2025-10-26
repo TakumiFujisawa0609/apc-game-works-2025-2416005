@@ -1,5 +1,4 @@
 #include "FieldManager.h"
-#include "FieldBase.h"
 #include "BField.h"
 #include "../../../Scene/SceneManager.h"
 #include "../../../Scene/GameClear.h"
@@ -17,12 +16,24 @@ FieldManager::~FieldManager()
 
 void FieldManager::Init(void)
 {
-
+    fields_.push_back(std::make_unique<BField>());
+    fields_.back()->Init(300.0f, 0.0f, 300.0f);
 }
 
 void FieldManager::Update(void)
 {
+    for (auto& field : fields_) {
+        field->Update();
+    }
 
+    // 全制圧チェック
+    bool allCaptured = true;
+    for (auto& field : fields_) {
+        if (field->GetState() != FieldBase::FieldState::PLAYER) {
+            allCaptured = false;
+            break;
+        }
+    }
 }
 
 void FieldManager::Draw(void)
@@ -37,5 +48,5 @@ void FieldManager::Release(void)
 
 FieldBase* FieldManager::GetField(FieldID id)
 {
-	return fields_[id].get();
+    return fields_[static_cast<int>(id)].get();
 }

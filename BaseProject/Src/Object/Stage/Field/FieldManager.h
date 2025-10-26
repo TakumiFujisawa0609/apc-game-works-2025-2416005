@@ -2,8 +2,9 @@
 #include "FieldBase.h"
 #include <map>
 #include <memory>
+#include <DxLib.h>
+#include <vector>
 
-class FieldBase;
 class FieldManager
 {
 public:
@@ -38,9 +39,8 @@ public:
 
 private:
 
-	std::map<FieldID, std::unique_ptr<FieldBase>> fields_;
+	std::vector<std::unique_ptr<FieldBase>> fields_;
 	FieldID currentField_ = FieldID::A_FIELD;
 
-	FieldBase* fieldbase;
 };
 
