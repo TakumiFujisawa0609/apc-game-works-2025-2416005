@@ -12,7 +12,25 @@
 #include "../../Scene/SceneManager.h"
 
 
-Player::Player(void)
+Player::Player(void) :
+animationController_(nullptr),
+modelId_(-1),
+currentState_(STATE::NONE),
+cntKnockBack_(0),
+pos_(AsoUtility::VECTOR_ZERO),
+angles_(AsoUtility::VECTOR_ZERO),
+scales_(AsoUtility::VECTOR_ZERO),
+moveDir_(AsoUtility::VECTOR_ZERO),
+movePow(AsoUtility::VECTOR_ZERO),
+localAngles_(AsoUtility::VECTOR_ZERO),
+jumpPow_(0.0f),
+isJump_(false),
+isAtack_(false),
+cntAtack_(0),
+dashTp(DASH_TP_MAX),
+SHandle(-1),
+weapon_(nullptr),
+isBrinkAction_(false)
 {
 	modelId_ = -1;
 	animationController_ = nullptr;
@@ -247,13 +265,22 @@ void Player::Release(void)
 		animationController_ = nullptr;
 	}
 
-	// モデルの解放
 	if (modelId_ != -1) {
 		MV1DeleteModel(modelId_);
 		modelId_ = -1;
 	}
 
-	weapon_->Release();
+	if (weapon_) {
+		weapon_->Release();
+		delete weapon_;
+		weapon_ = nullptr;
+	}
+
+	// カメラのフォローを解除（カメラが nullptr でないことを確認）
+	Camera* cam = SceneManager::GetInstance()->GetCamera();
+	if (cam) {
+		cam->SetFollow(nullptr);
+	}
 }
 
 VECTOR Player::GetPos(void)

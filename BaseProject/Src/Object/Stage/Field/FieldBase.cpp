@@ -25,6 +25,8 @@ void FieldBase::Init(float _x, float _y, float _z)
 
 void FieldBase::Update(void)
 {
+	if (player_ == nullptr) return;
+
 	VECTOR playerPos = player_->GetPos();
 
 	float dist = VSize(VSub(playerPos, pos_));

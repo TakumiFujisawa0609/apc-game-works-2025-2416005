@@ -41,6 +41,8 @@ public:
     const std::string& GetName() const { return name_; }
     bool IsCapturing() const { return isCapturing_; }
 
+    void SetPlayer(Player* player) { player_ = player; }
+
 protected:
     VECTOR pos_;          // 位置（VGet(_x, _y, _z)）
     VECTOR scales_;       // モデルスケール
