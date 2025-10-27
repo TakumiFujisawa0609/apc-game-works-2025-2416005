@@ -33,8 +33,6 @@ void EnemyManager::Init(float x, float y, float z)
     SlimeEnemy* slime = new SlimeEnemy(player_);
     slime->Init(x, y, z);
     slimes.push_back(slime);
-
-    spawnedCount++;
 }
 
 void EnemyManager::Update()
@@ -45,24 +43,6 @@ void EnemyManager::Update()
     // スライムの更新
     for (auto slime : slimes) {
         slime->Update();
-    }
-
-    // スポーン制御
-    if (spawnedCount < maxSlimes) {
-        framesSinceLastSpawn++;
-        if (framesSinceLastSpawn >= spawnInterval) {
-            framesSinceLastSpawn = 0;
-
-            // ランダムな角度を決定
-            float angle = (float)(rand() % 360) * (M_PI / 180.0f);
-
-            // 円周上に配置
-            float sx = playerPos.x + cosf(angle) * spawnRadius;
-            float sy = playerPos.y;
-            float sz = playerPos.z + sinf(angle) * spawnRadius;
-
-            Init(sx, sy, sz);
-        }
     }
 
     // 死んだ敵を削除
@@ -76,13 +56,6 @@ void EnemyManager::Update()
                 if (s->IsDeadEffect()) {
                     if (!s->GetAlive()) {
                         AddKilledCount(1);
-
-                        // ゲームクリア判定
-                        if (GetKilledCount() >= 250) {
-                            // シーン切替
-                            SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
-                        }
-
                         delete s;
                         return true;
                     }
@@ -92,11 +65,6 @@ void EnemyManager::Update()
                 // 通常の即時死亡
                 if (!s->GetAlive()) {
                     AddKilledCount(1);
-
-                    if (GetKilledCount() >= 250) {
-                        SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
-                    }
-
                     delete s;
                     return true;
                 }

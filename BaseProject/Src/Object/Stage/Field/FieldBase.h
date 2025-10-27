@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <DxLib.h>
 #include <string>
+#include <memory>
+#include <vector>
+#include "../../Enemy/EnemyManager.h"
 
 class Player;
 
@@ -44,6 +47,16 @@ public:
     void SetPlayer(Player* player) { player_ = player; }
 
 protected:
+
+    void StartBattle();
+    void UpdateBattle();
+
+
+    void SpawnEnemies();       
+    void UpdateEnemySpawn();   
+
+    void CheckCaptureCondition();
+
     VECTOR pos_;          // 位置（VGet(_x, _y, _z)）
     VECTOR scales_;       // モデルスケール
     float radius_;        // 制圧範囲
@@ -58,4 +71,18 @@ protected:
 
 	Player* player_; // プレイヤーへの参照
     bool wasInside_;  // プレイヤーがフィールド内にいるか
+
+    std::unique_ptr<EnemyManager> enemyManager_;
+    int killCount_ = 0;
+    int targetKillCount_ = 100;
+    bool isActive_ = false; // バトル中か？
+    bool isCaptured_ = false;      // すでに制圧済みか？
+
+    const int maxEnemies_ = 100;
+    const float spawnRadius_ = 300.0f;
+    const int respawnDelayFrames_ = 180; // 3秒(60fps)
+    int respawnTimer_ = 0;
+    bool isPlayerInside_ = false;
+
+    VECTOR minLocal_, maxLocal_;
 };

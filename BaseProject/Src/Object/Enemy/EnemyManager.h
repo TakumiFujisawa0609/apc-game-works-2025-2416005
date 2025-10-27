@@ -22,24 +22,21 @@ public:
 
     const std::vector<SlimeEnemy*>& GetSlimes() const { return slimes; }
 
+    int GetEnemyCount() const { return (int)slimes.size(); }
+    int GetKilledCount() const { return killedCount; }
+    void ResetKilledCount() { killedCount = 0; }
+
+    void AddKilledCount(int n) { killedCount += n; }
+
 private:
-    int maxSlimes = 50;
+    int maxSlimes = 100;
     int spawnedCount = 0;
     int framesSinceLastSpawn = 0;
-    int spawnInterval = 1;
+    int spawnInterval = 180;
     float spawnRadius = 1000.0f;
 
     // “|‚µ‚½“G‚Ì—İŒv
     int killedCount = 0;
-
-    // “|‚µ‚½”‚ğ‘‚â‚·
-    void AddKilledCount(int n = 1) { killedCount += n; }
-
-    // “|‚µ‚½”‚ğæ“¾
-    int GetKilledCount() const { return killedCount; }
-
-    // “|‚µ‚½”‚ğƒŠƒZƒbƒg
-    void ResetKilledCount() { killedCount = 0; }
 
 	Player* player_ = nullptr;
 };

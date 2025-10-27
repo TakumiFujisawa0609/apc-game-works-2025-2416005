@@ -34,11 +34,19 @@ void FieldManager::Update(void)
             break;
         }
     }
+
+
+    if (allCaptured) {
+        SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
+
+    }
 }
 
 void FieldManager::Draw(void)
 {
-
+    for (auto& field : fields_) {
+        field->Draw();
+    }
 }
 
 void FieldManager::Release(void)

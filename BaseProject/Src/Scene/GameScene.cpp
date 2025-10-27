@@ -38,7 +38,7 @@ void GameScene::Update(void)
 	// ƒvƒŒƒCƒ„[XV
 	player_->Update();
 
-	enemy_->Update();
+	//enemy_->Update();
 }
 
 void GameScene::Load(void)
@@ -62,9 +62,9 @@ void GameScene::Load(void)
 	fieldManager_->Init();
 
 	// “G‰Šú‰»
-	enemy_ = new EnemyManager(player_);
-	EnemyManager::SetInstance(enemy_);
-	enemy_->Init(0.0f, 0.0f, 50.0f);
+	//enemy_ = new EnemyManager(player_);
+	//EnemyManager::SetInstance(enemy_);
+	//enemy_->Init(0.0f, 0.0f, 50.0f);
 }
 
 void GameScene::LoadEnd(void)
@@ -85,7 +85,7 @@ void GameScene::Draw(void)
 	fieldManager_->Draw();
 
 	// “G•`‰æ
-	enemy_->Draw();
+	//enemy_->Draw();
 
 	// ƒvƒŒƒCƒ„[•`‰æ
 	player_->Draw();
@@ -107,6 +107,6 @@ void GameScene::Release(void)
 	player_->Release();
 
 	// “G‚Ì‰ð•ú
-	enemy_->Release();
-	EnemyManager::SetInstance(nullptr);
+	//enemy_->Release();
+	//EnemyManager::SetInstance(nullptr);
 }
