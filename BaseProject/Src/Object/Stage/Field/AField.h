@@ -13,7 +13,7 @@ public:
 	~AField()override;
 
 	// 初期化処理
-	void Init(float _x, float _y, float _z)override;
+	void Init(float _x, float _y, float _z, Player* player)override;
 
 	// 更新ステップ
 	void Update(void)override;

@@ -24,7 +24,7 @@ public:
     FieldBase(void);
     virtual ~FieldBase(void);
 
-  virtual void Init(float _x, float _y, float _z) = 0;
+  virtual void Init(float _x, float _y, float _z, Player* player) = 0;
     virtual void Update(void) = 0;
     virtual void Draw(void) = 0;
     virtual void Release(void) = 0;
@@ -68,6 +68,7 @@ protected:
     bool isCleared_;      // クリア済みか
     std::string name_;    // 拠点名など
     int modelHandle_;  // フィールドの範囲モデル
+
 
 	Player* player_; // プレイヤーへの参照
     bool wasInside_;  // プレイヤーがフィールド内にいるか

@@ -106,8 +106,6 @@ void Player::Init(void)
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
-	SHandle = LoadSoundMem("Date/Sound/•²Ó‹ÊÓ‘åŠ…Ñ.wav");
-
 	// ƒJƒƒ‰‚ÉŽ©•ªŽ©g‚ð“n‚·
 	SceneManager::GetInstance()->GetCamera()->SetFollow(this);
 

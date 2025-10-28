@@ -24,7 +24,7 @@ public:
 	~FieldManager();
 
 	// 初期化処理
-	void Init(void);
+	void Init(Player* player);
 
 	// 更新ステップ
 	void Update(void);

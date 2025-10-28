@@ -59,7 +59,7 @@ void GameScene::Load(void)
 
 	// フィールドの初期化
 	fieldManager_ = new FieldManager();
-	fieldManager_->Init();
+	fieldManager_->Init(player_);
 
 	// 敵初期化
 	//enemy_ = new EnemyManager(player_);

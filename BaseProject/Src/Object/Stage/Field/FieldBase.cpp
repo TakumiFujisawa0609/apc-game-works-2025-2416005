@@ -1,6 +1,7 @@
 #include "FieldBase.h"
 #include "../../Player/Player.h"
 
+
 FieldBase::FieldBase(void)
 {
 	scales_ = SCALES;
@@ -22,21 +23,18 @@ FieldBase::~FieldBase(void)
 
 }
 
-void FieldBase::Init(float _x, float _y, float _z)
+void FieldBase::Init(float _x, float _y, float _z, Player* player)
 {
 	pos_ = VGet(_x, _y, _z);
+
+	player_ = player;
 }
 
 void FieldBase::Update(void)
 {
-	if (!player_) {
-		DrawFormatString(50, 120, GetColor(255, 0, 0), "player_ is nullptr!");
-		return;
-	}
-
 	VECTOR playerPos = player_->GetPos();
 
-	// ==== フィールド範囲 ====
+	// フィールド範囲設定
 	VECTOR scale = VGet(3.0f, 1.0f, 3.0f);
 	float halfWidth = (1350.0f * scale.x) / 2.0f;
 	float halfDepth = (1350.0f * scale.z) / 2.0f;
@@ -48,19 +46,33 @@ void FieldBase::Update(void)
 	bool isInside = insideX && insideY && insideZ;
 
 	// フィールド侵入・退出チェック
-	if (isInside && !wasInside_) { wasInside_ = true; OnEnterField(); }
-	else if (!isInside && wasInside_) { wasInside_ = false; OnExitField(); }
+	if (isInside && !isPlayerInside_) {
+		isPlayerInside_ = true;
+		OnEnterField();
+	}
+	else if (!isInside && isPlayerInside_) {
+		isPlayerInside_ = false;
+		OnExitField();
+	}
 
-	// 敵管理の更新
+	// 敵管理更新
 	if (isPlayerInside_ && enemyManager_) {
 		enemyManager_->Update();
 		UpdateEnemySpawn();
-		CheckCaptureCondition();  
+		CheckCaptureCondition();
 	}
 
+	// デバッグ表示
+	DrawFormatString(50, 80, GetColor(255, 255, 255),
+		"Inside: %s", isPlayerInside_ ? "YES" : "NO");
 	DrawFormatString(50, 100, GetColor(255, 255, 255),
-		"Player Y: %.1f  FieldY: %.1f  Diff: %.1f",
-		playerPos.y, pos_.y, playerPos.y - pos_.y);
+		"PlayerPos(%.1f, %.1f, %.1f)", playerPos.x, playerPos.y, playerPos.z);
+	DrawFormatString(50, 120, GetColor(255, 255, 255),
+		"FieldPos(%.1f, %.1f, %.1f)", pos_.x, pos_.y, pos_.z);
+
+	if (isPlayerInside_) {
+		DrawSphere3D(playerPos, 50.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true); // 赤い球で表示
+	}
 }
 
 void FieldBase::Draw(void)
@@ -136,30 +148,28 @@ void FieldBase::UpdateCapture(float delta)
 	}
 }
 
+void FieldBase::OnEnterField()
+{
+	printfDx("プレイヤーがフィールドに侵入しました。\n");
+
+	// 敵マネージャ生成
+	if (!enemyManager_) {
+		enemyManager_ = std::make_unique<EnemyManager>(player_);
+		enemyManager_->SetInstance(enemyManager_.get());
+		SpawnEnemies();
+	}
+}
+
 void FieldBase::OnExitField()
 {
-	if (!isPlayerInside_) return;
-	isPlayerInside_ = false;
+	printfDx("プレイヤーがフィールドから退出しました。\n");
 
-	// 敵を全削除
 	if (enemyManager_) {
 		enemyManager_->Release();
 		enemyManager_.reset();
 	}
 }
 
-void FieldBase::OnEnterField()
-{
-	if (isPlayerInside_) return;
-	isPlayerInside_ = true;
-
-	// 敵マネージャ生成
-	enemyManager_ = std::make_unique<EnemyManager>(player_);
-	enemyManager_->SetInstance(enemyManager_.get());
-
-	// 初期スポーン
-	SpawnEnemies();
-}
 
 void FieldBase::StartBattle()
 {
@@ -225,7 +235,7 @@ void FieldBase::CheckCaptureCondition()
 
 	int killCount = enemyManager_->GetKilledCount();
 
-	// --- 制圧条件達成 ---
+	// 制圧条件達成 
 	if (killCount >= targetKillCount_) {
 		isCaptured_ = true;
 		state_ = FieldState::PLAYER;
@@ -237,7 +247,7 @@ void FieldBase::CheckCaptureCondition()
 		// 制圧演出
 		printfDx("フィールド制圧完了！\n");
 
-		// （任意）耐久リセットなど
+		// 耐久リセットなど
 		durability_ = 100;
 	}
 }
