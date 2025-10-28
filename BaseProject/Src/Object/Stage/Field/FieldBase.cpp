@@ -107,7 +107,6 @@ void FieldBase::Draw(void)
 
 void FieldBase::Release(void)
 {
-
 }
 
 void FieldBase::Damage(int dmg)
