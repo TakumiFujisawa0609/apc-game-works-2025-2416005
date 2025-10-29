@@ -49,29 +49,14 @@ void EnemyManager::Update()
     slimes.erase(
         std::remove_if(slimes.begin(), slimes.end(),
             [this](SlimeEnemy* s) {
-
                 if (!s) return true;
-
-                // 死亡エフェクト
-                if (s->IsDeadEffect()) {
-                    if (!s->GetAlive()) {
-                        AddKilledCount(1);
-                        delete s;
-                        return true;
-                    }
-                    return false; // 点滅中は残す
-                }
-
-                // 通常の即時死亡
                 if (!s->GetAlive()) {
-                    AddKilledCount(1);
                     delete s;
+                    AddKilledCount(1);
                     return true;
                 }
-
                 return false;
-            }
-        ),
+            }),
         slimes.end()
     );
 }

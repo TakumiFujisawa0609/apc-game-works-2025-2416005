@@ -46,6 +46,25 @@ public:
 
     void SetPlayer(Player* player) { player_ = player; }
 
+    VECTOR GetMinPos() const {
+        VECTOR scale = VGet(3.0f, 1.0f, 3.0f);
+        VECTOR half = VGet((1350.0f * scale.x) / 2.0f, (20.0f * scale.y) / 2.0f, (1350.0f * scale.z) / 2.0f);
+        return VSub(pos_, half);
+    }
+
+    VECTOR GetMaxPos() const {
+        VECTOR scale = VGet(3.0f, 1.0f, 3.0f);
+        VECTOR half = VGet((1350.0f * scale.x) / 2.0f, (20.0f * scale.y) / 2.0f, (1350.0f * scale.z) / 2.0f);
+        return VAdd(pos_, half);
+    }
+
+    // ★ 指定座標がこのフィールドの範囲内か？
+    bool IsInsideField(float x, float z) const {
+        VECTOR minPos = GetMinPos();
+        VECTOR maxPos = GetMaxPos();
+        return (x >= minPos.x && x <= maxPos.x && z >= minPos.z && z <= maxPos.z);
+    }
+
 protected:
 
     void StartBattle();

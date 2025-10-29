@@ -42,14 +42,12 @@ void SlimeEnemy::Update()
     if (isKnockbackOnly_)
     {
         pos = VAdd(pos, knockbackVel_);
-        knockbackVel_ = VScale(knockbackVel_, 0.92f); // 減衰率を少し緩める
-
-        if (VSize(knockbackVel_) < 0.3f) // 閾値を下げる
-        {
+        knockbackVel_ = VScale(knockbackVel_, 0.9f);
+        if (VSize(knockbackVel_) < 0.1f) {
             isKnockbackOnly_ = false;
-            knockbackVel_ = VGet(0, 0, 0); // リセット
+            knockbackVel_ = VGet(0, 0, 0);
         }
-        return; // ノックバック中は他の処理をスキップ
+        return;
     }
 
     // 死亡エフェクト処理
@@ -146,9 +144,6 @@ void SlimeEnemy::Draw()
         return;
     }
 
-	// 当たり判定の可視化
-	//DrawSphere3D(VGet(x, y, z), GetRadius(), 4, color, color, false);
-
 	if (modelId_ != -1)
 	{
 		MV1SetPosition(modelId_, VGet(x, y, z));
@@ -162,6 +157,10 @@ void SlimeEnemy::Draw()
 
 void SlimeEnemy::Release() 
 {
+    if (modelId_ != -1) {
+        MV1DeleteModel(modelId_);
+        modelId_ = -1;
+    }
 }
 
 void SlimeEnemy::Kill()
@@ -171,14 +170,15 @@ void SlimeEnemy::Kill()
     isDeadEffect_ = true;
     deadEffectTimer_ = 60; // 1秒点滅
     VECTOR dir = VNorm(VSub(pos, lastHitPos_));
-    knockbackVel_ = VScale(dir, 1000.0f); // ノックバック方向と強さ
+    knockbackVel_ = VScale(dir, 2.0f); // ノックバック方向と強さ
 
 }
 
 void SlimeEnemy::OnHit(const VECTOR& hitPos)
 {
-    if (!isAlive) return;
-    if (isKnockbackOnly_) return; // 既にノックバック中なら無視
+    if (!isAlive || isKnockbackOnly_) return;
+
+    lastHitPos_ = hitPos;
 
     VECTOR diff = VSub(GetPos(), hitPos);
     diff.y = 0.0f; // Y軸は固定する場合
@@ -187,13 +187,11 @@ void SlimeEnemy::OnHit(const VECTOR& hitPos)
     knockbackVel_ = VScale(diff, 8.0f); // 適切な速度に調整
 
     isKnockbackOnly_ = true;
-    lastHitPos_ = hitPos;
 }
 
 void SlimeEnemy::TakeDamage(int damage)
 {
-    if (!isAlive) return;
-    if (isDeadEffect_) return;
+    if (!isAlive || isDeadEffect_) return;
     hp_ -= damage;
 
     // HPが0以下になったら死亡
@@ -206,5 +204,5 @@ void SlimeEnemy::TakeDamage(int damage)
 
 bool SlimeEnemy::CanBeHit() const
 {
-    return isAlive && !isDeadEffect_;
+    return isAlive && !isDeadEffect_ && !isKnockbackOnly_;
 }

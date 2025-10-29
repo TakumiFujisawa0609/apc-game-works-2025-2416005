@@ -38,7 +38,7 @@ void FieldBase::Update(void)
 	VECTOR scale = VGet(3.0f, 1.0f, 3.0f);
 	float halfWidth = (1350.0f * scale.x) / 2.0f;
 	float halfDepth = (1350.0f * scale.z) / 2.0f;
-	float halfHeight = 500.0f;
+	float halfHeight = 5000000.0f;
 
 	bool insideX = fabs(playerPos.x - pos_.x) <= halfWidth;
 	bool insideY = fabs(playerPos.y - pos_.y) <= halfHeight;
@@ -62,13 +62,13 @@ void FieldBase::Update(void)
 		CheckCaptureCondition();
 	}
 
-	// デバッグ表示
-	DrawFormatString(50, 80, GetColor(255, 255, 255),
-		"Inside: %s", isPlayerInside_ ? "YES" : "NO");
-	DrawFormatString(50, 100, GetColor(255, 255, 255),
-		"PlayerPos(%.1f, %.1f, %.1f)", playerPos.x, playerPos.y, playerPos.z);
-	DrawFormatString(50, 120, GetColor(255, 255, 255),
-		"FieldPos(%.1f, %.1f, %.1f)", pos_.x, pos_.y, pos_.z);
+	//// デバッグ表示
+	//DrawFormatString(50, 80, GetColor(255, 255, 255),
+	//	"Inside: %s", isPlayerInside_ ? "YES" : "NO");
+	//DrawFormatString(50, 100, GetColor(255, 255, 255),
+	//	"PlayerPos(%.1f, %.1f, %.1f)", playerPos.x, playerPos.y, playerPos.z);
+	//DrawFormatString(50, 120, GetColor(255, 255, 255),
+	//	"FieldPos(%.1f, %.1f, %.1f)", pos_.x, pos_.y, pos_.z);
 
 	if (isPlayerInside_) {
 		DrawSphere3D(playerPos, 50.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true); // 赤い球で表示
@@ -85,28 +85,34 @@ void FieldBase::Draw(void)
 
 	if (enemyManager_) enemyManager_->Draw();
 
-	// 状態表示
-	DrawFormatString(50, 50, isPlayerInside_ ? GetColor(0, 255, 0) : GetColor(255, 0, 0),
-		"Player in field: %s", isPlayerInside_ ? "Yes" : "No");
+	//// 状態表示
+	//DrawFormatString(50, 50, isPlayerInside_ ? GetColor(0, 255, 0) : GetColor(255, 0, 0),
+	//	"Player in field: %s", isPlayerInside_ ? "Yes" : "No");
 
-	// 制圧ゲージ表示
-	if (isPlayerInside_ && !isCaptured_ && enemyManager_) {
-		int kill = enemyManager_->GetKilledCount();
-		DrawFormatString(
-			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 80, GetColor(255, 255, 255),
-			"討伐数: %d / %d", kill, targetKillCount_);
-	}
+	//// 制圧ゲージ表示
+	//if (isPlayerInside_ && !isCaptured_ && enemyManager_) {
+	//	int kill = enemyManager_->GetKilledCount();
+	//	DrawFormatString(
+	//		(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 80, GetColor(255, 255, 255),
+	//		"討伐数: %d / %d", kill, targetKillCount_);
+	//}
 
-	// 制圧済み表示
-	if (isCaptured_) {
-		DrawFormatString(
-			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 100, GetColor(0, 255, 0),
-			"制圧完了");
-	}
+	//// 制圧済み表示
+	//if (isCaptured_) {
+	//	DrawFormatString(
+	//		(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 100, GetColor(0, 255, 0),
+	//		"制圧完了");
+	//}
 }
 
 void FieldBase::Release(void)
 {
+	if (EnemyManager::GetInstance())
+	{
+		EnemyManager::GetInstance()->Release();
+		delete EnemyManager::GetInstance();
+		EnemyManager::SetInstance(nullptr);
+	}
 }
 
 void FieldBase::Damage(int dmg)
@@ -149,7 +155,9 @@ void FieldBase::UpdateCapture(float delta)
 
 void FieldBase::OnEnterField()
 {
-	printfDx("プレイヤーがフィールドに侵入しました。\n");
+	//printfDx("プレイヤーがフィールドに侵入しました。\n");
+
+	if (isCaptured_) return;
 
 	// 敵マネージャ生成
 	if (!enemyManager_) {
@@ -161,7 +169,7 @@ void FieldBase::OnEnterField()
 
 void FieldBase::OnExitField()
 {
-	printfDx("プレイヤーがフィールドから退出しました。\n");
+	//printfDx("プレイヤーがフィールドから退出しました。\n");
 
 	if (enemyManager_) {
 		enemyManager_->Release();
@@ -194,8 +202,11 @@ void FieldBase::UpdateBattle()
 void FieldBase::SpawnEnemies()
 {
 	if (!enemyManager_) return;
+	if (!player_) return;
 
 	VECTOR playerPos = player_->GetPos();
+	VECTOR minPos = GetMinPos();
+	VECTOR maxPos = GetMaxPos();
 
 	int current = enemyManager_->GetEnemyCount();
 	int spawnCount = maxEnemies_ - current;
@@ -206,6 +217,10 @@ void FieldBase::SpawnEnemies()
 		float dist = (float)(rand() % (int)spawnRadius_);
 		float sx = playerPos.x + cosf(angle) * dist;
 		float sz = playerPos.z + sinf(angle) * dist;
+
+		// ★ フィールドの範囲外ならスキップ
+		if (!IsInsideField(sx, sz)) continue;
+
 		enemyManager_->Init(sx, playerPos.y, sz);
 	}
 }
@@ -244,7 +259,7 @@ void FieldBase::CheckCaptureCondition()
 		enemyManager_.reset();
 
 		// 制圧演出
-		printfDx("フィールド制圧完了！\n");
+		//printfDx("フィールド制圧完了！\n");
 
 		// 耐久リセットなど
 		durability_ = 100;
