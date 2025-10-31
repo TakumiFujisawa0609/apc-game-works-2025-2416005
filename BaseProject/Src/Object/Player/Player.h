@@ -34,6 +34,9 @@ public:
 	// 1フレームで回復する体力
 	static constexpr int DASH_TP_RECOVER = 10; 
 
+	// 体力
+	static constexpr int HP = 50;
+
 
 	// アニメーション種別
 	enum class ANIM_TYPE
@@ -46,6 +49,19 @@ public:
 		ATTACK,
 		MAX,
 	};
+
+	// 攻撃の種類分け
+	enum ATTACK_STEP
+	{
+		STEP_NON,
+		STEP_PANCH,
+		STEP_PANCH_2,
+		STEP_KICK,
+		STEP_MAX,
+	};
+
+	// 状態関数型
+	typedef void (*AttackStepFunction)(Player&);
 
 	Player(void);
 	~Player(void);
@@ -62,6 +78,9 @@ public:
 	float GetRadius() const;
 
 	int GetModelId(void) const { return modelId_; }
+
+	// 攻撃ステップの更新
+	void ChangeAttackStep(ATTACK_STEP step) { attackStep_ = step; }
 
 private:
 
@@ -168,4 +187,24 @@ private:
 	Weapon* weapon_;
 
 	bool isBrinkAction_ = false;  // ブースト中 or ダッシュ中フラグ
+
+	// 攻撃中の種類
+	ATTACK_STEP attackStep_;
+
+	// 状態のテーブル（派生クラスでセットする）
+	AttackStepFunction stateTable_[Player::ATTACK_STEP::STEP_MAX];
+
+	float attackTimeLimit_;
+
+	// 攻撃受付処理
+	static void AttackStepNon(Player& player);
+	static void AttackStepPanch(Player& player);
+	static void AttackStepPanch2(Player& player);
+	static void AttackStepKick(Player& player);
+
+	// 攻撃受付時間の更新処理
+	bool AttackTimeLimit(void);
+	// 攻撃受付処理
+	void AttackStep(ANIM_TYPE type, ATTACK_STEP step);
+
 };
