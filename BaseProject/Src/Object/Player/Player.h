@@ -34,6 +34,9 @@ public:
 	// 1フレームで回復する体力
 	static constexpr int DASH_TP_RECOVER = 10; 
 
+	// 当たり判定用半径
+	static constexpr float ATTACK_TIME_LIMIT = 1.5f;
+
 	// 体力
 	static constexpr int HP = 50;
 
@@ -48,6 +51,11 @@ public:
 		BAKA,
 		ATTACK,
 		MAX,
+		ATTACK_IDLE,
+		PANCH,
+		PANCH_2,
+		KICK,
+		RUN,
 	};
 
 	// 攻撃の種類分け
@@ -56,7 +64,16 @@ public:
 		STEP_NON,
 		STEP_PANCH,
 		STEP_PANCH_2,
+		STEP_PANCH_3,
+		STEP_PANCH_4,
+		STEP_PANCH_5,
+		STEP_PANCH_6,
 		STEP_KICK,
+		STEP_KICK_2,
+		STEP_KICK_3,
+		STEP_KICK_4,
+		STEP_KICK_5,
+		STEP_KICK_6,
 		STEP_MAX,
 	};
 
@@ -200,7 +217,16 @@ private:
 	static void AttackStepNon(Player& player);
 	static void AttackStepPanch(Player& player);
 	static void AttackStepPanch2(Player& player);
+	static void AttackStepPanch3(Player& player);
+	static void AttackStepPanch4(Player& player);
+	static void AttackStepPanch5(Player& player);
+	static void AttackStepPanch6(Player& player);
 	static void AttackStepKick(Player& player);
+	static void AttackStepKick2(Player& player);
+	static void AttackStepKick3(Player& player);
+	static void AttackStepKick4(Player& player);
+	static void AttackStepKick5(Player& player);
+	static void AttackStepKick6(Player& player);
 
 	// 攻撃受付時間の更新処理
 	bool AttackTimeLimit(void);

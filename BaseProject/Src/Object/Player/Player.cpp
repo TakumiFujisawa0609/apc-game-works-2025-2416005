@@ -44,6 +44,16 @@ isBrinkAction_(false)
 	jumpPow_ = 0.0f;
 	// ノックバック関連初期化
 	cntKnockBack_ = 0;
+
+	modelId_ = -1;
+	animationController_ = nullptr;
+
+	// テーブルに関数のポインタを割り当て
+	stateTable_[STEP_NON] = AttackStepNon;
+	stateTable_[STEP_PANCH] = AttackStepPanch;
+	stateTable_[STEP_PANCH_2] = AttackStepPanch2;
+	stateTable_[STEP_KICK] = AttackStepKick;
+
 }
 
 Player::~Player(void)
@@ -769,4 +779,125 @@ void Player::ProcessBrink(void)
 	}
 }
 
+void Player::AttackStepPanch(Player& player)
+{
+	if (player.AttackTimeLimit())
+	{
+		// 攻撃受付時間が過ぎていたら処理を行わない
+		return;
+	}
 
+	// 攻撃処理を受け付ける
+	player.AttackStep(ANIM_TYPE::PANCH_2, ATTACK_STEP::STEP_PANCH_2);
+}
+
+void Player::AttackStepPanch2(Player& player)
+{
+	if (player.AttackTimeLimit())
+	{
+		return;
+	}
+
+	// 攻撃処理を受け付ける
+	player.AttackStep(ANIM_TYPE::KICK, ATTACK_STEP::STEP_KICK);
+
+}
+
+void Player::AttackStepPanch3(Player& player)
+{
+
+}
+
+void Player::AttackStepPanch4(Player& player)
+{
+
+}
+
+void Player::AttackStepPanch5(Player& player)
+{
+
+}
+
+void Player::AttackStepPanch6(Player& player)
+{
+
+}
+
+void Player::AttackStepKick(Player& player)
+{
+	if (player.AttackTimeLimit())
+	{
+		return;
+	}
+
+	// キックが最後だから、キックモーションが終わったら、
+	if (player.animationController_->IsEnd())
+	{
+		// 攻撃待機アニメーションを再生
+		//player.animationController_->BlendAnimPlay(static_cast<int>(ANIM_TYPE::ATTACK_IDLE), 0.1f);
+	}
+
+}
+
+void Player::AttackStepKick2(Player& player)
+{
+
+}
+
+void Player::AttackStepKick3(Player& player)
+{
+
+}
+
+void Player::AttackStepKick4(Player& player)
+{
+
+}
+
+void Player::AttackStepKick5(Player& player)
+{
+
+}
+
+void Player::AttackStepKick6(Player& player)
+{
+
+}
+
+bool Player::AttackTimeLimit(void)
+{
+	if (attackTimeLimit_ >= ATTACK_TIME_LIMIT)
+	{
+		// 攻撃可能時間を過ぎたら、攻撃中の種類を最初に戻す(NONにする)
+		attackTimeLimit_ = 0.0f;
+		ChangeAttackStep(ATTACK_STEP::STEP_NON);
+		return true;
+	}
+
+	// 攻撃可能時間を過ぎていないならfalse
+	return false;
+}
+
+void Player::AttackStep(ANIM_TYPE type, ATTACK_STEP step)
+{
+	// 前の攻撃(パンチとかキック)のアニメーションが終わったら、攻撃待機アニメーションをはさむ
+	if (animationController_->IsEnd())
+	{
+		// 攻撃待機アニメーションを再生
+		//animationController_->BlendAnimPlay(static_cast<int>(ANIM_TYPE::ATTACK_IDLE), 0.1f);
+
+		// 当たり判定用フラグを初期化( true / この攻撃は一度でも敵に当たったことがある, false / 一度も敵に攻撃を当てていない)	
+		isAtack_ = false;
+	}
+	// 攻撃ボタンが押されたかつ、攻撃待機アニメーションだったら入る
+	else if (((KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) & animationController_->GetPlayType()) == static_cast<int>(ANIM_TYPE::ATTACK_IDLE))
+	{
+		// 指定のアニメーションを再生
+		//animationController_->BlendAnimPlay(static_cast<int>(type), 0.1f, false);
+		// 次のステップへ更新
+		ChangeAttackStep(step);
+		// 攻撃受付時間の初期化
+		attackTimeLimit_ = 0.0f;
+	}
+
+}
