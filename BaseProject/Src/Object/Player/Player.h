@@ -49,7 +49,20 @@ public:
 		JUMP,
 		CAPO,
 		BAKA,
+		ATTACKS,
 		ATTACK,
+		ATTACK1,
+		ATTACK2,
+		ATTACK3,
+		ATTACK4,
+		ATTACK5,
+		ATTACK6,
+		ATTACK1_BRANCH,
+		ATTACK2_BRANCH,
+		ATTACK3_BRANCH,
+		ATTACK4_BRANCH,
+		ATTACK5_BRANCH,
+		ATTACK6_BRANCH,
 		MAX,
 		ATTACK_IDLE,
 		PANCH,
@@ -58,24 +71,6 @@ public:
 		RUN,
 	};
 
-	// 攻撃の種類分け
-	enum ATTACK_STEP
-	{
-		STEP_NON,
-		STEP_PANCH,
-		STEP_PANCH_2,
-		STEP_PANCH_3,
-		STEP_PANCH_4,
-		STEP_PANCH_5,
-		STEP_PANCH_6,
-		STEP_KICK,
-		STEP_KICK_2,
-		STEP_KICK_3,
-		STEP_KICK_4,
-		STEP_KICK_5,
-		STEP_KICK_6,
-		STEP_MAX,
-	};
 
 	// 状態関数型
 	typedef void (*AttackStepFunction)(Player&);
@@ -96,8 +91,6 @@ public:
 
 	int GetModelId(void) const { return modelId_; }
 
-	// 攻撃ステップの更新
-	void ChangeAttackStep(ATTACK_STEP step) { attackStep_ = step; }
 
 private:
 
@@ -161,7 +154,7 @@ private:
 	void ProcessDown(void);
 	void ProcessMove(void);
 	void ProcessShot(void);
-	void ProcessAtack	(void);
+	void ProcessAtack(void);
 	void ProcessBrink(void);
 
 
@@ -205,32 +198,15 @@ private:
 
 	bool isBrinkAction_ = false;  // ブースト中 or ダッシュ中フラグ
 
-	// 攻撃中の種類
-	ATTACK_STEP attackStep_;
 
-	// 状態のテーブル（派生クラスでセットする）
-	AttackStepFunction stateTable_[Player::ATTACK_STEP::STEP_MAX];
 
 	float attackTimeLimit_;
 
-	// 攻撃受付処理
-	static void AttackStepNon(Player& player);
-	static void AttackStepPanch(Player& player);
-	static void AttackStepPanch2(Player& player);
-	static void AttackStepPanch3(Player& player);
-	static void AttackStepPanch4(Player& player);
-	static void AttackStepPanch5(Player& player);
-	static void AttackStepPanch6(Player& player);
-	static void AttackStepKick(Player& player);
-	static void AttackStepKick2(Player& player);
-	static void AttackStepKick3(Player& player);
-	static void AttackStepKick4(Player& player);
-	static void AttackStepKick5(Player& player);
-	static void AttackStepKick6(Player& player);
 
-	// 攻撃受付時間の更新処理
-	bool AttackTimeLimit(void);
-	// 攻撃受付処理
-	void AttackStep(ANIM_TYPE type, ATTACK_STEP step);
+	int attackStep_ = 0;         // 現在の攻撃段数（0:非攻撃, 1～6:攻撃段数）
+	int attackInputBuffer_ = 0;  // 入力バッファ（次段攻撃受付）
+	int attackInputTimer_ = 0;   // 入力受付時間（フレーム数）
+	bool isBranchAttack_ = false; // 派生攻撃
 
+	VECTOR prevRootPos_ = VGet(0, 0, 0);
 };

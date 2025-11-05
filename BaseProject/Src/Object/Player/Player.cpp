@@ -48,11 +48,11 @@ isBrinkAction_(false)
 	modelId_ = -1;
 	animationController_ = nullptr;
 
-	// テーブルに関数のポインタを割り当て
-	stateTable_[STEP_NON] = AttackStepNon;
-	stateTable_[STEP_PANCH] = AttackStepPanch;
-	stateTable_[STEP_PANCH_2] = AttackStepPanch2;
-	stateTable_[STEP_KICK] = AttackStepKick;
+	//// テーブルに関数のポインタを割り当て
+	//stateTable_[STEP_NON] = AttackStepNon;
+	//stateTable_[STEP_PANCH] = AttackStepPanch;
+	//stateTable_[STEP_PANCH_2] = AttackStepPanch2;
+	//stateTable_[STEP_KICK] = AttackStepKick;
 
 }
 
@@ -114,7 +114,21 @@ void Player::Init(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
 		Application::PATH_MODEL + "Player/Jump1.mv1");
 
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK1), 30.0f,
+		Application::PATH_MODEL + "Player/attack1.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK2), 30.0f,
+		Application::PATH_MODEL + "Player/attack2.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK3), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACKS), 30.0f,
+		Application::PATH_MODEL + "Player/Sword And Shield Slash.mv1");
+
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
+	prevRootPos_ = MV1GetFramePosition(modelId_, 0); // 0はルートボーンのフレーム番号
 
 	// カメラに自分自身を渡す
 	SceneManager::GetInstance()->GetCamera()->SetFollow(this);
@@ -156,6 +170,27 @@ void Player::Update(void)
 		UpdateEnd();
 	case STATE::VICTORY:
 		UpdateVictory();
+		break;
+	}
+
+	switch (attackStep_) {
+	case 1:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
+		break;
+	case 2:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2), false);
+		break;
+	case 3:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3), false);
+		break;
+	case 4:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4), false);
+		break;
+	case 5:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5), false);
+		break;
+	case 6:
+		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6), false);
 		break;
 	}
 
@@ -262,6 +297,14 @@ void Player::Draw(void)
 	//	0, 150, 0xffffff,
 	//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
 	//);
+
+	// 攻撃段数の表示
+	if (isAtack_) {
+		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: %d段目", attackStep_);
+	}
+	else {
+		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: なし");
+	}
 }
 
 void Player::Release(void)
@@ -638,37 +681,138 @@ void Player::ProcessShot(void)
 
 void Player::ProcessAtack(void)
 {
-	// 左クリックで攻撃開始
-	if ((KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) && !isAtack_)
-	{
-		isAtack_ = true;
+	//// 左クリックで攻撃開始
+	//if ((KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) && !isAtack_)
+	//{
+	//	isAtack_ = true;
 
-		// 武器の攻撃開始
-		if (weapon_) {
-			weapon_->StartAttack();
+	//	// 武器の攻撃開始
+	//	if (weapon_) {
+	//		weapon_->StartAttack();
+	//	}
+
+	//	PlaySoundMem(SHandle, DX_PLAYTYPE_NORMAL);
+	//	DeleteSoundMem(SHandle);
+
+	//	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
+	//}
+
+	//// 攻撃中 → アニメーションが終わったら解除
+	//if (isAtack_ && animationController_->IsEnd())
+	//{
+	//	isAtack_ = false;
+
+	//	// 武器の攻撃終了
+	//	if (weapon_) {
+	//		weapon_->EndAttack();
+	//	}
+
+	//	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	//}
+
+	//// アニメーションの更新
+	//AtackPlayerManager::GetInstance()->Update();
+
+		// 攻撃入力受付
+		// 1段目開始
+		if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
+			attackStep_ = 1;
+			isAtack_ = true;
+			attackInputTimer_ = 60; // 60フレーム以内に次段入力受付
+			attackInputBuffer_ = 0;
+			animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
+			if (weapon_) weapon_->StartAttack();
+		}
+		// 2段目受付
+		else if (isAtack_ && attackStep_ == 1 && attackInputTimer_ > 0) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+				attackInputBuffer_ = 1; // 2段目受付
+			}
+		}
+		else if (isAtack_ && attackStep_ == 2 && attackInputTimer_ > 0) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+				attackInputBuffer_ = 1; // 3段目受付
+			}
+		}
+		else if (isAtack_ && attackStep_ == 3 && attackInputTimer_ > 0) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+				attackInputBuffer_ = 1; // 4段目受付
+			}
+		}
+		else if (isAtack_ && attackStep_ == 4 && attackInputTimer_ > 0) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+				attackInputBuffer_ = 1; // 5段目受付
+			}
+		}
+		else if (isAtack_ && attackStep_ == 5 && attackInputTimer_ > 0) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+				attackInputBuffer_ = 1; // 6段目受付
+			}
 		}
 
-		PlaySoundMem(SHandle, DX_PLAYTYPE_NORMAL);
-		DeleteSoundMem(SHandle);
+		// 攻撃中の処理
+		if (isAtack_) {
+			if (attackInputTimer_ > 0) attackInputTimer_--;
 
-		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
-	}
+			if (animationController_->IsEnd()) {
+				if (attackInputBuffer_ == 1) {
+					attackStep_++;
+					attackInputBuffer_ = 0;
+					attackInputTimer_ = 20;
+					// 段数ごとにアニメを切り替え
+					switch (attackStep_) {
+					case 2:
+						animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2), false);
+						break;
+					case 3:
+						animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3), false);
+						break;
+					case 4:
+						animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4), false);
+						break;
+					case 5:
+						animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5), false);
+						break;
+					case 6:
+						animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6), false);
+						break;
+	
+					}
+					if (weapon_) weapon_->StartAttack();
+				}
+				else {
+					// 終了
+					isAtack_ = false;
+					attackStep_ = 0;
+					attackInputBuffer_ = 0;
+					attackInputTimer_ = 0;
+					if (weapon_) weapon_->EndAttack();
+					animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+				}
+			}
 
-	// 攻撃中 → アニメーションが終わったら解除
-	if (isAtack_ && animationController_->IsEnd())
-	{
-		isAtack_ = false;
+			//// 攻撃中のみルートモーションを反映
+			//if (isAtack_) {
+			//	// 現在のルートボーン位置を取得
+			//	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
 
-		// 武器の攻撃終了
-		if (weapon_) {
-			weapon_->EndAttack();
+			//	// 差分を計算
+			//	VECTOR diff = VSub(rootPos, prevRootPos_);
+
+			//	// プレイヤーの向きに合わせて差分を回転
+			//	MATRIX rotMat = MGetRotY(angles_.y);
+			//	diff = VTransform(diff, rotMat);
+
+			//	// プレイヤー座標に加算
+			//	pos_ = VAdd(pos_, diff);
+
+			//	// モデルのワールド座標を更新
+			//	MV1SetPosition(modelId_, pos_);
+
+			//	// 次フレーム用に保存
+			//	prevRootPos_ = rootPos;
+			//}
 		}
-
-		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-	}
-
-	// アニメーションの更新
-	AtackPlayerManager::GetInstance()->Update();
 }
 
 void Player::ProcessBrink(void)
@@ -777,127 +921,4 @@ void Player::ProcessBrink(void)
 		if (dashTp > DASH_TP_MAX) dashTp = DASH_TP_MAX;
 		tpRecoverCounter = 0;
 	}
-}
-
-void Player::AttackStepPanch(Player& player)
-{
-	if (player.AttackTimeLimit())
-	{
-		// 攻撃受付時間が過ぎていたら処理を行わない
-		return;
-	}
-
-	// 攻撃処理を受け付ける
-	player.AttackStep(ANIM_TYPE::PANCH_2, ATTACK_STEP::STEP_PANCH_2);
-}
-
-void Player::AttackStepPanch2(Player& player)
-{
-	if (player.AttackTimeLimit())
-	{
-		return;
-	}
-
-	// 攻撃処理を受け付ける
-	player.AttackStep(ANIM_TYPE::KICK, ATTACK_STEP::STEP_KICK);
-
-}
-
-void Player::AttackStepPanch3(Player& player)
-{
-
-}
-
-void Player::AttackStepPanch4(Player& player)
-{
-
-}
-
-void Player::AttackStepPanch5(Player& player)
-{
-
-}
-
-void Player::AttackStepPanch6(Player& player)
-{
-
-}
-
-void Player::AttackStepKick(Player& player)
-{
-	if (player.AttackTimeLimit())
-	{
-		return;
-	}
-
-	// キックが最後だから、キックモーションが終わったら、
-	if (player.animationController_->IsEnd())
-	{
-		// 攻撃待機アニメーションを再生
-		//player.animationController_->BlendAnimPlay(static_cast<int>(ANIM_TYPE::ATTACK_IDLE), 0.1f);
-	}
-
-}
-
-void Player::AttackStepKick2(Player& player)
-{
-
-}
-
-void Player::AttackStepKick3(Player& player)
-{
-
-}
-
-void Player::AttackStepKick4(Player& player)
-{
-
-}
-
-void Player::AttackStepKick5(Player& player)
-{
-
-}
-
-void Player::AttackStepKick6(Player& player)
-{
-
-}
-
-bool Player::AttackTimeLimit(void)
-{
-	if (attackTimeLimit_ >= ATTACK_TIME_LIMIT)
-	{
-		// 攻撃可能時間を過ぎたら、攻撃中の種類を最初に戻す(NONにする)
-		attackTimeLimit_ = 0.0f;
-		ChangeAttackStep(ATTACK_STEP::STEP_NON);
-		return true;
-	}
-
-	// 攻撃可能時間を過ぎていないならfalse
-	return false;
-}
-
-void Player::AttackStep(ANIM_TYPE type, ATTACK_STEP step)
-{
-	// 前の攻撃(パンチとかキック)のアニメーションが終わったら、攻撃待機アニメーションをはさむ
-	if (animationController_->IsEnd())
-	{
-		// 攻撃待機アニメーションを再生
-		//animationController_->BlendAnimPlay(static_cast<int>(ANIM_TYPE::ATTACK_IDLE), 0.1f);
-
-		// 当たり判定用フラグを初期化( true / この攻撃は一度でも敵に当たったことがある, false / 一度も敵に攻撃を当てていない)	
-		isAtack_ = false;
-	}
-	// 攻撃ボタンが押されたかつ、攻撃待機アニメーションだったら入る
-	else if (((KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) & animationController_->GetPlayType()) == static_cast<int>(ANIM_TYPE::ATTACK_IDLE))
-	{
-		// 指定のアニメーションを再生
-		//animationController_->BlendAnimPlay(static_cast<int>(type), 0.1f, false);
-		// 次のステップへ更新
-		ChangeAttackStep(step);
-		// 攻撃受付時間の初期化
-		attackTimeLimit_ = 0.0f;
-	}
-
 }
