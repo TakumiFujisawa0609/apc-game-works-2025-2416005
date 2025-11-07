@@ -88,8 +88,6 @@ private:
 	// ƒJƒƒ‰‚Ì’Ç]‘ÎÛ
 	Player* follow_;
 
-	/*Player* player_;*/
-
 	// ’‹“_
 	VECTOR targetPos_;
 

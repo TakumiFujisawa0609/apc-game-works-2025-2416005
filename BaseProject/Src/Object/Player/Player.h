@@ -38,7 +38,7 @@ public:
 	static constexpr float ATTACK_TIME_LIMIT = 1.5f;
 
 	// 体力
-	static constexpr int HP = 50;
+	static constexpr int HP = 1000;
 
 
 	// アニメーション種別

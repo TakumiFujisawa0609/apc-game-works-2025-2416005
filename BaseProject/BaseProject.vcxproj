@@ -31,7 +31,6 @@
     <ClCompile Include="Src\Object\UI\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayerManager.cpp" />
-    <ClCompile Include="Src\Object\Stage\Field\Field.cpp" />
     <ClCompile Include="Src\Object\UI\UI.cpp" />
     <ClCompile Include="Src\Object\Weapon\Weapon.cpp" />
     <ClCompile Include="Src\Scene\GameOver.cpp" />
@@ -70,7 +69,6 @@
     <ClInclude Include="Src\Object\UI\MiniMap.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayerManager.h" />
-    <ClInclude Include="Src\Object\Stage\Field\Field.h" />
     <ClInclude Include="Src\Object\UI\UI.h" />
     <ClInclude Include="Src\Object\Weapon\Weapon.h" />
     <ClInclude Include="Src\Scene\GameOver.h" />

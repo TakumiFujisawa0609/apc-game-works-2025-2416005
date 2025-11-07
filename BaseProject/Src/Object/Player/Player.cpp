@@ -45,9 +45,6 @@ isBrinkAction_(false)
 	// ノックバック関連初期化
 	cntKnockBack_ = 0;
 
-	modelId_ = -1;
-	animationController_ = nullptr;
-
 	//// テーブルに関数のポインタを割り当て
 	//stateTable_[STEP_NON] = AttackStepNon;
 	//stateTable_[STEP_PANCH] = AttackStepPanch;
@@ -115,16 +112,43 @@ void Player::Init(void)
 		Application::PATH_MODEL + "Player/Jump1.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK1), 30.0f,
-		Application::PATH_MODEL + "Player/attack1.mv1");
+		Application::PATH_MODEL + "Player/Slash.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK2), 30.0f,
-		Application::PATH_MODEL + "Player/attack2.mv1");
+		Application::PATH_MODEL + "Player/Atack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK3), 30.0f,
-		Application::PATH_MODEL + "Player/attack3.mv1");
+		Application::PATH_MODEL + "Player/Slash2.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK4), 30.0f,
+		Application::PATH_MODEL + "Player/Atack.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK5), 30.0f,
+		Application::PATH_MODEL + "Player/srash.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK6), 30.0f,
+		Application::PATH_MODEL + "Player/spin.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACKS), 30.0f,
 		Application::PATH_MODEL + "Player/Sword And Shield Slash.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK2_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK3_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK4_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK5_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK6_BRANCH), 30.0f,
+		Application::PATH_MODEL + "Player/attack3.mv1");
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
@@ -718,7 +742,7 @@ void Player::ProcessAtack(void)
 		if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
 			attackStep_ = 1;
 			isAtack_ = true;
-			attackInputTimer_ = 60; // 60フレーム以内に次段入力受付
+			attackInputTimer_ = 100; // 60フレーム以内に次段入力受付
 			attackInputBuffer_ = 0;
 			animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
 			if (weapon_) weapon_->StartAttack();
@@ -749,6 +773,14 @@ void Player::ProcessAtack(void)
 				attackInputBuffer_ = 1; // 6段目受付
 			}
 		}
+
+		// 派生攻撃入力（射撃ボタン）
+		if (isAtack_ && attackInputTimer_ > 0 && !isBranchAttack_) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::SHOT).down) {
+				isBranchAttack_ = true;
+			}
+		}
+
 
 		// 攻撃中の処理
 		if (isAtack_) {
@@ -798,6 +830,9 @@ void Player::ProcessAtack(void)
 
 			//	// 差分を計算
 			//	VECTOR diff = VSub(rootPos, prevRootPos_);
+
+			//	// Y成分は無視（ジャンプ処理と干渉するため）
+			//	diff.y = 0.0f;
 
 			//	// プレイヤーの向きに合わせて差分を回転
 			//	MATRIX rotMat = MGetRotY(angles_.y);
@@ -886,7 +921,7 @@ void Player::ProcessBrink(void)
 	{
 		// --- 調整パラメータ ---
 		const float boostPower = 200.0f;   // ← 距離を伸ばしたいなら↑ここを上げる（元60）
-		const int boostDuration = 10;      // ← 継続フレーム（短くすればより瞬間的に）
+		const int boostDuration = 30;      // ← 継続フレーム（短くすればより瞬間的に）
 		const int boostTpCost = 30;        // ← 1回の単発ブーストで減るTP量を追加
 
 		// 向いている方向へ瞬間的に移動
