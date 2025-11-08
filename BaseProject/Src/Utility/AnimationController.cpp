@@ -166,6 +166,13 @@ bool AnimationController::IsEnd(void) const
 
 }
 
+bool AnimationController::IsPlaying(void) const
+{
+	// I—¹‚µ‚Ä‚¢‚È‚¯‚ê‚ÎÄ¶’†‚Æ‚İ‚È‚·
+	if (isLoop_) return true; // ƒ‹[ƒv‚È‚çí‚ÉÄ¶’†
+	return (playAnim_.step < playAnim_.totalTime);
+}
+
 void AnimationController::Add(int type, float speed, Animation& animation)
 {
 	animation.speed = speed;
