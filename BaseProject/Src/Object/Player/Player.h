@@ -157,6 +157,8 @@ private:
 	void ProcessAtack(void);
 	void ProcessBrink(void);
 
+	void ApplyRootMotion();
+
 
 	// ノックバック方向
 	VECTOR knockBackDir_;
@@ -210,4 +212,6 @@ private:
 	int branchType_;        // どの段から派生したか（1?6）
 
 	VECTOR prevRootPos_ = VGet(0, 0, 0);
+
+	VECTOR cameraTarget = pos_;
 };

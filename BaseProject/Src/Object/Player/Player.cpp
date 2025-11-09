@@ -713,6 +713,7 @@ void Player::ProcessAtack(void)
 		attackInputBuffer_ = 0;
 		isBranchAttack_ = false;
 		branchType_ = -1; // 派生種別初期化
+		prevRootPos_ = MV1GetFramePosition(modelId_, 0);
 		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
 		if (weapon_) weapon_->StartAttack();
 	}
@@ -729,7 +730,7 @@ void Player::ProcessAtack(void)
 			}
 
 			// 特殊派生入力（射撃ボタンなど）
-			if (KEY::GetIns().GetInfo(KEY_TYPE::SHOT).down && !isBranchAttack_) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down && !isBranchAttack_) {
 				isBranchAttack_ = true;
 				branchType_ = attackStep_; // 今の段数を記録しておく（どの段から派生したか）
 			}
@@ -814,8 +815,6 @@ void Player::ProcessAtack(void)
 				animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 			}
 		}
-	}
-
 
 			//// 攻撃中のみルートモーションを反映
 			//if (isAtack_) {
@@ -841,6 +840,9 @@ void Player::ProcessAtack(void)
 			//	// 次フレーム用に保存
 			//	prevRootPos_ = rootPos;
 			//}
+
+			//ApplyRootMotion();
+	}
 }
 
 void Player::ProcessBrink(void)
@@ -949,4 +951,31 @@ void Player::ProcessBrink(void)
 		if (dashTp > DASH_TP_MAX) dashTp = DASH_TP_MAX;
 		tpRecoverCounter = 0;
 	}
+}
+
+void Player::ApplyRootMotion()
+{
+	if (!isAtack_) return;
+
+	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
+	VECTOR diff = VSub(rootPos, prevRootPos_);
+
+	// Y軸は無視
+	diff.y = 0.0f;
+
+	// 異常な値を無視（アニメ開始直後の暴走対策）
+	if (VSquareSize(diff) > 10000.0f) {
+		prevRootPos_ = rootPos;
+		return;
+	}
+
+	// プレイヤーの向きに合わせて変換
+	MATRIX rotMat = MGetRotY(angles_.y);
+	diff = VTransform(diff, rotMat);
+
+	// 座標更新
+	pos_ = VAdd(pos_, diff);
+	MV1SetPosition(modelId_, pos_);
+
+	prevRootPos_ = rootPos;
 }

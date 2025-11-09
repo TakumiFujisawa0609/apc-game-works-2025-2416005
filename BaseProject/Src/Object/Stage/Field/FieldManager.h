@@ -14,6 +14,11 @@ public:
 	{
 		A_FIELD,
 		B_FIELD,
+		C_FIELD,
+		D_FIELD,
+		E_FIELD,
+		F_FIELD,
+		G_FIELD,
 		MAX
 	};
 

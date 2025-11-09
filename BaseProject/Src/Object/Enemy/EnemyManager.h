@@ -8,6 +8,8 @@ public:
     static EnemyManager* GetInstance();
     static void SetInstance(EnemyManager* instance);
 
+    static void ResetInstance() { instance_ = nullptr; }
+
 private:
     std::vector<SlimeEnemy*> slimes;
 
@@ -37,6 +39,8 @@ private:
 
     // “|‚µ‚½“G‚Ì—ÝŒv
     int killedCount = 0;
+
+    static EnemyManager* instance_;
 
 	Player* player_ = nullptr;
 };

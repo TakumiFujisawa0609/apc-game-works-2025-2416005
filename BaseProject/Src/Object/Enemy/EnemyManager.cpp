@@ -13,6 +13,8 @@ EnemyManager* g_enemy_manager_instance = nullptr;
 EnemyManager* EnemyManager::GetInstance() { return g_enemy_manager_instance; }
 void EnemyManager::SetInstance(EnemyManager* instance) { g_enemy_manager_instance = instance; }
 
+EnemyManager* EnemyManager::instance_ = nullptr;
+
 EnemyManager::EnemyManager(Player* player)
 {
 	slimes.clear();

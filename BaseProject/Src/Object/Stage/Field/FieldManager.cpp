@@ -1,6 +1,11 @@
 #include "FieldManager.h"
 #include "BField.h"
 #include "AField.h"
+#include "CField.h"
+#include "DField.h"
+#include "EField.h"
+#include "FField.h"
+#include "GField.h"
 #include "../../../Scene/SceneManager.h"
 #include "../../../Scene/GameClear.h"
 
@@ -22,6 +27,21 @@ void FieldManager::Init(Player* player)
 
     fields_.push_back(std::make_unique<BField>());
     fields_.back()->Init(300.0f, 0.0f, 300.0f,player);
+
+	fields_.push_back(std::make_unique<CField>());
+    fields_.back()->Init(-4500.0f, 0.0f, 4000.0f,player);
+
+    fields_.push_back(std::make_unique<DField>());
+    fields_.back()->Init(-4000.0f, 0.0f, -3000.0f,player);
+
+    fields_.push_back(std::make_unique<EField>());
+    fields_.back()->Init(0.0f, 0.0f, -4000.0f,player);
+
+    fields_.push_back(std::make_unique<FField>());
+    fields_.back()->Init(4000.0f, 0.0f, -3500.0f,player);
+
+    fields_.push_back(std::make_unique<GField>());
+	fields_.back()->Init(2000.0f, 0.0f, 2000.0f, player);
 }
 
 void FieldManager::Update(void)

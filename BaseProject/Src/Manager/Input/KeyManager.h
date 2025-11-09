@@ -32,6 +32,7 @@ public:
 		SP,
 		UP,
 		GARD,
+		HASEI,
 
 		// ƒJƒƒ‰‘€ì
 		CAMERA_UP,

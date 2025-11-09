@@ -26,8 +26,13 @@
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\AField.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\BField.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field\CField.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field\DField.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field\EField.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field\FField.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\FieldBase.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\FieldManager.cpp" />
+    <ClCompile Include="Src\Object\Stage\Field\GField.cpp" />
     <ClCompile Include="Src\Object\UI\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayer.cpp" />
     <ClCompile Include="Src\Object\Player\AtackPlayerManager.cpp" />
@@ -64,8 +69,13 @@
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Stage\Field\AField.h" />
     <ClInclude Include="Src\Object\Stage\Field\BField.h" />
+    <ClInclude Include="Src\Object\Stage\Field\CField.h" />
+    <ClInclude Include="Src\Object\Stage\Field\DField.h" />
+    <ClInclude Include="Src\Object\Stage\Field\EField.h" />
+    <ClInclude Include="Src\Object\Stage\Field\FField.h" />
     <ClInclude Include="Src\Object\Stage\Field\FieldBase.h" />
     <ClInclude Include="Src\Object\Stage\Field\FieldManager.h" />
+    <ClInclude Include="Src\Object\Stage\Field\GField.h" />
     <ClInclude Include="Src\Object\UI\MiniMap.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayer.h" />
     <ClInclude Include="Src\Object\Player\AtackPlayerManager.h" />

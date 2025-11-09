@@ -110,7 +110,6 @@ void FieldBase::Release(void)
 	if (EnemyManager::GetInstance())
 	{
 		EnemyManager::GetInstance()->Release();
-		delete EnemyManager::GetInstance();
 		EnemyManager::SetInstance(nullptr);
 	}
 }
@@ -173,7 +172,8 @@ void FieldBase::OnExitField()
 
 	if (enemyManager_) {
 		enemyManager_->Release();
-		enemyManager_.reset();
+		EnemyManager::SetInstance(nullptr); // グローバルを無効化
+		enemyManager_.reset();              // unique_ptr で安全に破棄
 	}
 }
 

@@ -32,11 +32,12 @@ void GameScene::Update(void)
 	// ステージ更新
 	Stage::GetInstance()->Update();
 
+	// プレイヤー更新
+	player_->Update();
+
 	// フィールドの更新
 	fieldManager_->Update();
 
-	// プレイヤー更新
-	player_->Update();
 
 	//enemy_->Update();
 }
