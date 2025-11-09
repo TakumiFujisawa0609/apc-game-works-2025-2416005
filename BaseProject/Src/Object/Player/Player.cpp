@@ -679,14 +679,17 @@ void Player::ProcessMove(void)
 		}
 	}
 
-	// アニメーションの更新
-	//animationController_->Update();
-
 }
 
 void Player::ProcessShot(void)
 {
-	// スペースキーで弾を発射
+	// 派生コマンド中、または攻撃中なら弾を撃たない
+	if (isBranching_ || isAtack_) {
+		// ただし弾の更新は毎フレーム必要
+		ShotPlayerManager::GetInstance().Update();
+		return;
+	}
+
 	if ((KEY::GetIns().GetInfo(KEY_TYPE::SHOT).down))
 	{
 		VECTOR dir = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));

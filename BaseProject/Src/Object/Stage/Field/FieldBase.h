@@ -18,6 +18,32 @@ public:
         PLAYER    // 味方側
     };
 
+    struct SpawnPoint {
+        VECTOR pos;
+        bool isActive;
+        int wave;      // 今のウェーブ番号
+        int spawnCount; // 今の湧き数
+        int maxWave;   // 最大ウェーブ数
+    };
+
+    struct FallingEnemy {
+        VECTOR pos;      // 現在位置
+        VECTOR vel;      // 速度
+        bool landed;     // 着地済みか
+        int timer;       // 演出タイマー
+    };
+
+    struct PendingEnemy {
+        VECTOR pos;
+        int delay; // スポーンまでの待ち時間（フレーム）
+    };
+
+    std::vector<PendingEnemy> pendingEnemies_;
+
+    std::vector<SpawnPoint> spawnPoints_;
+
+    std::vector<FallingEnemy> fallingEnemies_;
+
     static constexpr VECTOR SCALES = { 3.0f, 3.0f, 3.0f };
     static constexpr VECTOR DEFAULT_POS = { 300.0f, 10.0f, 300.0f };
 
@@ -36,6 +62,8 @@ public:
     void OnEnterField();
 
     void OnExitField();
+
+	void UpdateFallingEnemies();
 
     bool IsCapturedBy(FieldState team) const { return state_ == team; }
     FieldState GetState() const { return state_; }
@@ -75,6 +103,8 @@ protected:
     void UpdateEnemySpawn();   
 
     void CheckCaptureCondition();
+
+	void UpdatePendingEnemies();
 
     VECTOR pos_;          // 位置（VGet(_x, _y, _z)）
     VECTOR scales_;       // モデルスケール

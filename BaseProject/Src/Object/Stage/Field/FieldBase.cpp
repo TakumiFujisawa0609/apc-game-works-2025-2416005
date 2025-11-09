@@ -58,6 +58,8 @@ void FieldBase::Update(void)
 	// 敵管理更新
 	if (isPlayerInside_ && enemyManager_) {
 		enemyManager_->Update();
+		UpdatePendingEnemies();
+		UpdateFallingEnemies();
 		UpdateEnemySpawn();
 		CheckCaptureCondition();
 	}
@@ -177,6 +179,29 @@ void FieldBase::OnExitField()
 	}
 }
 
+void FieldBase::UpdateFallingEnemies()
+{
+	for (auto it = fallingEnemies_.begin(); it != fallingEnemies_.end(); )
+	{
+		it->pos = VAdd(it->pos, it->vel);
+		it->timer++;
+
+		// 地面に着いたか判定（y座標が地面以下）
+		if (it->pos.y <= pos_.y) {
+			it->landed = true;
+
+			// 敵として正式スポーン
+			enemyManager_->Init(it->pos.x, pos_.y, it->pos.z);
+
+			it = fallingEnemies_.erase(it);
+			continue;
+		}
+
+		++it;
+	}
+}
+
+
 
 void FieldBase::StartBattle()
 {
@@ -201,44 +226,39 @@ void FieldBase::UpdateBattle()
 
 void FieldBase::SpawnEnemies()
 {
-	if (!enemyManager_) return;
-	if (!player_) return;
+	if (!player_ || !enemyManager_) return;
 
-	VECTOR playerPos = player_->GetPos();
-	VECTOR minPos = GetMinPos();
-	VECTOR maxPos = GetMaxPos();
-
-	int current = enemyManager_->GetEnemyCount();
+	int current = enemyManager_->GetEnemyCount() + (int)fallingEnemies_.size() + (int)pendingEnemies_.size();
 	int spawnCount = maxEnemies_ - current;
 	if (spawnCount <= 0) return;
 
+	VECTOR scale = VGet(3.0f, 1.0f, 3.0f);
+	float halfWidth = (1350.0f * scale.x) / 2.0f;
+	float halfDepth = (1350.0f * scale.z) / 2.0f;
+
 	for (int i = 0; i < spawnCount; i++) {
-		float angle = (float)(rand() % 360) * DX_PI_F / 180.0f;
-		float dist = (float)(rand() % (int)spawnRadius_);
-		float sx = playerPos.x + cosf(angle) * dist;
-		float sz = playerPos.z + sinf(angle) * dist;
+		PendingEnemy pe;
+		float offsetX = (float)(rand() % (int)(halfWidth * 2)) - halfWidth;
+		float offsetZ = (float)(rand() % (int)(halfDepth * 2)) - halfDepth;
 
-		// ★ フィールドの範囲外ならスキップ
-		if (!IsInsideField(sx, sz)) continue;
+		pe.pos = VAdd(pos_, VGet(offsetX, 0.0f, offsetZ));
 
-		enemyManager_->Init(sx, playerPos.y, sz);
+		// 各敵が出てくるまでの遅延時間（例：1～3秒）
+		pe.delay = 60 + rand() % 1200; // 60～180フレーム後に出現
+		pendingEnemies_.push_back(pe);
 	}
 }
+
 
 void FieldBase::UpdateEnemySpawn()
 {
 	if (!enemyManager_) return;
 
-	int count = enemyManager_->GetEnemyCount();
-	if (count < 100) {
-		respawnTimer_++;
-		if (respawnTimer_ >= 180) { // 3秒後
-			respawnTimer_ = 0;
-			SpawnEnemies(); // FieldBase 側で呼ぶ
-		}
-	}
-	else {
+	respawnTimer_++;
+
+	if (respawnTimer_ >= 120) { // 2秒おきに出す
 		respawnTimer_ = 0;
+		SpawnEnemies(); // ← 空から降らせる
 	}
 }
 
@@ -263,5 +283,30 @@ void FieldBase::CheckCaptureCondition()
 
 		// 耐久リセットなど
 		durability_ = 100;
+	}
+}
+
+void FieldBase::UpdatePendingEnemies()
+{
+	for (auto it = pendingEnemies_.begin(); it != pendingEnemies_.end(); )
+	{
+		it->delay--;
+
+		// 時間がきたら落下開始
+		if (it->delay <= 0)
+		{
+			FallingEnemy fe;
+			fe.pos = VAdd(it->pos, VGet(0.0f, 400.0f + (rand() % 100), 0.0f));
+			fe.vel = VGet(0.0f, -6.0f - (rand() % 3), 0.0f);
+			fe.landed = false;
+			fe.timer = 0;
+
+			fallingEnemies_.push_back(fe);
+
+			it = pendingEnemies_.erase(it);
+		}
+		else {
+			++it;
+		}
 	}
 }

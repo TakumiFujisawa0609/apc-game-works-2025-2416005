@@ -122,6 +122,10 @@ private:
 
 	void ChangeState(STATE newState);
 
+
+	bool IsBranching() const { return isBranching_; }
+	void SetBranching(bool flag) { isBranching_ = flag; }
+
 	// 現在の状態に応じた更新処理
 	void UpdateKnockback(void);
 	void UpdateStandby(void);
@@ -214,4 +218,7 @@ private:
 	VECTOR prevRootPos_ = VGet(0, 0, 0);
 
 	VECTOR cameraTarget = pos_;
+
+	bool isInBranchCommand_;  // 派生コマンド入力中ならtrue
+	bool isBranching_ = false;  // 派生入力中かどうか
 };
