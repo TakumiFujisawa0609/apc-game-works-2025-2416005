@@ -2,6 +2,7 @@
 
 FField::FField()
 {
+	fieldName_ = "Fフィールド";
 }
 
 FField::~FField()

@@ -2,6 +2,7 @@
 
 GField::GField()
 {
+	fieldName_ = "Gフィールド";
 }
 
 GField::~GField()

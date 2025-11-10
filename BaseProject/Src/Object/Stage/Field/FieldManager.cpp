@@ -11,6 +11,7 @@
 
 
 FieldManager::FieldManager()
+    : currentFieldName_("不明")
 {
 
 }
@@ -23,10 +24,10 @@ FieldManager::~FieldManager()
 void FieldManager::Init(Player* player)
 {
     fields_.push_back(std::make_unique<AField>());
-    fields_.back()->Init(5000.0f, 0.0f, 4000.0f,player);
+    fields_.back()->Init(300.0f, 0.0f, 300.0f, player);
 
     fields_.push_back(std::make_unique<BField>());
-    fields_.back()->Init(300.0f, 0.0f, 300.0f,player);
+    fields_.back()->Init(5000.0f, 0.0f, 4000.0f,player);
 
 	fields_.push_back(std::make_unique<CField>());
     fields_.back()->Init(-5000.0f, 0.0f, 4000.0f,player);
@@ -46,6 +47,8 @@ void FieldManager::Init(Player* player)
 
 void FieldManager::Update(void)
 {
+    currentFieldName_ = "不明";
+
     for (auto& field : fields_) {
         field->Update();
     }
@@ -71,6 +74,11 @@ void FieldManager::Draw(void)
     for (auto& field : fields_) {
         field->Draw();
     }
+
+    //// 現在地を画面に表示
+    //DrawFormatString(50, 50, GetColor(255, 255, 255),
+    //    "現在地：%s", currentFieldName_.c_str());
+
 }
 
 void FieldManager::Release(void)

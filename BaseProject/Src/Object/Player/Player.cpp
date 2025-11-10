@@ -819,32 +819,32 @@ void Player::ProcessAtack(void)
 			}
 		}
 
-			//// 攻撃中のみルートモーションを反映
-			//if (isAtack_) {
-			//	// 現在のルートボーン位置を取得
-			//	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
+			// 攻撃中のみルートモーションを反映
+			if (isAtack_) {
+				// 現在のルートボーン位置を取得
+				VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
 
-			//	// 差分を計算
-			//	VECTOR diff = VSub(rootPos, prevRootPos_);
+				// 差分を計算
+				VECTOR diff = VSub(rootPos, prevRootPos_);
 
-			//	// Y成分は無視（ジャンプ処理と干渉するため）
-			//	diff.y = 0.0f;
+				// Y成分は無視（ジャンプ処理と干渉するため）
+				diff.y = 0.0f;
 
-			//	// プレイヤーの向きに合わせて差分を回転
-			//	MATRIX rotMat = MGetRotY(angles_.y);
-			//	diff = VTransform(diff, rotMat);
+				// プレイヤーの向きに合わせて差分を回転
+				MATRIX rotMat = MGetRotY(angles_.y);
+				diff = VTransform(diff, rotMat);
 
-			//	// プレイヤー座標に加算
-			//	pos_ = VAdd(pos_, diff);
+				// プレイヤー座標に加算
+				pos_ = VAdd(pos_, diff);
 
-			//	// モデルのワールド座標を更新
-			//	MV1SetPosition(modelId_, pos_);
+				// モデルのワールド座標を更新
+				MV1SetPosition(modelId_, pos_);
 
-			//	// 次フレーム用に保存
-			//	prevRootPos_ = rootPos;
-			//}
+				// 次フレーム用に保存
+				prevRootPos_ = rootPos;
+			}
 
-			//ApplyRootMotion();
+			ApplyRootMotion();
 	}
 }
 
@@ -865,12 +865,12 @@ void Player::ProcessBrink(void)
 	const float dashSpeed = 35.0f;
 	const int dashTpCost = 1;
 
-	// --- 状態リセット ---
+	// 状態リセット
 	isBrinkAction_ = (isDash || isBoost);  // ← これが上昇中回復制御に使える
 
 	if (boostCooldown > 0) boostCooldown--;
 
-	// --- 入力 ---
+	// 入力
 	if ((KEY::GetIns().GetInfo(KEY_TYPE::DASH).down) && boostCooldown <= 0)
 	{
 		if (nowFrame - lastPressFrame <= doubleTapThreshold)
@@ -887,7 +887,7 @@ void Player::ProcessBrink(void)
 
 	bool isHolding = (KEY::GetIns().GetInfo(KEY_TYPE::DASH).prev) != 0;
 
-	// --- ダッシュ開始 ---
+	// ダッシュ開始
 	if (canDash && isHolding && dashTp > 0)
 	{
 		isDash = true;
@@ -895,7 +895,7 @@ void Player::ProcessBrink(void)
 		canDash = false;
 	}
 
-	// --- ブーストダッシュ中 ---
+	// ブーストダッシュ中
 	if (isDash)
 	{
 		if (dashTp > 0 && isHolding)
@@ -914,10 +914,10 @@ void Player::ProcessBrink(void)
 		return;
 	}
 
-	// --- 単発ブースト中 ---
+	// 単発ブースト中
 	if (isBoost && dashTimer > 0)
 	{
-		// --- 調整パラメータ ---
+		// 調整パラメータ
 		const float boostPower = 200.0f;   // ← 距離を伸ばしたいなら↑ここを上げる（元60）
 		const int boostDuration = 30;      // ← 継続フレーム（短くすればより瞬間的に）
 		const int boostTpCost = 30;        // ← 1回の単発ブーストで減るTP量を追加
@@ -945,7 +945,7 @@ void Player::ProcessBrink(void)
 		return;
 	}
 
-	// --- 通常回復 ---
+	// 通常回復
 	isBrinkAction_ = false;  // ← 通常状態に戻す
 	tpRecoverCounter++;
 	if (tpRecoverCounter >= 5)

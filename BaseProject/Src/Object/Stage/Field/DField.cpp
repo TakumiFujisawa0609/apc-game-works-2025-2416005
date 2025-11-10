@@ -2,6 +2,7 @@
 
 DField::DField()
 {
+	fieldName_ = "Dフィールド";
 }
 
 DField::~DField()

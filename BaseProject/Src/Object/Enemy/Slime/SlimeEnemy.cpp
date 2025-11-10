@@ -25,7 +25,7 @@ SlimeEnemy::~SlimeEnemy()
 void SlimeEnemy::Init(float _x, float _y, float _z) 
 {
     EnemyBase::Init(_x, _y, _z);
-    moveSpeed = 5.0f;
+    moveSpeed = 0.5f;
     color = GetColor(0, 106, 182);
 	isAlive = true;
 
@@ -61,6 +61,23 @@ void SlimeEnemy::Update()
         return;
     }
 
+    // 追従範囲設定
+    const float followRange = 500.0f; 
+    const float stopRange = 100.0f; 
+
+    VECTOR toPlayer = VSub(playerPos, GetPos());
+    toPlayer.y = 0.0f;
+    float distance = VSize(toPlayer);
+
+    // 距離判定
+    static bool isChasing = false;
+
+    if (distance <= followRange)
+        isChasing = true;
+    else if (distance > followRange + stopRange)
+        isChasing = false;
+
+    // プレイヤーとの押し戻し
     {
         VECTOR diff = VSub(GetPos(), playerPos);
         diff.y = 0.0f;
@@ -76,32 +93,15 @@ void SlimeEnemy::Update()
         }
     }
 
-    // 点滅中はその他の動作を止める
-    if (isDeadEffect_)
+    // 追従ロジック
+    if (isChasing)
     {
-        pos = VAdd(pos, knockbackVel_);
-        knockbackVel_ = VScale(knockbackVel_, 0.9f);
-
-        deadEffectTimer_--;
-        if (deadEffectTimer_ <= 0)
-        {
-            isDeadEffect_ = false;
-            isAlive = false;
-        }
-
-        return;
+        VECTOR dir = VNorm(toPlayer);
+        x += dir.x * moveSpeed;
+        z += dir.z * moveSpeed;
     }
 
-    // 通常の移動処理（上下運動・プレイヤー追従・スライム同士の衝突）
-    //y += moveSpeed;
-    //if (y > 50.0f || y < 0.0f) moveSpeed *= -1.0f;
-
-    VECTOR dir = VSub(playerPos, GetPos());
-    dir = VNorm(dir);
-    x += dir.x * enemymoove;
-    y += dir.y * enemymoove;
-    z += dir.z * enemymoove;
-
+    // 敵同士の押し戻し
     EnemyManager* sm = EnemyManager::GetInstance();
     if (sm)
     {
@@ -121,10 +121,8 @@ void SlimeEnemy::Update()
                 VECTOR pushDir = VNorm(diff);
                 float pushAmount = (minDist - dist) * 0.5f;
                 x += pushDir.x * pushAmount;
-                y += pushDir.y * pushAmount;
                 z += pushDir.z * pushAmount;
                 other->x -= pushDir.x * pushAmount;
-                other->y -= pushDir.y * pushAmount;
                 other->z -= pushDir.z * pushAmount;
             }
         }

@@ -135,4 +135,8 @@ protected:
     bool isPlayerInside_ = false;
 
     VECTOR minLocal_, maxLocal_;
+    std::string fieldName_; // ← フィールド名を保持
+
+    const std::string& GetFieldName() const { return fieldName_; }
+    bool IsPlayerInside() const { return isPlayerInside_; }
 };

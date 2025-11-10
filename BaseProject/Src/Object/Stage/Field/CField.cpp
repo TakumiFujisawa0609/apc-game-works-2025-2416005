@@ -2,6 +2,7 @@
 
 CField::CField()
 {
+    fieldName_ = "Cフィールド";
 }
 
 CField::~CField()

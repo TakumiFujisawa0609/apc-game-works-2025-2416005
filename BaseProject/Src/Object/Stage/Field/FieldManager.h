@@ -47,5 +47,6 @@ private:
 	std::vector<std::unique_ptr<FieldBase>> fields_;
 	FieldID currentField_ = FieldID::A_FIELD;
 
+	std::string currentFieldName_; // 現在のフィールド名を保持
 };
 

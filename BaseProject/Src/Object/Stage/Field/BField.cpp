@@ -3,6 +3,7 @@
 
 BField::BField()
 {
+    fieldName_ = "Bフィールド";
 }
 
 BField::~BField()

@@ -2,6 +2,7 @@
 
 EField::EField()
 {
+	fieldName_ = "Eフィールド";
 }
 
 EField::~EField()
