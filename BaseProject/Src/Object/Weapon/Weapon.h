@@ -15,6 +15,10 @@ private:
     VECTOR swordTip_;     // 剣の先端座標
     VECTOR swordBase_;    // 剣の根元座標
     bool isAttacking_;    // 攻撃中かどうか
+    int attackTimer_;
+    int attackActiveStart_; // 判定有効開始フレーム
+    int attackActiveEnd_;   // 判定有効終了フレーム
+    int attackDuration_;    // 攻撃全体時間
     std::set<SlimeEnemy*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
 
     // 線分と球の当たり判定

@@ -42,26 +42,29 @@ void EnemyManager::Update()
     // プレイヤー位置取得
     VECTOR playerPos = player_->GetPos();
 
-    // スライムの更新
+    // スライム更新
     for (auto slime : slimes) {
-        slime->Update();
+        if (slime) slime->Update();
     }
 
-    // 死んだ敵を削除
-    slimes.erase(
-        std::remove_if(slimes.begin(), slimes.end(),
-            [this](SlimeEnemy* s) {
-                if (!s) return true;
-                if (!s->GetAlive()) {
-                    delete s;
-                    AddKilledCount(1);
-                    return true;
-                }
-                return false;
-            }),
-        slimes.end()
-    );
+ 
+    std::vector<SlimeEnemy*> toDelete;
+    for (auto slime : slimes) {
+        if (slime && !slime->GetAlive()) {
+            toDelete.push_back(slime);
+        }
+    }
+
+    for (auto s : toDelete) {
+        auto it = std::find(slimes.begin(), slimes.end(), s);
+        if (it != slimes.end()) {
+            delete* it;
+            slimes.erase(it);
+            AddKilledCount(1);
+        }
+    }
 }
+
 
 void EnemyManager::Draw()
 {

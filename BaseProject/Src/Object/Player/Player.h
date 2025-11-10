@@ -87,9 +87,13 @@ public:
 
 	VECTOR GetAngles(void);
 
+	int GetHP(void);
+
 	float GetRadius() const;
 
 	int GetModelId(void) const { return modelId_; }
+
+	void TakeDamage(int damage);
 
 
 private:
@@ -221,4 +225,11 @@ private:
 
 	bool isInBranchCommand_;  // ”h¶ƒRƒ}ƒ“ƒh“ü—Í’†‚È‚çtrue
 	bool isBranching_ = false;  // ”h¶“ü—Í’†‚©‚Ç‚¤‚©
+
+	int hp_ = 1000;
+	int maxHp_ = 1000;
+	bool isDead_ = false;
+	bool isHit_ = false;
+	bool isInvincible_ = false;
+	int invincibleTimer_ = 0;
 };

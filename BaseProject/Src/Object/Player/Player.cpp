@@ -10,6 +10,7 @@
 #include "../../Object/Stage/Stage.h"
 #include "../../Object/Weapon/Weapon.h"
 #include "../../Scene/SceneManager.h"
+#include "../../Scene/GameOver.h"
 
 
 Player::Player(void) :
@@ -291,6 +292,30 @@ void Player::Draw(void)
 		//DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
 	}
 
+	// --- HPバー描画 ---
+	const int barX = 50;      // HPバーの左上X座標
+	const int barY = 50;      // HPバーの左上Y座標
+	const int barWidth = 200; // HPバーの全体幅
+	const int barHeight = 20; // HPバーの高さ
+
+	// HP割合を計算
+	float hpRate = static_cast<float>(hp_) / maxHp_;
+	if (hpRate < 0.0f) hpRate = 0.0f;
+
+	// 枠（背景）
+	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(80, 80, 80), TRUE);
+
+	// HPの残量部分（赤～緑）
+	int r = 255 - static_cast<int>(255 * hpRate);
+	int g = static_cast<int>(255 * hpRate);
+	DrawBox(barX, barY, barX + static_cast<int>(barWidth * hpRate), barY + barHeight, GetColor(r, g, 0), TRUE);
+
+	// 枠線
+	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
+
+	// 数値表示（例: HP 80 / 100）
+	DrawFormatString(barX + 50, barY - 20, GetColor(255, 255, 255), "HP: %d / %d", hp_, maxHp_);
+
 	DrawFormatString(
 		0, 10, 0xffffff,
 		"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
@@ -371,6 +396,11 @@ VECTOR* Player::GetPosPtr(void)
 VECTOR Player::GetAngles(void)
 {
 	return angles_;
+}
+
+int Player::GetHP(void)
+{
+	return HP;
 }
 
 float Player::GetRadius() const {
@@ -819,32 +849,32 @@ void Player::ProcessAtack(void)
 			}
 		}
 
-			// 攻撃中のみルートモーションを反映
-			if (isAtack_) {
-				// 現在のルートボーン位置を取得
-				VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
+			//// 攻撃中のみルートモーションを反映
+			//if (isAtack_) {
+			//	// 現在のルートボーン位置を取得
+			//	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
 
-				// 差分を計算
-				VECTOR diff = VSub(rootPos, prevRootPos_);
+			//	// 差分を計算
+			//	VECTOR diff = VSub(rootPos, prevRootPos_);
 
-				// Y成分は無視（ジャンプ処理と干渉するため）
-				diff.y = 0.0f;
+			//	// Y成分は無視（ジャンプ処理と干渉するため）
+			//	diff.y = 0.0f;
 
-				// プレイヤーの向きに合わせて差分を回転
-				MATRIX rotMat = MGetRotY(angles_.y);
-				diff = VTransform(diff, rotMat);
+			//	// プレイヤーの向きに合わせて差分を回転
+			//	MATRIX rotMat = MGetRotY(angles_.y);
+			//	diff = VTransform(diff, rotMat);
 
-				// プレイヤー座標に加算
-				pos_ = VAdd(pos_, diff);
+			//	// プレイヤー座標に加算
+			//	pos_ = VAdd(pos_, diff);
 
-				// モデルのワールド座標を更新
-				MV1SetPosition(modelId_, pos_);
+			//	// モデルのワールド座標を更新
+			//	MV1SetPosition(modelId_, pos_);
 
-				// 次フレーム用に保存
-				prevRootPos_ = rootPos;
-			}
+			//	// 次フレーム用に保存
+			//	prevRootPos_ = rootPos;
+			//}
 
-			ApplyRootMotion();
+			//ApplyRootMotion();
 	}
 }
 
@@ -981,4 +1011,23 @@ void Player::ApplyRootMotion()
 	MV1SetPosition(modelId_, pos_);
 
 	prevRootPos_ = rootPos;
+}
+
+void Player::TakeDamage(int damage)
+{
+	if (isInvincible_) return;  // 無敵時間中なら無効（必要なら）
+
+	hp_ -= damage;
+
+	// 被弾時の演出（点滅・SEなど）
+	isHit_ = true;
+	invincibleTimer_ = 60; // 1秒間無敵（例）
+
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		isDead_ = true;
+
+		SceneManager::GetInstance()->ChangeScene(std::make_shared<GameOver>());
+	}
 }

@@ -28,6 +28,7 @@ void SlimeEnemy::Init(float _x, float _y, float _z)
     moveSpeed = 0.5f;
     color = GetColor(0, 106, 182);
 	isAlive = true;
+    damageStunTimer_ = 0;
 
 	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/slime.mv1").c_str());
 }
@@ -36,7 +37,31 @@ void SlimeEnemy::Update()
 {
     if (!isAlive) return;
 
+    if (damageStunTimer_ > 0)
+    {
+        damageStunTimer_--;
+
+        // ノックバック中なら少しだけ動かす
+        if (isKnockbackOnly_)
+        {
+            pos = VAdd(pos, knockbackVel_);
+            knockbackVel_ = VScale(knockbackVel_, 0.9f);
+            if (VSize(knockbackVel_) < 0.1f) {
+                isKnockbackOnly_ = false;
+                knockbackVel_ = VGet(0, 0, 0);
+            }
+        }
+        return;
+    }
+
+
+    // 攻撃クールタイム減少
+    if (attackCooldown_ > 0) attackCooldown_--;
+
     VECTOR playerPos = player_->GetPos();
+    VECTOR toPlayer = VSub(playerPos, GetPos());
+    toPlayer.y = 0.0f;
+    float distance = VSize(toPlayer);
 
     // ノックバック処理
     if (isKnockbackOnly_)
@@ -61,15 +86,9 @@ void SlimeEnemy::Update()
         return;
     }
 
-    // 追従範囲設定
-    const float followRange = 500.0f; 
-    const float stopRange = 100.0f; 
-
-    VECTOR toPlayer = VSub(playerPos, GetPos());
-    toPlayer.y = 0.0f;
-    float distance = VSize(toPlayer);
-
-    // 距離判定
+    // 追従範囲
+    const float followRange = 500.0f;
+    const float stopRange = 100.0f;
     static bool isChasing = false;
 
     if (distance <= followRange)
@@ -77,23 +96,45 @@ void SlimeEnemy::Update()
     else if (distance > followRange + stopRange)
         isChasing = false;
 
-    // プレイヤーとの押し戻し
+    // ==== 攻撃処理 ====
+    if (!isAttacking_ && attackCooldown_ <= 0)
     {
-        VECTOR diff = VSub(GetPos(), playerPos);
-        diff.y = 0.0f;
-        float dist = VSize(diff);
-        float minDist = GetRadius() + player_->GetRadius();
-
-        if (dist < minDist && dist > 0.0001f)
+        // 一定距離内なら攻撃開始
+        if (distance < attackRange_)
         {
-            VECTOR pushDir = VNorm(diff);
-            float pushAmount = (minDist - dist);
-            x += pushDir.x * pushAmount;
-            z += pushDir.z * pushAmount;
+            isAttacking_ = true;
+            attackTimer_ = 0;
         }
     }
 
-    // 追従ロジック
+    // 攻撃中の処理
+    if (isAttacking_)
+    {
+        attackTimer_++;
+
+        // 攻撃中は移動しない
+        if (attackTimer_ == attackHitFrame_)
+        {
+            // このタイミングでヒット判定を出す
+            float minDist = GetRadius() + player_->GetRadius();
+            if (VSize(VSub(GetPos(), player_->GetPos())) < minDist + 20.0f)
+            {
+                player_->TakeDamage(attackDamage_);
+            }
+        }
+
+        // 攻撃モーション終了
+        if (attackTimer_ > attackDuration_)
+        {
+            isAttacking_ = false;
+            attackCooldown_ = attackCooldownMax_;
+        }
+
+        // モーション再生など（あればここで）
+        return;
+    }
+
+    // 追従（攻撃していない時のみ）
     if (isChasing)
     {
         VECTOR dir = VNorm(toPlayer);
@@ -101,7 +142,7 @@ void SlimeEnemy::Update()
         z += dir.z * moveSpeed;
     }
 
-    // 敵同士の押し戻し
+    // 敵同士の押し戻し（既存の処理）
     EnemyManager* sm = EnemyManager::GetInstance();
     if (sm)
     {
@@ -191,6 +232,8 @@ void SlimeEnemy::TakeDamage(int damage)
 {
     if (!isAlive || isDeadEffect_) return;
     hp_ -= damage;
+
+    damageStunTimer_ = damageStunMax_;
 
     // HPが0以下になったら死亡
     if (hp_ <= 0)

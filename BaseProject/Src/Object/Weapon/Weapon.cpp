@@ -69,9 +69,19 @@ void Weapon::Update()
         swordBase_ = VTransform(VGet(0.0f, -50.0f, 0.0f), finalMat);  // 剣の根元（-50→-250）
     }
 
-    // 攻撃中なら当たり判定チェック
+    // 攻撃中の判定制御
     if (isAttacking_) {
-        CheckCollision();
+        attackTimer_++;
+
+        // 判定が有効な時間帯だけ実行
+        if (attackTimer_ >= attackActiveStart_ && attackTimer_ <= attackActiveEnd_) {
+            CheckCollision();
+        }
+
+        // 攻撃が終了したら自動でリセット
+        if (attackTimer_ > attackDuration_) {
+            EndAttack();
+        }
     }
 }
 
@@ -127,8 +137,15 @@ void Weapon::StartAttack()
 
 void Weapon::EndAttack()
 {
-    isAttacking_ = false;
-    hitEnemies_.clear(); 
+    isAttacking_ = true;
+    attackTimer_ = 0;
+
+    // 攻撃のタイミングを設定（アニメーションに合わせる）
+    attackActiveStart_ = 10; // 10フレーム後に有効化
+    attackActiveEnd_ = 25; // 25フレームで終了
+    attackDuration_ = 35; // 全体は35フレーム程度
+
+    hitEnemies_.clear();
 }
 
 void Weapon::CheckCollision()
@@ -137,7 +154,7 @@ void Weapon::CheckCollision()
     EnemyManager* enemyManager = EnemyManager::GetInstance();
     if (!enemyManager) return;
 
-    auto& slimes = enemyManager->GetSlimes();
+    auto slimes = enemyManager->GetSlimes();
 
     for (auto slime : slimes) {
         if (!slime) continue;
@@ -153,13 +170,13 @@ void Weapon::CheckCollision()
 
             VECTOR swordCenter = VScale(VAdd(swordBase_, swordTip_), 0.5f);
             slime->OnHit(swordCenter);
-            slime->TakeDamage(30);
+            slime->TakeDamage(5);
 
             if (slime->GetHP() <= 0) {
                 slime->Kill();
             }
 
-            break;
+            //break;
         }
     }
 }

@@ -22,7 +22,7 @@ public:
     void Draw();
     void Release();
 
-    const std::vector<SlimeEnemy*>& GetSlimes() const { return slimes; }
+    std::vector<SlimeEnemy*> GetSlimes() const { return slimes; }
 
     int GetEnemyCount() const { return (int)slimes.size(); }
     int GetKilledCount() const { return killedCount; }

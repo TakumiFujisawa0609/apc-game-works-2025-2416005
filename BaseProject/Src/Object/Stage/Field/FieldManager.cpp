@@ -64,7 +64,7 @@ void FieldManager::Update(void)
 
 
     if (allCaptured) {
-        //SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
+        SceneManager::GetInstance()->ChangeScene(std::make_shared<GameClear>());
 
     }
 }
