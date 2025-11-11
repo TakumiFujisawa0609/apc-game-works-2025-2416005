@@ -26,23 +26,23 @@ void FieldManager::Init(Player* player)
     fields_.push_back(std::make_unique<AField>());
     fields_.back()->Init(300.0f, 0.0f, 300.0f, player);
 
-    fields_.push_back(std::make_unique<BField>());
-    fields_.back()->Init(5000.0f, 0.0f, 4000.0f,player);
+ //   fields_.push_back(std::make_unique<BField>());
+ //   fields_.back()->Init(5000.0f, 0.0f, 4000.0f,player);
 
-	fields_.push_back(std::make_unique<CField>());
-    fields_.back()->Init(-5000.0f, 0.0f, 4000.0f,player);
+	//fields_.push_back(std::make_unique<CField>());
+ //   fields_.back()->Init(-5000.0f, 0.0f, 4000.0f,player);
 
-    fields_.push_back(std::make_unique<DField>());
-    fields_.back()->Init(-5000.0f, 0.0f, -4000.0f,player);
+ //   fields_.push_back(std::make_unique<DField>());
+ //   fields_.back()->Init(-5000.0f, 0.0f, -4000.0f,player);
 
-    fields_.push_back(std::make_unique<EField>());
-    fields_.back()->Init(-5000.0f, 0.0f, -4000.0f,player);
+ //   fields_.push_back(std::make_unique<EField>());
+ //   fields_.back()->Init(-5000.0f, 0.0f, -4000.0f,player);
 
-    fields_.push_back(std::make_unique<FField>());
-    fields_.back()->Init(10000.0f, 0.0f, 10000.0f,player);
+ //   fields_.push_back(std::make_unique<FField>());
+ //   fields_.back()->Init(10000.0f, 0.0f, 10000.0f,player);
 
-    fields_.push_back(std::make_unique<GField>());
-	fields_.back()->Init(-10000.0f, 0.0f, -10000.0f, player);
+ //   fields_.push_back(std::make_unique<GField>());
+	//fields_.back()->Init(-10000.0f, 0.0f, -10000.0f, player);
 }
 
 void FieldManager::Update(void)

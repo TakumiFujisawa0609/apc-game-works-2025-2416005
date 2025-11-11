@@ -183,3 +183,18 @@ void AnimationController::Add(int type, float speed, Animation& animation)
 		animations_.emplace(type, animation);
 	}
 }
+
+float AnimationController::GetNowFrame() const
+{
+	return playAnim_.step;
+}
+
+float AnimationController::GetTotalFrame() const
+{
+	return playAnim_.totalTime;
+}
+
+void AnimationController::SetSpeed(float speed)
+{
+	playAnim_.speed = speed;
+}

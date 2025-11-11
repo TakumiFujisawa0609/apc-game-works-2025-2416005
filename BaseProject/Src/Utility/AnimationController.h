@@ -55,6 +55,8 @@ public:
 
 	bool IsPlaying(void) const;
 
+	void SetSpeed(float speed);
+
 private:
 
 	// アニメーションするモデルのハンドルID
@@ -72,6 +74,11 @@ private:
 
 	// アニメーション追加の共通処理
 	void Add(int type, float speed, Animation& animation);
+
+	float GetNowFrame() const;
+
+	float GetTotalFrame() const;
+
 
 	// 各アニメーションIDのモデルインデックス
 	std::map<int, int> animHandles_; 

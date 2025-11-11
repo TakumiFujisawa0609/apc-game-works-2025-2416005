@@ -1,19 +1,16 @@
 #include <cmath>
 #include <DxLib.h>
 #include "../Manager/Camera.h"
-#include "../Object/Grid.h"
 #include "../Object/Stage/Stage.h"
 #include "TitleScene.h"
 #include "../Object/Player/Player.h"
 #include "GameScene.h"
-#include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Weapon/Weapon.h"
 #include "../Scene/SceneManager.h"
 #include "../Object/Stage/Field/FieldManager.h"
 
 GameScene::GameScene(void) : SceneBase()
 {
-	grid_ = nullptr;
 	SetMouseDispFlag(false);
 }
 
@@ -24,13 +21,15 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
-
+	GameSceneSoundHandle = LoadSoundMem("Data/Sound/BGM.mp3");
 }
 
 void GameScene::Update(void)
 {
 	// ステージ更新
 	Stage::GetInstance()->Update();
+
+	PlaySoundMem(GameSceneSoundHandle, DX_PLAYTYPE_LOOP);
 
 	// プレイヤー更新
 	player_->Update();
@@ -39,7 +38,6 @@ void GameScene::Update(void)
 	fieldManager_->Update();
 
 
-	//enemy_->Update();
 }
 
 void GameScene::Load(void)
@@ -61,11 +59,6 @@ void GameScene::Load(void)
 	// フィールドの初期化
 	fieldManager_ = new FieldManager();
 	fieldManager_->Init(player_);
-
-	// 敵初期化
-	//enemy_ = new EnemyManager(player_);
-	//EnemyManager::SetInstance(enemy_);
-	//enemy_->Init(0.0f, 0.0f, 50.0f);
 }
 
 void GameScene::LoadEnd(void)
@@ -85,9 +78,6 @@ void GameScene::Draw(void)
 	// フィールド描画
 	fieldManager_->Draw();
 
-	// 敵描画
-	//enemy_->Draw();
-
 	// プレイヤー描画
 	player_->Draw();
 
@@ -106,8 +96,4 @@ void GameScene::Release(void)
 
 	// プレイヤー解放
 	player_->Release();
-
-	// 敵の解放
-	//enemy_->Release();
-	//EnemyManager::SetInstance(nullptr);
 }

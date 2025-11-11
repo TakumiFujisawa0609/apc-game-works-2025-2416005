@@ -96,7 +96,7 @@ void SlimeEnemy::Update()
     else if (distance > followRange + stopRange)
         isChasing = false;
 
-    // ==== UŒ‚ˆ— ====
+    // UŒ‚ˆ—
     if (!isAttacking_ && attackCooldown_ <= 0)
     {
         // ˆê’è‹——£“à‚È‚çUŒ‚ŠJn
@@ -130,11 +130,11 @@ void SlimeEnemy::Update()
             attackCooldown_ = attackCooldownMax_;
         }
 
-        // ƒ‚[ƒVƒ‡ƒ“Ä¶‚È‚Çi‚ ‚ê‚Î‚±‚±‚Åj
+        // ƒ‚[ƒVƒ‡ƒ“Ä¶‚È‚Ç
         return;
     }
 
-    // ’Ç]iUŒ‚‚µ‚Ä‚¢‚È‚¢‚Ì‚İj
+    // ’Ç]
     if (isChasing)
     {
         VECTOR dir = VNorm(toPlayer);
@@ -142,7 +142,18 @@ void SlimeEnemy::Update()
         z += dir.z * moveSpeed;
     }
 
-    // “G“¯m‚Ì‰Ÿ‚µ–ß‚µiŠù‘¶‚Ìˆ—j
+    // ƒvƒŒƒCƒ„[‚Æ‚Ì‰Ÿ‚µ–ß‚µ 
+    {
+        VECTOR diff = VSub(GetPos(), playerPos);
+        diff.y = 0.0f; float dist = VSize(diff);
+        float minDist = GetRadius() + player_->GetRadius();
+        if (dist < minDist && dist > 0.0001f) {
+            VECTOR pushDir = VNorm(diff); float pushAmount = (minDist - dist);
+            x += pushDir.x * pushAmount; z += pushDir.z * pushAmount;
+        }
+    }
+
+    // “G“¯m‚Ì‰Ÿ‚µ–ß‚µ
     EnemyManager* sm = EnemyManager::GetInstance();
     if (sm)
     {

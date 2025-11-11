@@ -40,6 +40,10 @@ public:
 	// 体力
 	static constexpr int HP = 1000;
 
+	// 攻撃速度調整変数（短すぎる場合は0.5～0.8推奨）
+	float attackAnimSpeed_ = 30.0f;
+
+
 
 	// アニメーション種別
 	enum class ANIM_TYPE

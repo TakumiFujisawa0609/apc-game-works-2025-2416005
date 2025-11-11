@@ -739,143 +739,147 @@ void Player::ProcessShot(void)
 void Player::ProcessAtack(void)
 {
 
-	// 攻撃開始（初段）
-	if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
-		attackStep_ = 1;
-		isAtack_ = true;
-		attackInputBuffer_ = 0;
-		isBranchAttack_ = false;
-		branchType_ = -1; // 派生種別初期化
-		prevRootPos_ = MV1GetFramePosition(modelId_, 0);
-		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
-		if (weapon_) weapon_->StartAttack();
-	}
+if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
+    attackStep_ = 1;
+    isAtack_ = true;
+    attackInputBuffer_ = 0;
+    isBranchAttack_ = false;
+    branchType_ = -1; // 派生種別初期化
+    prevRootPos_ = MV1GetFramePosition(modelId_, 0);
 
-	// 攻撃中処理
-	if (isAtack_) {
+    animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
+    animationController_->SetSpeed(attackAnimSpeed_); // ← 再生速度調整
+    if (weapon_) weapon_->StartAttack();
+}
 
-		// アニメーション再生中に入力受付
-		if (animationController_->IsPlaying() && !animationController_->IsEnd()) {
+// 攻撃中処理
+if (isAtack_) {
 
-			// 通常コンボ入力
-			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
-				attackInputBuffer_ = 1;
-			}
+	// アニメーション再生中に入力受付
+	if (animationController_->IsPlaying() && !animationController_->IsEnd()) {
 
-			// 特殊派生入力（射撃ボタンなど）
-			if (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down && !isBranchAttack_) {
-				isBranchAttack_ = true;
-				branchType_ = attackStep_; // 今の段数を記録しておく（どの段から派生したか）
-			}
+		// 通常コンボ入力
+		if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+			attackInputBuffer_ = 1;
 		}
 
-		// アニメ終了時の分岐
-		if (animationController_->IsEnd()) {
+		// 特殊派生入力（射撃ボタンなど）
+		if (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down && !isBranchAttack_) {
+			isBranchAttack_ = true;
+			branchType_ = attackStep_; // 今の段数を記録（どの段から派生したか）
+		}
+	}
 
-			// 特殊派生優先
-			if (isBranchAttack_) {
-				isBranchAttack_ = false;
-				isAtack_ = true;
+	// アニメ終了時の分岐
+	if (animationController_->IsEnd()) {
 
-				switch (branchType_) {
-				case 1:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
-					break;
-				case 2:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2_BRANCH), false);
-					break;
-				case 3:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3_BRANCH), false);
-					break;
-				case 4:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4_BRANCH), false);
-					break;
-				case 5:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5_BRANCH), false);
-					break;
-				case 6:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6_BRANCH), false);
-					break;
-				default:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
-					break;
-				}
+		// ===== 特殊派生優先 =====
+		if (isBranchAttack_) {
+			isBranchAttack_ = false;
+			isAtack_ = true;
 
-				if (weapon_) weapon_->StartAttack();
-
-				// 派生後は通常コンボをリセットする
-				attackStep_ = 0;
-				return;
+			switch (branchType_) {
+			case 1:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
+				break;
+			case 2:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2_BRANCH), false);
+				break;
+			case 3:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3_BRANCH), false);
+				break;
+			case 4:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4_BRANCH), false);
+				break;
+			case 5:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5_BRANCH), false);
+				break;
+			case 6:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6_BRANCH), false);
+				break;
+			default:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
+				break;
 			}
 
-			// 通常コンボ継続
-			if (attackInputBuffer_ == 1) {
-				attackStep_++;
-				attackInputBuffer_ = 0;
+			animationController_->SetSpeed(attackAnimSpeed_);
+			if (weapon_) weapon_->StartAttack();
 
-				switch (attackStep_) {
-				case 2:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2), false);
-					break;
-				case 3:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3), false);
-					break;
-				case 4:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4), false);
-					break;
-				case 5:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5), false);
-					break;
-				case 6:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6), false);
-					break;
-				default:
-					isAtack_ = false;
-					attackStep_ = 0;
-					if (weapon_) weapon_->EndAttack();
-					animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-					break;
-				}
+			// 派生後は通常コンボをリセットする
+			attackStep_ = 0;
+			return;
+		}
 
-				if (isAtack_ && weapon_) weapon_->StartAttack();
-			}
-			else {
-				// 入力なしで終了
+		// ===== 通常コンボ継続 =====
+		if (attackInputBuffer_ == 1) {
+			attackStep_++;
+			attackInputBuffer_ = 0;
+
+			switch (attackStep_) {
+			case 2:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2), false);
+				break;
+			case 3:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3), false);
+				break;
+			case 4:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4), false);
+				break;
+			case 5:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5), false);
+				break;
+			case 6:
+				animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6), false);
+				break;
+			default:
 				isAtack_ = false;
 				attackStep_ = 0;
-				attackInputBuffer_ = 0;
 				if (weapon_) weapon_->EndAttack();
 				animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+				break;
 			}
+
+			animationController_->SetSpeed(attackAnimSpeed_);
+			if (isAtack_ && weapon_) weapon_->StartAttack();
 		}
-
-			//// 攻撃中のみルートモーションを反映
-			//if (isAtack_) {
-			//	// 現在のルートボーン位置を取得
-			//	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
-
-			//	// 差分を計算
-			//	VECTOR diff = VSub(rootPos, prevRootPos_);
-
-			//	// Y成分は無視（ジャンプ処理と干渉するため）
-			//	diff.y = 0.0f;
-
-			//	// プレイヤーの向きに合わせて差分を回転
-			//	MATRIX rotMat = MGetRotY(angles_.y);
-			//	diff = VTransform(diff, rotMat);
-
-			//	// プレイヤー座標に加算
-			//	pos_ = VAdd(pos_, diff);
-
-			//	// モデルのワールド座標を更新
-			//	MV1SetPosition(modelId_, pos_);
-
-			//	// 次フレーム用に保存
-			//	prevRootPos_ = rootPos;
-			//}
-
-			//ApplyRootMotion();
+		else {
+			// ===== 入力なしで終了 =====
+			isAtack_ = false;
+			attackStep_ = 0;
+			attackInputBuffer_ = 0;
+			if (weapon_) weapon_->EndAttack();
+			animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+		}
 	}
+
+
+	//// 攻撃中のみルートモーションを反映
+	//if (isAtack_) {
+	//	// 現在のルートボーン位置を取得
+	//	VECTOR rootPos = MV1GetFramePosition(modelId_, 0);
+
+	//	// 差分を計算
+	//	VECTOR diff = VSub(rootPos, prevRootPos_);
+
+	//	// Y成分は無視（ジャンプ処理と干渉するため）
+	//	diff.y = 0.0f;
+
+	//	// プレイヤーの向きに合わせて差分を回転
+	//	MATRIX rotMat = MGetRotY(angles_.y);
+	//	diff = VTransform(diff, rotMat);
+
+	//	// プレイヤー座標に加算
+	//	pos_ = VAdd(pos_, diff);
+
+	//	// モデルのワールド座標を更新
+	//	MV1SetPosition(modelId_, pos_);
+
+	//	// 次フレーム用に保存
+	//	prevRootPos_ = rootPos;
+	//}
+
+	//ApplyRootMotion();
+}
 }
 
 void Player::ProcessBrink(void)

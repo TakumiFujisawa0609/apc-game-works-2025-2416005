@@ -91,20 +91,20 @@ void FieldBase::Draw(void)
 	//DrawFormatString(50, 50, isPlayerInside_ ? GetColor(0, 255, 0) : GetColor(255, 0, 0),
 	//	"Player in field: %s", isPlayerInside_ ? "Yes" : "No");
 
-	//// 制圧ゲージ表示
-	//if (isPlayerInside_ && !isCaptured_ && enemyManager_) {
-	//	int kill = enemyManager_->GetKilledCount();
-	//	DrawFormatString(
-	//		(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 80, GetColor(255, 255, 255),
-	//		"討伐数: %d / %d", kill, targetKillCount_);
-	//}
+	// 制圧ゲージ表示
+	if (isPlayerInside_ && !isCaptured_ && enemyManager_) {
+		int kill = enemyManager_->GetKilledCount();
+		DrawFormatString(
+			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 80, GetColor(255, 255, 255),
+			"討伐数: %d / %d", kill, targetKillCount_);
+	}
 
-	//// 制圧済み表示
-	//if (isCaptured_) {
-	//	DrawFormatString(
-	//		(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 100, GetColor(0, 255, 0),
-	//		"制圧完了");
-	//}
+	// 制圧済み表示
+	if (isCaptured_) {
+		DrawFormatString(
+			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 100, GetColor(0, 255, 0),
+			"制圧完了");
+	}
 }
 
 void FieldBase::Release(void)

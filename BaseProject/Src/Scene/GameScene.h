@@ -1,7 +1,5 @@
 #pragma once
-class Grid;
 class Player;
-class EnemyManager;
 class Weapon;
 class FieldManager;
 
@@ -35,14 +33,11 @@ public:
 
 private:
 
-// ƒOƒŠƒbƒhü
-Grid* grid_;
-
 Player* player_;
-
-EnemyManager* enemy_;
 
 Weapon* weapon_;
 
 FieldManager* fieldManager_;
+
+int GameSceneSoundHandle;
 };
