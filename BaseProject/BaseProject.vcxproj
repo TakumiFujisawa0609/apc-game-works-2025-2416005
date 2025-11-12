@@ -23,6 +23,7 @@
     <ClCompile Include="Src\Loading\Loading.cpp" />
     <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
     <ClCompile Include="Src\Object\Actor\ActorBase.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Bos\Bos.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\AField.cpp" />
     <ClCompile Include="Src\Object\Stage\Field\BField.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="Src\Loading\Loading.h" />
     <ClInclude Include="Src\Manager\Input\KeyManager.h" />
     <ClInclude Include="Src\Object\Actor\ActorBase.h" />
+    <ClInclude Include="Src\Object\Enemy\Bos\Bos.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Stage\Field\AField.h" />
     <ClInclude Include="Src\Object\Stage\Field\BField.h" />
