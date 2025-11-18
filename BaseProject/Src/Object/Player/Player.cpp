@@ -61,7 +61,12 @@ Player::~Player(void)
 void Player::Init(void)
 {
 	// モデルの読み込み
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Player/hiannsi.mv1").c_str());
+	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Player/hiannsi.mv1").c_str());
+	//if (modelId_ == -1) {
+	//	MessageBoxA(NULL, "プレイヤーモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
+	//}
+
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Player/Player.mv1").c_str());
 	if (modelId_ == -1) {
 		MessageBoxA(NULL, "プレイヤーモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	}
@@ -80,16 +85,16 @@ void Player::Init(void)
 	pos_ = AsoUtility::VECTOR_ZERO;
 	MV1SetPosition(modelId_, pos_);
 
-	// モデルのスケール設定
-	float scalef = 1.5f;
-	VECTOR scale = VGet(scalef, scalef, scalef);
-	MV1SetScale(modelId_, scale);
+	//// モデルのスケール設定
+	//float scalef = 1.5f;
+	//VECTOR scale = VGet(scalef, scalef, scalef);
+	//MV1SetScale(modelId_, scale);
 
-	int frameNum = MV1GetFrameNum(modelId_);
-	for (int i = 0; i < frameNum; i++) {
-		const char* frameName = MV1GetFrameName(modelId_, i);
-		printfDx("Frame %d: %s\n", i, frameName);
-	}
+	//int frameNum = MV1GetFrameNum(modelId_);
+	//for (int i = 0; i < frameNum; i++) {
+	//	const char* frameName = MV1GetFrameName(modelId_, i);
+	//	printfDx("Frame %d: %s\n", i, frameName);
+	//}
 
 
 	animationController_ = new AnimationController(modelId_);

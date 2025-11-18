@@ -87,7 +87,7 @@ void SlimeEnemy::Update()
     }
 
     // ’Ç]”ÍˆÍ
-    const float followRange = 500.0f;
+    const float followRange = 1000.0f;
     const float stopRange = 100.0f;
     static bool isChasing = false;
 
