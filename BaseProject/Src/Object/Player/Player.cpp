@@ -45,13 +45,6 @@ isBrinkAction_(false)
 	jumpPow_ = 0.0f;
 	// ノックバック関連初期化
 	cntKnockBack_ = 0;
-
-	//// テーブルに関数のポインタを割り当て
-	//stateTable_[STEP_NON] = AttackStepNon;
-	//stateTable_[STEP_PANCH] = AttackStepPanch;
-	//stateTable_[STEP_PANCH_2] = AttackStepPanch2;
-	//stateTable_[STEP_KICK] = AttackStepKick;
-
 }
 
 Player::~Player(void)
@@ -560,6 +553,10 @@ void Player::UpdateAttack(void)
 	if (animationController_->IsEnd())
 	{
 		ChangeState(STATE::STANDBY);
+	}
+	// 武器の攻撃判定開始
+	if (weapon_) {
+		weapon_->StartAttack();
 	}
 }
 

@@ -55,10 +55,12 @@ void Weapon::Update()
     if (isAttacking_) {
         attackTimer_++;
 
+        // 判定有効フレームのみ当たり判定
         if (attackTimer_ >= attackActiveStart_ && attackTimer_ <= attackActiveEnd_) {
             CheckCollision();
         }
 
+        // 攻撃終了
         if (attackTimer_ > attackDuration_) {
             EndAttack();
         }
@@ -115,10 +117,11 @@ void Weapon::StartAttack()
     attackTimer_ = 0;
     hitEnemies_.clear();
 
-    // 攻撃判定が長すぎる場合はここを調整
-    attackActiveStart_ = 0;
-    attackActiveEnd_ = 70;
-    attackDuration_ = 80;
+    // 例：アニメーションの10フレーム目から25フレーム目まで判定有効
+    attackActiveStart_ = 10;
+    attackActiveEnd_ = 25;
+    attackDuration_ = 35; // アニメーション全体の長さ
+
 }
 
 void Weapon::EndAttack()
