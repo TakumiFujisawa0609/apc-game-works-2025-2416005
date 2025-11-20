@@ -64,6 +64,9 @@ void Player::Init(void)
 		MessageBoxA(NULL, "プレイヤーモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	}
 
+	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Bos.mv1").c_str());
+
+
 	angles_ = VGet(0.0f, DX_PI_F, 0.0f);
 
 	angles_ = VGet(0.0f, DX_PI_F, 0.0f);

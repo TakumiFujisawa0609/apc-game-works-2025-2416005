@@ -32,6 +32,7 @@ private:
 
 	Player* player_;
 
+	int modelId_;
     int hp_ = 100;  // 体力
     bool isAttacking_ = false;     // 攻撃中かどうか
     int attackTimer_ = 0;          // 攻撃の経過フレーム
@@ -43,4 +44,7 @@ private:
     const int attackCooldownMax_ = 90; // 次の攻撃までの待機
     int damageStunTimer_;     // 被ダメージ後の行動不能タイマー
     const int damageStunMax_ = 60; // 無力化時間（60フレーム = 約1秒）
+
+    VECTOR Pos_;
+    VECTOR Angels_;
 };

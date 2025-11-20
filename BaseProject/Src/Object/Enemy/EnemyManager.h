@@ -2,6 +2,7 @@
 #include <vector>
 #include "../Enemy/Slime/SlimeEnemy.h"
 
+class Boss;
 class Player;
 class EnemyManager {
 public:
@@ -43,4 +44,6 @@ private:
     static EnemyManager* instance_;
 
 	Player* player_ = nullptr;
+
+    Boss* boss_ = nullptr;
 };
