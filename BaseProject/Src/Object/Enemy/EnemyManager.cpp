@@ -3,7 +3,6 @@
 #include <cmath>
 #include "../../Scene/SceneManager.h"
 #include "../../Scene/GameClear.h"
-#include "Bos/Boss.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -36,9 +35,6 @@ void EnemyManager::Init(float x, float y, float z)
     SlimeEnemy* slime = new SlimeEnemy(player_);
     slime->Init(x, y, z);
     slimes.push_back(slime);
-
-    boss_ = new Boss(player_);
-    boss_->Init(x, y, z);
 }
 
 void EnemyManager::Update()
@@ -67,8 +63,6 @@ void EnemyManager::Update()
             AddKilledCount(1);
         }
     }
-
-    boss_->Update();
 }
 
 
@@ -82,8 +76,6 @@ void EnemyManager::Draw()
         0, 70, 0xffffff,
         "ƒXƒ‰ƒCƒ€” : %d / %d", (int)slimes.size(), maxSlimes
     );
-
-    boss_->Update();
 }
 
 void EnemyManager::Release()
@@ -96,6 +88,4 @@ void EnemyManager::Release()
     framesSinceLastSpawn = 0;
 
     ResetKilledCount();
-
-    boss_->Release();
 }
