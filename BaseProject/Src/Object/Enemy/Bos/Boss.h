@@ -1,11 +1,25 @@
 #pragma once
 #include "../EnemyBase.h"
 #include "../../Player/Player.h"
+#include "../../../Utility/AnimationController.h"
+
 
 class Player;
 class Boss : public EnemyBase 
 {
 public:
+
+	// アニメーション種別
+	enum class ANIM_TYPE
+	{
+		IDLE,
+		WALK,
+		ATTACK,
+		DAMAGE,
+		DEAD,
+        WIN,
+	};
+
     // コンストラクタ
 	Boss(Player* player);
 
@@ -27,8 +41,34 @@ public:
 	// 撃破
     void Kill() override;      
 
+	// ダメージを受ける
+    void TakeDamage(int damage);
+
+	// 状態列挙型
+    enum class STATE {
+        NONE,
+        IDLE,
+        ATTACK,
+        DAMAGE,
+        DEAD,
+    };
+
+    // アニメーション制御
+    AnimationController* animationController_;
+
+    // 現在のアニメーション種別
+    ANIM_TYPE animType_;
 
 private:
+
+    void ChangeState(STATE newState);
+
+    void UpdateIdle();
+    void UpdateAttack();
+    void UpdateDamage();
+    void UpdateDead();
+
+    STATE currentState_;
 
 	Player* player_;
 
