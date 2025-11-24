@@ -1,5 +1,6 @@
 #pragma once
 #include "FieldBase.h"
+#include "../../Enemy/Bos/Boss.h"
 
 class Player;
 class GField : public FieldBase
@@ -24,6 +25,11 @@ public:
 	// ‰ğ•úˆ—
 	void Release(void)override;
 
+	void CheckCaptureCondition()override;
+
 private:
 	Player* player;
+
+	Boss* boss_ = nullptr;
+	bool bossSpawned_ = false;
 };

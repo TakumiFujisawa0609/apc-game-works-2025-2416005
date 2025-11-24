@@ -102,7 +102,7 @@ protected:
     void SpawnEnemies();       
     void UpdateEnemySpawn();   
 
-    void CheckCaptureCondition();
+    virtual void CheckCaptureCondition();
 
 	void UpdatePendingEnemies();
 

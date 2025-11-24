@@ -2,6 +2,8 @@
 #include "Weapon.h"
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
+#include "../../Object/Enemy/Bos/Boss.h"
+
 
 Weapon::Weapon(Player* player)
 {

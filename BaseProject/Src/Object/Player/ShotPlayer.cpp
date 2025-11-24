@@ -4,6 +4,7 @@
 #include "../../Object/Enemy/EnemyBase.h"
 #include "../../Object/Enemy/Slime/SlimeEnemy.h"
 #include "../../Utility/AsoUtility.h"
+#include "../../Object/Enemy/Bos/Boss.h"
 
 ShotPlayer::ShotPlayer(const VECTOR& pos, const VECTOR& dir)
     : pos_(pos), dir_(VNorm(dir)), speed_(20.0f), alive_(true), startPos_(pos), prevPos_(pos)
@@ -63,6 +64,27 @@ void ShotPlayer::Update(void)
             slime->OnHit(pos_); 
             slime->Kill();
             break;
+        }
+    }
+
+    Boss* boss = sm->GetBoss();
+    if (boss && boss->GetAlive()) {
+
+        VECTOR c = boss->GetPos();
+        float r = boss->GetRadius() + SHOT_RADIUS;
+
+        VECTOR d = VSub(pos_, prevPos_);
+        float dd = VSize(d);
+
+        float t = AsoUtility::Dot(VSub(c, prevPos_), d) / (dd * dd);
+        t = (t < 0.0f) ? 0.0f : ((t > 1.0f) ? 1.0f : t);
+
+        VECTOR closest = VAdd(prevPos_, VScale(d, t));
+
+        if (VSize(VSub(closest, c)) <= r) {
+            boss->TakeDamage(20); // íeÇÕåïÇÊÇËã≠Ç≠Ç∑ÇÈÅH
+            alive_ = false;
+            return;
         }
     }
 }

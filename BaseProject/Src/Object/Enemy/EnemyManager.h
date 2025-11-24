@@ -2,6 +2,7 @@
 #include <vector>
 #include "../Enemy/Slime/SlimeEnemy.h"
 
+class Boss;
 class Player;
 class EnemyManager {
 public:
@@ -12,6 +13,7 @@ public:
 
 private:
     std::vector<SlimeEnemy*> slimes;
+    Boss* boss_ = nullptr;  
 
 public:
     EnemyManager(Player* player);
@@ -24,11 +26,16 @@ public:
 
     std::vector<SlimeEnemy*> GetSlimes() const { return slimes; }
 
+    void SetBoss(Boss* boss) { boss_ = boss; }
+    Boss* GetBoss() const { return boss_; }
+    bool HasBoss() const { return boss_ != nullptr; }
+
     int GetEnemyCount() const { return (int)slimes.size(); }
     int GetKilledCount() const { return killedCount; }
     void ResetKilledCount() { killedCount = 0; }
 
     void AddKilledCount(int n) { killedCount += n; }
+
 
 private:
     int maxSlimes = 100;
@@ -42,5 +49,5 @@ private:
 
     static EnemyManager* instance_;
 
-	Player* player_ = nullptr;
+    Player* player_ = nullptr;
 };

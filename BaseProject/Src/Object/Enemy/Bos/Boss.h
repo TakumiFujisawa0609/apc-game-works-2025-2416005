@@ -59,6 +59,11 @@ public:
     // 現在のアニメーション種別
     ANIM_TYPE animType_;
 
+    VECTOR GetPos() const { return Pos_; }
+    bool GetAlive() const { return isAlive; }
+	bool GetRadius() const { return 100.0f; }
+	bool OnHit() const { return isAttacking_ && attackTimer_ == attackHitFrame_; }
+
 private:
 
     void ChangeState(STATE newState);

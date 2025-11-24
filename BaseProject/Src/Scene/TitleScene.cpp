@@ -70,9 +70,9 @@ void TitleScene::Draw(void)
 		(Application::SCREEN_SIZE_Y - TITLE_SIZE_HIG) / 2,
 		imageId_, true);
 
-	//DrawString(100, 100, "TitleScene", GetColor(255, 0, 0));
-	//DrawString(100, 200, "Press A Button", GetColor(255, 0, 0));
-	//DrawString(100, 300, "Press SPACE", GetColor(255, 0, 0));
+	DrawString(100, 100, "TitleScene", GetColor(255, 0, 0));
+	DrawString(100, 200, "Press A Button", GetColor(255, 0, 0));
+	DrawString(100, 300, "Press SPACE", GetColor(255, 0, 0));
 }
 
 void TitleScene::Release(void)
