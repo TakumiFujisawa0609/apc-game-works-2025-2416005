@@ -763,7 +763,7 @@ void Player::ProcessAtack(void)
 		if (animationController_->IsPlaying() && !animationController_->IsEnd()) {
 
 			// ’ÊíƒRƒ“ƒ{“ü—Í
-			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).up) {
 				attackInputBuffer_ = 1;
 			}
 

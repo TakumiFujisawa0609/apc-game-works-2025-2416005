@@ -64,7 +64,7 @@ void GField::CheckCaptureCondition()
 	int killCount = enemyManager_->GetKilledCount();
 
 	// ---- ボス未出現 → 100体倒したらボス出現 ----
-	if (!bossSpawned_ && killCount >= 100)
+	if (!bossSpawned_ && killCount >= 1)
 	{
 		VECTOR spawnPos = VAdd(pos_, VGet(0.0f, 0.0f, 200.0f));
 
@@ -73,11 +73,11 @@ void GField::CheckCaptureCondition()
 
 		bossSpawned_ = true;
 
-		// もうスライムを出さない
-		enemyManager_->Release();
-		enemyManager_.reset();
+		//// もうスライムを出さない
+		//enemyManager_->Release();
+		//enemyManager_.reset();
 
-		printfDx(" ボス出現！！ Gフィールド決戦開始 \n");
+		//printfDx(" ボス出現！！ Gフィールド決戦開始 \n");
 	}
 
 	// ---- ボスが倒されたら制圧完了 ----
@@ -87,6 +87,6 @@ void GField::CheckCaptureCondition()
 		state_ = FieldState::PLAYER;
 		durability_ = 100;
 
-		printfDx(" Gフィールド制圧達成！\n");
+		//printfDx(" Gフィールド制圧達成！\n");
 	}
 }

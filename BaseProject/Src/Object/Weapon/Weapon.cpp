@@ -143,20 +143,49 @@ void Weapon::CheckCollision()
     for (auto slime : slimes) {
         if (!slime) continue;
         if (!slime->CanBeHit()) continue;
+
+        // すでに当たった敵ならスキップ
         if (hitEnemies_.find(slime) != hitEnemies_.end()) continue;
 
         VECTOR enemyPos = slime->GetPos();
         float enemyRadius = slime->GetRadius();
 
-        if (CheckLineToSphereCollision(swordBase_, swordTip_, enemyPos, enemyRadius)) {
+        // カプセル vs 球体 で判定
+        if (CheckLineToSphereCollision(swordBase_, swordTip_, enemyPos, enemyRadius))
+        {
             hitEnemies_.insert(slime);
-            VECTOR swordCenter = VScale(VAdd(swordBase_, swordTip_), 0.5f);
-            slime->OnHit(swordCenter);
+
+            VECTOR hitPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
+
+            slime->OnHit(hitPos);
             slime->TakeDamage(5);
-            if (slime->GetHP() <= 0) slime->Kill();
+
+            if (slime->GetHP() <= 0)
+                slime->Kill();
+        }
+    }
+
+    Boss* boss = enemyManager->GetBoss();
+    if (boss && boss->CanBeHit() && !bossHit_)
+    {
+        VECTOR bossPos = boss->GetPos();
+        float bossRadius = boss->GetRadius();
+
+        if (CheckLineToSphereCollision(swordBase_, swordTip_, bossPos, bossRadius))
+        {
+            bossHit_ = true;
+
+            VECTOR hitPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
+
+            boss->OnHit(hitPos);
+            boss->TakeDamage(5);
+
+            if (boss->GetHP() <= 0)
+                boss->Kill();
         }
     }
 }
+
 
 bool Weapon::CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
     const VECTOR& spherePos, float sphereRadius)

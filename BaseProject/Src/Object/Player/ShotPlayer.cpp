@@ -35,7 +35,10 @@ void ShotPlayer::Update(void)
     }
 
     EnemyManager* sm = EnemyManager::GetInstance();
-    if (!sm) return;
+    if (!sm) {
+        alive_ = false;  
+        return;
+    }
 
     const auto& slimes = sm->GetSlimes();
     for (auto slime : slimes) {
@@ -43,48 +46,62 @@ void ShotPlayer::Update(void)
         if (!slime->CanBeHit()) continue; 
         if (!slime->GetAlive()) continue;
 
-        VECTOR c = slime->GetPos();
-        float r = slime->GetRadius() + SHOT_RADIUS;
+        VECTOR psPos = pos_;            // 弾の現在座標
+        VECTOR sPos = slime->GetPos(); // スライム座標
 
-        VECTOR d = VSub(pos_, prevPos_);
-        float dd = VSize(d);
-        if (dd == 0.0f) {
-            if (VSize(VSub(prevPos_, c)) <= r) {
-                slime->Kill();
-                break;
-            }
-            continue;
-        }
-        float t = AsoUtility::Dot(VSub(c, prevPos_), d) / (dd * dd);
-        if (t < 0.0f) t = 0.0f;
-        if (t > 1.0f) t = 1.0f;
-        VECTOR closest = VAdd(prevPos_, VScale(d, t));
-        float dist = VSize(VSub(closest, c));
-        if (dist <= r) {
-            slime->OnHit(pos_); 
+        // 距離ベクトル
+        VECTOR diff;
+        diff.x = psPos.x - sPos.x;
+        diff.y = psPos.y - sPos.y;
+        diff.z = psPos.z - sPos.z;
+
+        // 距離の二乗
+        float dis =
+            diff.x * diff.x +
+            diff.y * diff.y +
+            diff.z * diff.z;
+
+        // 半径合計（弾 + スライム）
+        float radius = SHOT_RADIUS + slime->GetRadius();
+
+        // 半径^2より小さい → 衝突
+        if (dis < (radius * radius)) {
+
+            // スライムへダメージ
+            slime->OnHit(pos_);
             slime->Kill();
+
+            // 弾を消す
+            alive_ = false;
             break;
         }
     }
 
     Boss* boss = sm->GetBoss();
-    if (boss && boss->GetAlive()) {
+    if (boss && boss->GetAlive())
+    {
+        VECTOR psPos = pos_;             // 弾の現在位置
+        VECTOR bPos = boss->GetPos();   // ボスの座標
 
-        VECTOR c = boss->GetPos();
-        float r = boss->GetRadius() + SHOT_RADIUS;
+        // 距離ベクトル
+        VECTOR diff;
+        diff.x = psPos.x - bPos.x;
+        diff.y = psPos.y - bPos.y;
+        diff.z = psPos.z - bPos.z;
 
-        VECTOR d = VSub(pos_, prevPos_);
-        float dd = VSize(d);
+        float dis =
+            diff.x * diff.x +
+            diff.y * diff.y +
+            diff.z * diff.z;
 
-        float t = AsoUtility::Dot(VSub(c, prevPos_), d) / (dd * dd);
-        t = (t < 0.0f) ? 0.0f : ((t > 1.0f) ? 1.0f : t);
+        float radius = SHOT_RADIUS + boss->GetRadius();
 
-        VECTOR closest = VAdd(prevPos_, VScale(d, t));
+        if (dis < (radius * radius))
+        {
+            boss->Kill();
 
-        if (VSize(VSub(closest, c)) <= r) {
-            boss->TakeDamage(20); // 弾は剣より強くする？
+            // 弾を消す
             alive_ = false;
-            return;
         }
     }
 }

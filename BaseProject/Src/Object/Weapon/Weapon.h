@@ -20,6 +20,7 @@ private:
     int attackActiveEnd_;   // 判定有効終了フレーム
     int attackDuration_;    // 攻撃全体時間
     std::set<SlimeEnemy*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
+    bool bossHit_ = false;
 
     // 線分と球の当たり判定
     bool CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,

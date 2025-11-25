@@ -60,9 +60,10 @@ public:
     ANIM_TYPE animType_;
 
     VECTOR GetPos() const { return Pos_; }
-    bool GetAlive() const { return isAlive; }
-	bool GetRadius() const { return 100.0f; }
-	bool OnHit() const { return isAttacking_ && attackTimer_ == attackHitFrame_; }
+	float GetRadius() const { return radius_; }
+    void OnHit(const VECTOR&);
+    int GetHP() const { return hp_; }
+    bool CanBeHit() const;
 
 private:
 
@@ -73,10 +74,12 @@ private:
     void UpdateDamage();
     void UpdateDead();
 
+
     STATE currentState_;
 
 	Player* player_;
 
+    float radius_ = 100.0f;
 	int modelId_;
     int hp_ = 100;  // ‘Ì—Í
     bool isAttacking_ = false;     // UŒ‚’†‚©‚Ç‚¤‚©

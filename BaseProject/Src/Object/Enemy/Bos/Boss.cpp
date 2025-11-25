@@ -18,17 +18,18 @@ void Boss::Init(float _x, float _y, float _z)
 
 	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Bos.mv1").c_str());
 
-	// モデルの初期関係
-	MV1SetPosition(modelId_, VGet(1.0f, 1.0f, 1.0f));
-
-	// アニメーションコントローラ生成
 	animationController_ = new AnimationController(modelId_);
 	animType_ = ANIM_TYPE::IDLE;
 	animationController_->Play(static_cast<int>(animType_), true);
 
-	// 初期位置設定
+	// モデル位置
 	MV1SetPosition(modelId_, VGet(_x, _y, _z));
+
+	Pos_ = VGet(_x, _y, _z);
+
+	hp_ = 100;
 }
+
 
 void Boss::Update()
 {
@@ -65,6 +66,15 @@ void Boss::Draw()
 	if (modelId_ != -1) {
 		MV1DrawModel(modelId_);
 	}
+
+	DrawSphere3D(
+		Pos_,           // 座標
+		GetRadius(),    // あたり判定半径
+		16,
+		GetColor(0, 255, 0),     // 外線
+		GetColor(0, 128, 0),     // 塗り
+		FALSE                    // 塗りつぶし無し
+	);
 }
 
 void Boss::Release()
@@ -84,6 +94,12 @@ void Boss::TakeDamage(int damage)
 	if (hp_ <= 0) {
 		Kill();
 	}
+}
+
+void Boss::OnHit(const VECTOR&)
+{
+	isAttacking_ = true;
+	attackTimer_ = 0;
 }
 
 void Boss::ChangeState(STATE newState)
@@ -142,4 +158,9 @@ void Boss::UpdateDamage()
 void Boss::UpdateDead()
 {
 	isAlive = false;
+}
+
+bool Boss::CanBeHit() const
+{
+	return isAlive;
 }
