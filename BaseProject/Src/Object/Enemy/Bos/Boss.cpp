@@ -19,6 +19,10 @@ void Boss::Init(float _x, float _y, float _z)
 	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Bos.mv1").c_str());
 
 	animationController_ = new AnimationController(modelId_);
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
+
 	animType_ = ANIM_TYPE::IDLE;
 	animationController_->Play(static_cast<int>(animType_), true);
 
