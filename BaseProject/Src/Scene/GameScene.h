@@ -7,6 +7,10 @@ class GameScene : public SceneBase
 {
 public:
 
+	static constexpr int BACKGROUND_COLOR_R = 0;
+	static constexpr int BACKGROUND_COLOR_G = 139;
+	static constexpr int BACKGROUND_COLOR_B = 139;
+
 	// コンストラクタ
 	GameScene(void);
 
@@ -15,6 +19,9 @@ public:
 
 	// 初期化処理
 	void Init(void)override;
+
+	// 3D初期化
+	void Init3D(void);	
 
 	// 更新ステップ
 	void Update(void)override;

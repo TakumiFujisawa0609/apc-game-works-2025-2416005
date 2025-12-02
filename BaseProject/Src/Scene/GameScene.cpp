@@ -24,6 +24,33 @@ void GameScene::Init(void)
 	GameSceneSoundHandle = LoadSoundMem("Data/Sound/BGM.mp3");
 }
 
+void GameScene::Init3D(void)
+{
+
+	// 背景色設定
+	SetBackgroundColor(
+		BACKGROUND_COLOR_R,
+		BACKGROUND_COLOR_G,
+		BACKGROUND_COLOR_B);
+
+	// Zバッファを有効にする
+	SetUseZBuffer3D(true);
+
+	// Zバッファへの書き込みを有効にする
+	SetWriteZBuffer3D(true);
+
+	// バックカリングを有効にする
+	SetUseBackCulling(true);
+
+	// ライトの設定
+	SetUseLighting(true);
+
+	// 正面から斜め下に向かったライト
+	ChangeLightTypeDir({ 0.00f, -1.00f, 1.00f });
+
+}
+
+
 void GameScene::Update(void)
 {
 	// ステージ更新

@@ -23,6 +23,22 @@ void Boss::Init(float _x, float _y, float _z)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
 		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
 
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Walking.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::DAMAGE), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Damege.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::DEAD), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WIN), 30.0f,
+		Application::PATH_MODEL + "Enemy/boss action/Hip Hop Dancing.mv1");
+
+
 	animType_ = ANIM_TYPE::IDLE;
 	animationController_->Play(static_cast<int>(animType_), true);
 
@@ -139,6 +155,25 @@ void Boss::UpdateIdle()
 	if (dist < attackRange_) {
 		ChangeState(STATE::ATTACK);
 	}
+	else {
+		// プレイヤーに向かって移動
+		VECTOR direction = VSub(player_->GetPos(), Pos_);
+		direction = VNorm(direction);
+		Pos_ = VAdd(Pos_, VScale(direction, moveSpeed_));
+
+		// ボスの向きをプレイヤー方向に設定
+		float angleY = atan2f(direction.x, direction.z);
+		MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
+
+		// モデル位置更新
+		MV1SetPosition(modelId_, Pos_);
+		// 移動中は歩行アニメーション再生
+		animType_ = ANIM_TYPE::WALK;
+		animationController_->Play(static_cast<int>(animType_), true);
+	}
+
+	// 攻撃アニメーション再生
+
 }
 
 void Boss::UpdateAttack()

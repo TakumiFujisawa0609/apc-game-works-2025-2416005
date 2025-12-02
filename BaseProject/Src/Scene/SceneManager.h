@@ -12,9 +12,7 @@ class SceneManager
 {
 public:
 	static constexpr float DEFAULT_FPS = 60.0f;
-	static constexpr int BACKGROUND_COLOR_R = 0;
-	static constexpr int BACKGROUND_COLOR_G = 139;
-	static constexpr int BACKGROUND_COLOR_B = 139;
+
 public:
 	// シングルトン（生成・取得・削除）
 	static void CreateInstance(void) { if (instance_ == nullptr) { instance_ = new SceneManager(); } };
@@ -41,7 +39,6 @@ private:
 public:
 
 	void Init(void);	// 初期化
-	void Init3D(void);	// 3D初期化
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
 	void Release(void);	// 解放
