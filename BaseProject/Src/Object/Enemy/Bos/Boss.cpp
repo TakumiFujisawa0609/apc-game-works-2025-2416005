@@ -161,25 +161,33 @@ void Boss::UpdateIdle()
 		direction = VNorm(direction);
 		Pos_ = VAdd(Pos_, VScale(direction, moveSpeed_));
 
-		// ボスの向きをプレイヤー方向に設定
-		float angleY = atan2f(direction.x, direction.z);
+		// ボスの向きをプレイヤー方向に180度反転して設定
+		float angleY = atan2f(direction.x, direction.z) + DX_PI_F;
 		MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
 
 		// モデル位置更新
 		MV1SetPosition(modelId_, Pos_);
+
 		// 移動中は歩行アニメーション再生
 		animType_ = ANIM_TYPE::WALK;
 		animationController_->Play(static_cast<int>(animType_), true);
 	}
-
-	// 攻撃アニメーション再生
-
 }
 
 void Boss::UpdateAttack()
 {
 	// 攻撃処理
-	player_->TakeDamage(attackDamage_);
+	attackTimer_++;
+	if (attackTimer_ >= attackDuration_) {
+		isAttacking_ = false;
+		attackTimer_ = 0;
+	}
+	// 攻撃アニメーション再生
+	
+	animType_ = ANIM_TYPE::ATTACK;
+	animationController_->Play(static_cast<int>(animType_), true);
+	
+	// 攻撃後は待機状態へ戻る
 	ChangeState(STATE::IDLE);
 }
 
