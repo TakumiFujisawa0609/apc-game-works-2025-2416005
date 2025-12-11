@@ -142,10 +142,8 @@ void SlimeEnemy::Update()
     VECTOR direction = VSub(playerPos, slimePos);
     direction = VNorm(direction);
 
-    // スライムの向きをプレイヤー方向に180度反転して設定
-    float angleY = atan2f(direction.x, direction.z) + DX_PI_F;
-    MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
-
+    // Y軸回転角度を計算
+    float angleY = atan2f(direction.x, direction.z);
 
     // モデルの向きを設定
     MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
