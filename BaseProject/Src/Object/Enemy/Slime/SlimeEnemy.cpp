@@ -134,6 +134,22 @@ void SlimeEnemy::Update()
         return;
     }
 
+
+    // スライムの位置を取得
+    VECTOR slimePos = pos;
+
+    // プレイヤーへの方向ベクトル
+    VECTOR direction = VSub(playerPos, slimePos);
+    direction = VNorm(direction);
+
+    // スライムの向きをプレイヤー方向に180度反転して設定
+    float angleY = atan2f(direction.x, direction.z) + DX_PI_F;
+    MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
+
+
+    // モデルの向きを設定
+    MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
+
     // 追従
     if (isChasing)
     {
