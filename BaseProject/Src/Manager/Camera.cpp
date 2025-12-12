@@ -2,6 +2,7 @@
 #include "../Manager/Input/KeyManager.h"
 #include "Camera.h"
 #include "../Object/Player/Player.h"
+#include <EffekseerForDXLib.h>
 
 Camera::Camera(void)
 {
@@ -349,6 +350,9 @@ void Camera::SetBeforeDrawFollow(void)
 		targetPos_,
 		{ 0.0f, 1.0f, 0.0f }
 	);
+
+	// DXライブラリのカメラとEffekseerのカメラを同期する
+	Effekseer_Sync3DSetting();
 }
 
 

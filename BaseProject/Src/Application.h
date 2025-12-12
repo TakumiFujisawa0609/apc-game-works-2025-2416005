@@ -22,6 +22,7 @@ public:
 	static const std::string PATH_IMAGE;
 	static const std::string PATH_MODEL;
 	static const std::string PATH_EFFECT;
+	static const std::string PATH_EFFEKSEER;
 	//-------------------------------------------
 
 	// インスタンスを明示的に生成
@@ -44,6 +45,9 @@ public:
 
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
+
+	// エフェクシアの初期化
+	void InitEffekseer(void);
 
 private:
 

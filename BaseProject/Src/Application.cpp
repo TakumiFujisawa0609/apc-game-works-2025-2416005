@@ -3,10 +3,13 @@
 #include "Application.h"
 #include "Scene/SceneManager.h"
 #include "AppSystem/FpsControl/FpsControl.h"
+#include <EffekseerForDXLib.h>
 
 Application* Application::instance_ = nullptr;
 
 const std::string Application::PATH_MODEL = "Data/Model/";
+
+const std::string Application::PATH_EFFEKSEER = "Data/Effekseer/";
 
 void Application::CreateInstance(void)
 {
@@ -117,6 +120,9 @@ void Application::Destroy(void)
 	SceneManager::GetInstance()->Release();
 	SceneManager::DeleteInstance();
 
+	// EffekseerÇèIóπÇ∑ÇÈ
+	Effkseer_End();
+
 	// DxLibèIóπ
 	if (DxLib_End() == -1)
 	{
@@ -136,6 +142,17 @@ bool Application::IsInitFail(void) const
 bool Application::IsReleaseFail(void) const
 {
 	return isReleaseFail_;
+}
+
+void Application::InitEffekseer(void)
+{
+	if (Effekseer_Init(8000) == -1)
+	{
+		DxLib_End();
+	}
+
+	SetChangeScreenModeGraphicsSystemResetFlag(false);
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 }
 
 Application::Application(void)

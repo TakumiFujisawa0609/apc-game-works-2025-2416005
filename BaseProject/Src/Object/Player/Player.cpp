@@ -11,6 +11,7 @@
 #include "../../Object/Weapon/Weapon.h"
 #include "../../Scene/SceneManager.h"
 #include "../../Scene/GameOver.h"
+#include <EffekseerForDXLib.h>
 
 
 Player::Player(void) :
@@ -155,6 +156,14 @@ void Player::Init(void)
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 	prevRootPos_ = MV1GetFramePosition(modelId_, 0); // 0はルートボーンのフレーム番号
+
+	efectslashId_ = LoadEffekseerEffect(
+		(Application::PATH_EFFEKSEER + "slashu.efkefc").c_str()
+	);
+
+	if (efectslashId_ == -1) {
+		MessageBoxA(NULL, "エフェクトの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
+	}
 
 	// カメラに自分自身を渡す
 	SceneManager::GetInstance()->GetCamera()->SetFollow(this);

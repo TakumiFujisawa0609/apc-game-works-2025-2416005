@@ -1,5 +1,6 @@
 #include <cmath>
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include "../Manager/Camera.h"
 #include "../Object/Stage/Stage.h"
 #include "TitleScene.h"
@@ -8,6 +9,7 @@
 #include "../Object/Weapon/Weapon.h"
 #include "../Scene/SceneManager.h"
 #include "../Object/Stage/Field/FieldManager.h"
+
 
 GameScene::GameScene(void) : SceneBase()
 {
@@ -99,6 +101,10 @@ void GameScene::Draw(void)
 	Camera* camera = SceneManager::GetInstance()->GetCamera();
 	camera->SetBeforeDraw();
 
+	// Effekseerにより再生中のエフェクトを更新する
+	UpdateEffekseer3D();
+
+
 	// ステージ描画
 	Stage::GetInstance()->Draw();
 
@@ -109,6 +115,9 @@ void GameScene::Draw(void)
 	player_->Draw();
 
 	camera->DrawDebug();
+
+	// Effekseerにより再生中のエフェクトを描画する
+	DrawEffekseer3D();
 }
 
 void GameScene::Release(void)

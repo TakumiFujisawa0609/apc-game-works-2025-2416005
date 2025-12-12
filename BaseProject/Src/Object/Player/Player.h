@@ -236,4 +236,6 @@ private:
 	bool isHit_ = false;
 	bool isInvincible_ = false;
 	int invincibleTimer_ = 0;
+
+	int efectslashId_;
 };
