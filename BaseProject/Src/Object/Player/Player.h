@@ -99,6 +99,10 @@ public:
 
 	void TakeDamage(int damage);
 
+	bool IsAtack() const { return isAtack_; }
+
+	void PlayEffectAt(const VECTOR & pos);
+
 
 private:
 
@@ -222,6 +226,7 @@ private:
 	int attackInputTimer_ = 0;   // 入力受付時間（フレーム数）
 	bool isBranchAttack_ = false; // 派生攻撃
 	int branchType_;        // どの段から派生したか（1?6）
+	bool isAttackStartedThisFrame = true;
 
 	VECTOR prevRootPos_ = VGet(0, 0, 0);
 
@@ -238,4 +243,7 @@ private:
 	int invincibleTimer_ = 0;
 
 	int efectslashId_;
+
+	int attackFrameCount_;
+
 };

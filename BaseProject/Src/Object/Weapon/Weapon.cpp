@@ -30,7 +30,7 @@ void Weapon::Init()
         MessageBoxA(NULL, "武器モデルの読み込みに失敗しました。", "エラー", MB_OK);
     }
 
-    float scalef = 2.0f;
+    float scalef = 4.0f;
     MV1SetScale(modelId_, VGet(scalef, scalef, scalef));
 }
 
@@ -54,15 +54,26 @@ void Weapon::Update()
         swordBase_ = VTransform(VGet(0.0f, -50.0f, 0.0f), finalMat);
     }
 
+    // 判定の起点をプレイヤー側フラグで制御するようにした
+    bool playerAttackFlag = (player_ != nullptr) && player_->IsAtack();
+
+    if (playerAttackFlag) {
+        // プレイヤーが攻撃中なら毎フレーム当たり判定を行う
+        CheckCollision();
+    }
+    else {
+        // 非攻撃時はヒット済み集合やボスフラグをリセットしておく
+        hitEnemies_.clear();
+        bossHit_ = false;
+        // attackTimer_ 等は Start/End によって管理されるが、
+        // プレイヤー側フラグ基準で判定するためここでタイマーはリセットしておく
+        attackTimer_ = 0;
+    }
+
+    // 既存の isAttacking_ / attackTimer_ ベースの終了処理は残す（視覚・演出用）
     if (isAttacking_) {
         attackTimer_++;
 
-        // 判定有効フレームのみ当たり判定
-        if (attackTimer_ >= attackActiveStart_ && attackTimer_ <= attackActiveEnd_) {
-            CheckCollision();
-        }
-
-        // 攻撃終了
         if (attackTimer_ > attackDuration_) {
             EndAttack();
         }
@@ -73,36 +84,39 @@ void Weapon::Draw()
 {
     MV1DrawModel(modelId_);
 
-    // カプセルの半径
-    const float capsuleRadius = 30.0f;
+    //// 当たり判定が出ているときだけ「判定に一致するカプセル」を厳密に可視化する
+    //bool playerAttackFlag = (player_ != nullptr) && player_->IsAtack();
 
-    // 当たり判定を可視化
-    if (isAttacking_) {
-        // 剣の線を赤で表示
-        DrawLine3D(swordBase_, swordTip_, GetColor(255, 0, 0));
+    //if (playerAttackFlag) {
+    //    // 判定関数内の capsuleRadius と一致させる（判定と同一の半径で表示）
+    //    const float capsuleRadius = 100.0f;
+    //    // 表示精度（球の数）。多めにすると見た目が滑らかになりますが処理は増えます。
+    //    const int segments = 20;
 
-        // カプセルを表現するために複数の球体を配置
-        int segments = 10; // 球体の数
-        for (int i = 0; i <= segments; i++) {
-            float t = (float)i / (float)segments;
-            VECTOR pos = VAdd(swordBase_, VScale(VSub(swordTip_, swordBase_), t));
-            unsigned int color = GetColor(255, (int)(100 * (1.0f - t)), 0);
-            DrawSphere3D(pos, capsuleRadius, 8, color, color, FALSE);
-        }
-    }
-    else {
-        // 攻撃していない時は青で表示
-        DrawLine3D(swordBase_, swordTip_, GetColor(0, 0, 255));
+    //    // 中心軸ラインを赤で描画（判定中心）
+    //    DrawLine3D(swordBase_, swordTip_, GetColor(255, 40, 40));
 
-        // カプセルを表現
-        int segments = 5;
-        for (int i = 0; i <= segments; i++) {
-            float t = (float)i / (float)segments;
-            VECTOR pos = VAdd(swordBase_, VScale(VSub(swordTip_, swordBase_), t));
-            DrawSphere3D(pos, capsuleRadius * 0.7f, 8, GetColor(0, 0, 255), GetColor(100, 100, 255), FALSE);
-        }
-    }
+    //    // 等間隔に球を並べてカプセルを表現（両端のキャップ + 中央のボディ）
+    //    for (int i = 0; i <= segments; ++i) {
+    //        float t = (float)i / (float)segments;
+    //        VECTOR pos = VAdd(swordBase_, VScale(VSub(swordTip_, swordBase_), t));
+    //        // 色を少しグラデにして視認性向上
+    //        int r = 255;
+    //        int g = 80 + (int)(80.0f * (1.0f - fabsf(t - 0.5f) * 2.0f)); // 中央やや明るく
+    //        int b = 40;
+    //        unsigned int color = GetColor(r, g, b);
+    //        // 球でカプセル本体を表現（透明ではなく塗りで表示すると見やすい）
+    //        DrawSphere3D(pos, capsuleRadius, 16, color, color, false);
+    //    }
 
+    //    // 両端の球は更に強調（キャップ）
+    //    DrawSphere3D(swordBase_, capsuleRadius, 16, GetColor(255, 60, 60), GetColor(255, 60, 60), false);
+    //    DrawSphere3D(swordTip_, capsuleRadius, 16, GetColor(255, 60, 60), GetColor(255, 60, 60), false);
+    //}
+    //else {
+    //    // 当たり判定が出ていないときはカプセル描画を行わない（要求通り）
+    //    // 必要ならここで小さなライトな可視化に切り替えられますが現状は何も描かない
+    //}
 }
 
 void Weapon::Release()
@@ -119,11 +133,10 @@ void Weapon::StartAttack()
     attackTimer_ = 0;
     hitEnemies_.clear();
 
-    // 例：アニメーションの10フレーム目から25フレーム目まで判定有効
-    attackActiveStart_ = 10;
-    attackActiveEnd_ = 25;
-    attackDuration_ = 35; // アニメーション全体の長さ
-
+    if (player_) {
+		VECTOR swingPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
+		player_->PlayEffectAt(swingPos);
+    }
 }
 
 void Weapon::EndAttack()
@@ -131,6 +144,7 @@ void Weapon::EndAttack()
     isAttacking_ = false;
     attackTimer_ = 0;
     hitEnemies_.clear();
+    bossHit_ = false;
 }
 
 void Weapon::CheckCollision()

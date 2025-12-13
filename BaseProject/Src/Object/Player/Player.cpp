@@ -158,8 +158,7 @@ void Player::Init(void)
 	prevRootPos_ = MV1GetFramePosition(modelId_, 0); // 0はルートボーンのフレーム番号
 
 	efectslashId_ = LoadEffekseerEffect(
-		(Application::PATH_EFFEKSEER + "slashu.efkefc").c_str()
-	);
+		(Application::PATH_EFFECT + "slashu.efkefc").c_str());
 
 	if (efectslashId_ == -1) {
 		MessageBoxA(NULL, "エフェクトの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
@@ -326,43 +325,89 @@ void Player::Draw(void)
 	// 数値表示（例: HP 80 / 100）
 	DrawFormatString(barX + 50, barY - 20, GetColor(255, 255, 255), "HP: %d / %d", hp_, maxHp_);
 
-	DrawFormatString(
-		0, 10, 0xffffff,
-		"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
-		AsoUtility::Rad2DegF(angles_.x),
-		AsoUtility::Rad2DegF(angles_.y),
-		AsoUtility::Rad2DegF(angles_.z)
-	);
+	{
+		DrawFormatString(
+			0, 10, 0xffffff,
+			"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
+			AsoUtility::Rad2DegF(angles_.x),
+			AsoUtility::Rad2DegF(angles_.y),
+			AsoUtility::Rad2DegF(angles_.z)
+		);
 
-	DrawFormatString(
-		0, 30, 0xffffff,
-		"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
-		pos_.x, pos_.y, pos_.z
-	);
+		DrawFormatString(
+			0, 30, 0xffffff,
+			"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
+			pos_.x, pos_.y, pos_.z
+		);
 
-	DrawFormatString(
-		0, 50, 0xffffff,
-		"ジャンプ中　　　 ：%s",
-		isJump_ ? "Yes" : "No"
-	);
+		DrawFormatString(
+			0, 50, 0xffffff,
+			"ジャンプ中　　　 ：%s",
+			isJump_ ? "Yes" : "No"
+		);
 
-	DrawFormatString(
-		0, 90, 0xffffff,
-		"攻撃中: %s",
-		isAtack_ ? "Yes" : "No"
-	);
+		DrawFormatString(
+			0, 90, 0xffffff,
+			"攻撃中: %s",
+			isAtack_ ? "Yes" : "No"
+		);
 
-	//DrawFormatString(
-	//	0, 150, 0xffffff,
-	//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
-	//);
+		//DrawFormatString(
+		//	0, 150, 0xffffff,
+		//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
+		//);
 
-	// 攻撃段数の表示
-	if (isAtack_) {
-		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: %d段目", attackStep_);
-	}
-	else {
-		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: なし");
+		// 攻撃段数の表示
+		if (isAtack_) {
+			DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: %d段目", attackStep_);
+		}
+		else {
+			DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: なし");
+		}
+
+		{
+			const int indX = 880; const int indY = 8;
+			const int indW = 260; const int indH = 72;
+
+			// 背景と枠
+			DrawBox(indX, indY, indX + indW, indY + indH, GetColor(20, 20, 20), TRUE);
+			DrawBox(indX, indY, indX + indW, indY + indH, GetColor(255, 255, 255), FALSE);
+
+			// 現在の入力／バッファ状態を取得
+			bool attackDown = (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) != 0;
+			bool attackBuffered = (attackInputBuffer_ == 1);
+			bool branchDown = (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down) != 0;
+			bool branchBuffered = isBranchAttack_;
+
+			// 色決め（Buffered -> 緑、Down -> 黄、None -> グレー）
+			int cAttack = attackBuffered ? GetColor(0, 200, 0) : attackDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
+			int cBranch = branchBuffered ? GetColor(0, 200, 0) : branchDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
+
+			// 見出し
+			DrawFormatString(indX + 8, indY + 6, GetColor(255, 255, 255), "Command Buffer");
+
+			// 攻撃コマンド状態
+			if (attackBuffered) {
+				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Buffered");
+			}
+			else if (attackDown) {
+				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Down");
+			}
+			else {
+				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : None");
+			}
+
+			// 派生コマンド状態
+			if (branchBuffered) {
+				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Buffered");
+			}
+			else if (branchDown) {
+				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Down");
+			}
+			else {
+				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : None");
+			}
+		}
 	}
 }
 
@@ -751,6 +796,7 @@ void Player::ProcessShot(void)
 
 void Player::ProcessAtack(void)
 {
+	isAttackStartedThisFrame = false;
 
 	if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
 		attackStep_ = 1;
@@ -763,6 +809,8 @@ void Player::ProcessAtack(void)
 		animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1), false);
 		animationController_->SetSpeed(attackAnimSpeed_);
 		if (weapon_) weapon_->StartAttack();
+
+		isAttackStartedThisFrame = true;
 	}
 
 	// 攻撃中処理
@@ -772,7 +820,7 @@ void Player::ProcessAtack(void)
 		if (animationController_->IsPlaying() && !animationController_->IsEnd()) {
 
 			// 通常コンボ入力
-			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).up) {
+			if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && !isAttackStartedThisFrame) {
 				attackInputBuffer_ = 1;
 			}
 
@@ -1046,5 +1094,19 @@ void Player::TakeDamage(int damage)
 		isDead_ = true;
 
 		SceneManager::GetInstance()->ChangeScene(std::make_shared<GameOver>());
+	}
+}
+
+void Player::PlayEffectAt(const VECTOR& pos)
+{
+	if (efectslashId_ == -1) return;
+	
+		// エフェクトを再生してハンドルを得る
+	int effHandle = PlayEffekseer3DEffect(efectslashId_);
+
+	if (effHandle != -1)
+	{
+		// 再生ハンドルの位置を設定
+		StopEffekseer3DEffect(effHandle);
 	}
 }

@@ -9,7 +9,12 @@ Application* Application::instance_ = nullptr;
 
 const std::string Application::PATH_MODEL = "Data/Model/";
 
-const std::string Application::PATH_EFFEKSEER = "Data/Effekseer/";
+const std::string Application::PATH_IMAGE = "Data/Image/";
+
+const std::string Application::PATH_DATA = "Data/";
+
+const std::string Application::PATH_EFFECT = "Data/Effekseer/";
+
 
 void Application::CreateInstance(void)
 {
