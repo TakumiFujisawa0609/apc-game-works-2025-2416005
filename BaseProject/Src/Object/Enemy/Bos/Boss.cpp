@@ -26,14 +26,15 @@ void Boss::Init(float _x, float _y, float _z)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), 30.0f,
 		Application::PATH_MODEL + "Enemy/boss action/Walking.mv1");
 
+	// 攻撃用のアニメーションを専用ファイルに変更
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 30.0f,
-		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
+		Application::PATH_MODEL + "Enemy/boss action/Standing Melee Attack Downward.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::DAMAGE), 30.0f,
 		Application::PATH_MODEL + "Enemy/boss action/Damege.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::DEAD), 30.0f,
-		Application::PATH_MODEL + "Enemy/boss action/Idle.mv1");
+		Application::PATH_MODEL + "Enemy/boss action/Dead.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::WIN), 30.0f,
 		Application::PATH_MODEL + "Enemy/boss action/Hip Hop Dancing.mv1");
@@ -62,18 +63,18 @@ void Boss::Update()
 	// 状態ごとの処理
 	switch (currentState_) {
 	case STATE::IDLE:
-		UpdateIdle(); 
+		UpdateIdle();
 		break;
-	case STATE::ATTACK: 
+	case STATE::ATTACK:
 		UpdateAttack();
 		break;
-	case STATE::DAMAGE: 
-		UpdateDamage(); 
+	case STATE::DAMAGE:
+		UpdateDamage();
 		break;
 	case STATE::DEAD:
-		UpdateDead(); 
+		UpdateDead();
 		break;
-	default: 
+	default:
 		break;
 	}
 }
@@ -118,13 +119,15 @@ void Boss::TakeDamage(int damage)
 
 void Boss::OnHit(const VECTOR&)
 {
-	isAttacking_ = true;
-	attackTimer_ = 0;
+	// ここは被弾時の処理を追加したい場合に拡張できます（ノックバックなど）
+	// 現状は被弾で短時間スタンさせる挙動にしておきます
+	damageStunTimer_ = damageStunMax_;
 }
 
 void Boss::ChangeState(STATE newState)
 {
 	currentState_ = newState;
+	bool isLoop = true; // デフォルトはループ再生
 
 	switch (newState) {
 	case STATE::IDLE:
@@ -132,63 +135,104 @@ void Boss::ChangeState(STATE newState)
 		break;
 	case STATE::ATTACK:
 		animType_ = ANIM_TYPE::ATTACK;
+		isLoop = false;
 		break;
 	case STATE::DAMAGE:
 		animType_ = ANIM_TYPE::DAMAGE;
+		isLoop = false;
 		break;
 	case STATE::DEAD:
 		animType_ = ANIM_TYPE::DEAD;
+		isLoop = false;
 		break;
 	default:
 		animType_ = ANIM_TYPE::IDLE;
 		break;
 	}
 	if (animationController_) {
-		animationController_->Play(static_cast<int>(animType_), true);
+		animationController_->Play(static_cast<int>(animType_), isLoop);
 	}
 }
 
 void Boss::UpdateIdle()
 {
-	// プレイヤーが近ければ攻撃状態へ
+	if (damageStunTimer_ > 0) {
+		damageStunTimer_--;
+		return;
+	}
+
+	// フレーム単位でのクールダウン管理（Slime と同様）
+	if (attackCooldown_ > 0) attackCooldown_--;
+
+	// プレイヤーとの距離
 	float dist = VSize(VSub(player_->GetPos(), Pos_));
-	if (dist < attackRange_) {
+
+	{
+		VECTOR dir = VSub(player_->GetPos(), Pos_);
+		dir.y = 0.0f;
+		if (VSize(dir) > 0.0001f) {
+			dir = VNorm(dir);
+			float angleY = atan2f(dir.x, dir.z); // Slime と同じ式
+			angleY += DX_PI_F; // 180度反転を補正
+			MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
+		}
+	}
+
+	// プレイヤーが射程内 AND クールダウン完了
+	if (dist < attackRange_ && attackCooldown_ <= 0) {
 		ChangeState(STATE::ATTACK);
+		// 攻撃開始準備
+		isAttacking_ = true;
+		attackTimer_ = 0;
+		return;
+	}
+	else if (dist < attackRange_ && attackCooldown_ > 0) {
+		// 射程内だがクールダウン中の場合、待機を継続
+		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+		return;
 	}
 	else {
 		// プレイヤーに向かって移動
 		VECTOR direction = VSub(player_->GetPos(), Pos_);
 		direction = VNorm(direction);
-		Pos_ = VAdd(Pos_, VScale(direction, moveSpeed_));
+		Pos_ = VAdd(Pos_, VScale(direction, (float)moveSpeed_));
 
-		// ボスの向きをプレイヤー方向に180度反転して設定
-		float angleY = atan2f(direction.x, direction.z) + DX_PI_F;
-		MV1SetRotationXYZ(modelId_, VGet(0.0f, angleY, 0.0f));
-
-		// モデル位置更新
 		MV1SetPosition(modelId_, Pos_);
 
 		// 移動中は歩行アニメーション再生
-		animType_ = ANIM_TYPE::WALK;
-		animationController_->Play(static_cast<int>(animType_), true);
+		animationController_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
 	}
 }
 
+
 void Boss::UpdateAttack()
 {
-	// 攻撃処理
+	if (damageStunTimer_ > 0) {
+		// 被ダメージで割り込み
+		ChangeState(STATE::IDLE);
+		isAttacking_ = false;
+		attackTimer_ = 0;
+		attackCooldown_ = attackCooldownMax_; 
+		return;
+	}
+
 	attackTimer_++;
+
+	// ヒットフレーム
+	if (attackTimer_ == attackHitFrame_) {
+		float minDist = GetRadius() + player_->GetRadius();
+		if (VSize(VSub(Pos_, player_->GetPos())) < minDist + 20.0f) {
+			player_->TakeDamage(attackDamage_);
+		}
+	}
+
+	// 攻撃終了
 	if (attackTimer_ >= attackDuration_) {
 		isAttacking_ = false;
 		attackTimer_ = 0;
+		attackCooldown_ = attackCooldownMax_; 
+		ChangeState(STATE::IDLE);
 	}
-	// 攻撃アニメーション再生
-	
-	animType_ = ANIM_TYPE::ATTACK;
-	animationController_->Play(static_cast<int>(animType_), true);
-	
-	// 攻撃後は待機状態へ戻る
-	ChangeState(STATE::IDLE);
 }
 
 void Boss::UpdateDamage()

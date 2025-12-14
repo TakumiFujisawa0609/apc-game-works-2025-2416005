@@ -13,7 +13,6 @@
 #include "../../Scene/GameOver.h"
 #include <EffekseerForDXLib.h>
 
-
 Player::Player(void) :
 animationController_(nullptr),
 modelId_(-1),
@@ -523,7 +522,6 @@ void Player::ChangeAttack(void)
 
 	// 攻撃アニメーション
 	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
-
 }
 
 void Player::ChangeShot(void)
@@ -544,7 +542,6 @@ void Player::ChangeVictory(void)
 {
 	//// VICTORYアニメーションをループ再生
 	//animationController_->Play(static_cast<int>(ANIM_TYPE::WAVE), true);
-
 }
 
 void Player::DrawStandby(void)
