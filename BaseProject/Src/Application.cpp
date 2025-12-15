@@ -16,6 +16,7 @@ const std::string Application::PATH_DATA = "Data/";
 const std::string Application::PATH_EFFECT = "Data/Effekseer/";
 
 
+
 void Application::CreateInstance(void)
 {
 	if (instance_ == nullptr)
@@ -48,6 +49,9 @@ void Application::Init(void)
 		isInitFail_ = true;
 		return;
 	}
+
+	// Effekseer初期化
+	InitEffekseer();
 
 	// 乱数のシード値を設定する
 	DATEDATA date;
