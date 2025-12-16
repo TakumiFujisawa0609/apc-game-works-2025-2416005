@@ -1107,3 +1107,20 @@ void Player::PlayEffectAt(const VECTOR& pos)
 		StopEffekseer3DEffect(effHandle);
 	}
 }
+
+//void Player::PlayEffectAt(const VECTOR& pos, const VECTOR& dir)
+//{
+//	if (efectslashId_ == -1) return;
+//	// エフェクトを再生してハンドルを得る
+//	int effHandle = PlayEffekseer3DEffect(efectslashId_);
+//	if (effHandle != -1)
+//	{
+//		// 再生ハンドルの位置を設定
+//		SetEffekseer3DEffectPosition(effHandle, pos);
+//
+//		// 方向に応じた回転を設定
+//		VECTOR up = VGet(0.0f, 1.0f, 0.0f);
+//		MATRIX rotMat = MGetRotDir(dir, up);
+//		SetEffekseer3DEffectRotation(effHandle, rotMat);
+//	}
+//}

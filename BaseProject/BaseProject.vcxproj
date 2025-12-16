@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppSystem\FpsControl\FpsControl.cpp" />
+    <ClCompile Include="Src\Effect\EffekseerEffect.cpp" />
     <ClCompile Include="Src\Loading\Loading.cpp" />
     <ClCompile Include="Src\Manager\Input\KeyManager.cpp" />
     <ClCompile Include="Src\Object\Actor\ActorBase.cpp" />
@@ -64,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppSystem\FpsControl\FpsControl.h" />
+    <ClInclude Include="Src\Effect\EffekseerEffect.h" />
     <ClInclude Include="Src\Loading\Loading.h" />
     <ClInclude Include="Src\Manager\Input\KeyManager.h" />
     <ClInclude Include="Src\Object\Actor\ActorBase.h" />
