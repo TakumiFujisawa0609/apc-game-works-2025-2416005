@@ -103,7 +103,7 @@ public:
 
 	void PlayEffectAt(const VECTOR & pos);
 
-	void PlayEffectAt(const VECTOR& pos, const VECTOR& dir);
+	//void PlayEffectAt(const VECTOR& pos, const VECTOR& dir);
 
 
 private:

@@ -4,6 +4,7 @@
 #include "Scene/SceneManager.h"
 #include "AppSystem/FpsControl/FpsControl.h"
 #include <EffekseerForDXLib.h>
+#include "Effect/EffekseerEffect.h"
 
 Application* Application::instance_ = nullptr;
 
@@ -130,7 +131,8 @@ void Application::Destroy(void)
 	SceneManager::DeleteInstance();
 
 	// Effekseer‚ðI—¹‚·‚é
-	Effkseer_End();
+	EffekseerEffect::GetInstance()->Release();
+	EffekseerEffect::DeleteInstance();
 
 	// DxLibI—¹
 	if (DxLib_End() == -1)
@@ -155,13 +157,8 @@ bool Application::IsReleaseFail(void) const
 
 void Application::InitEffekseer(void)
 {
-	if (Effekseer_Init(8000) == -1)
-	{
-		DxLib_End();
-	}
-
-	SetChangeScreenModeGraphicsSystemResetFlag(false);
-	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	EffekseerEffect::CreateInstance();
+	EffekseerEffect::GetInstance()->Init();
 }
 
 Application::Application(void)

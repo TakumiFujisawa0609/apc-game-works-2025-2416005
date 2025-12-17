@@ -47,6 +47,8 @@ public:
 		// デバッグキー
 		DEBUG_VOXEl_CREATE,
 
+		KARI,
+
 		MAX,
 	};
 

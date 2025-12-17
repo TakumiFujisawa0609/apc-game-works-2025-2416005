@@ -9,6 +9,7 @@
 #include "../Object/Weapon/Weapon.h"
 #include "../Scene/SceneManager.h"
 #include "../Object/Stage/Field/FieldManager.h"
+#include "../Effect/EffekseerEffect.h"
 
 
 GameScene::GameScene(void) : SceneBase()
@@ -63,6 +64,9 @@ void GameScene::Update(void)
 	// プレイヤー更新
 	player_->Update();
 
+	// エフェクト更新
+	EffekseerEffect::GetInstance()->Update();
+
 	// フィールドの更新
 	fieldManager_->Update();
 
@@ -84,6 +88,9 @@ void GameScene::Load(void)
 	Stage::CreateInstance();
 	Stage::GetInstance()->Init();
 	Stage::GetInstance()->SetPlayer(player_);
+
+	// エフェクトの初期化
+	EffekseerEffect::CreateInstance();
 
 	// フィールドの初期化
 	fieldManager_ = new FieldManager();
@@ -114,10 +121,14 @@ void GameScene::Draw(void)
 	// プレイヤー描画
 	player_->Draw();
 
+	// エフェクトの描画
+	EffekseerEffect::GetInstance()->Draw();
+
+	// カメラの描画
 	camera->DrawDebug();
 
 	// Effekseerにより再生中のエフェクトを描画する
-	DrawEffekseer3D();
+	//DrawEffekseer3D();
 }
 
 void GameScene::Release(void)
@@ -125,6 +136,10 @@ void GameScene::Release(void)
 	// ステージ解放
 	Stage::GetInstance()->Release();
 	Stage::DeleteInstance();
+
+	// エフェクトの解放
+	EffekseerEffect::GetInstance()->Delete();
+	EffekseerEffect::DeleteInstance();
 
 	// フィールド解放
 	fieldManager_->Release();

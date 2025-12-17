@@ -156,13 +156,6 @@ void Player::Init(void)
 
 	prevRootPos_ = MV1GetFramePosition(modelId_, 0); // 0はルートボーンのフレーム番号
 
-	efectslashId_ = LoadEffekseerEffect(
-		(Application::PATH_EFFECT + "slashu.efkefc").c_str());
-
-	if (efectslashId_ == -1) {
-		MessageBoxA(NULL, "エフェクトの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
-	}
-
 	// カメラに自分自身を渡す
 	SceneManager::GetInstance()->GetCamera()->SetFollow(this);
 
@@ -300,29 +293,29 @@ void Player::Draw(void)
 		//DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
 	}
 
-	// --- HPバー描画 ---
-	const int barX = 50;      // HPバーの左上X座標
-	const int barY = 50;      // HPバーの左上Y座標
-	const int barWidth = 200; // HPバーの全体幅
-	const int barHeight = 20; // HPバーの高さ
+	//// --- HPバー描画 ---
+	//const int barX = 50;      // HPバーの左上X座標
+	//const int barY = 50;      // HPバーの左上Y座標
+	//const int barWidth = 200; // HPバーの全体幅
+	//const int barHeight = 20; // HPバーの高さ
 
-	// HP割合を計算
-	float hpRate = static_cast<float>(hp_) / maxHp_;
-	if (hpRate < 0.0f) hpRate = 0.0f;
+	//// HP割合を計算
+	//float hpRate = static_cast<float>(hp_) / maxHp_;
+	//if (hpRate < 0.0f) hpRate = 0.0f;
 
-	// 枠（背景）
-	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(80, 80, 80), TRUE);
+	//// 枠（背景）
+	//DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(80, 80, 80), TRUE);
 
-	// HPの残量部分（赤～緑）
-	int r = 255 - static_cast<int>(255 * hpRate);
-	int g = static_cast<int>(255 * hpRate);
-	DrawBox(barX, barY, barX + static_cast<int>(barWidth * hpRate), barY + barHeight, GetColor(r, g, 0), TRUE);
+	//// HPの残量部分（赤～緑）
+	//int r = 255 - static_cast<int>(255 * hpRate);
+	//int g = static_cast<int>(255 * hpRate);
+	//DrawBox(barX, barY, barX + static_cast<int>(barWidth * hpRate), barY + barHeight, GetColor(r, g, 0), TRUE);
 
-	// 枠線
-	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
+	//// 枠線
+	//DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
 
-	// 数値表示（例: HP 80 / 100）
-	DrawFormatString(barX + 50, barY - 20, GetColor(255, 255, 255), "HP: %d / %d", hp_, maxHp_);
+	//// 数値表示（例: HP 80 / 100）
+	//DrawFormatString(barX + 50, barY - 20, GetColor(255, 255, 255), "HP: %d / %d", hp_, maxHp_);
 
 	{
 		DrawFormatString(

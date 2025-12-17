@@ -1,4 +1,8 @@
 #include "EffekseerEffect.h"
+#include "../Application.h"
+#include "../Manager/Input/KeyManager.h"
+
+EffekseerEffect* EffekseerEffect::instance_ = nullptr;
 
 EffekseerEffect::EffekseerEffect(void)
 {
@@ -23,12 +27,32 @@ void EffekseerEffect::Init(void)
 
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-	//shalshutEffectId_ 
+	shalshutEffectId_ = LoadEffekseerEffect(
+			(Application::PATH_EFFECT + "slashu.efkefc").c_str());
+
+	if (shalshutEffectId_ == -1) {
+		MessageBoxA(NULL, "エフェクトの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
+	}
 }
 
 void EffekseerEffect::Update(void)
 {
+	float kensc = 10.0f;
 
+	if (KEY::GetIns().GetInfo(KEY_TYPE::KARI).down) {
+		PlayshalshuEffectHandle = PlayEffekseer3DEffect(shalshutEffectId_);
+		SetPosPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.0f, 50.0f, 0.0f);
+		SetRotationPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.0f, DX_PI_F / 2.0f, 0.0f);
+		SetScalePlayingEffekseer3DEffect(PlayshalshuEffectHandle, kensc, kensc, kensc);
+	}
+
+	//PlayshalshuEffectHandle = PlayEffekseer3DEffect(shalshutEffectId_);
+
+	//SetPosPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.0f, 50.0f, 0.0f);
+
+	//SetRotationPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.0f, DX_PI_F / 2.0f, 0.0f);
+
+	//SetScalePlayingEffekseer3DEffect(PlayshalshuEffectHandle, 2.0f, 2.0f, 2.0f);
 }
 
 void EffekseerEffect::Draw(void)
@@ -38,7 +62,10 @@ void EffekseerEffect::Draw(void)
 
 void EffekseerEffect::Release(void)
 {
-	//DeleteEffekseerEffect();
-
 	Effkseer_End();
+}
+
+void EffekseerEffect::Delete(void)
+{
+	DeleteEffekseerEffect(shalshutEffectId_);
 }

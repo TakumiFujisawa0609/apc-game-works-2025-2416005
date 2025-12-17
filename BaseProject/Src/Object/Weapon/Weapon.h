@@ -44,5 +44,7 @@ public:
 
     bool IsAttacking() const { return isAttacking_; }
 
+
+
 	Player* player_;  // プレイヤーへのポインタ
 };

@@ -38,6 +38,11 @@ public:
 	// ‰ğ•ú
 	void Release(void);
 
+    // ƒfƒŠ[ƒg
+	void Delete(void);
+
 private:
     int shalshutEffectId_;
+
+    int PlayshalshuEffectHandle;
 };
