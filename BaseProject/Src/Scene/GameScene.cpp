@@ -92,6 +92,8 @@ void GameScene::Load(void)
 	// エフェクトの初期化
 	EffekseerEffect::CreateInstance();
 
+	EffekseerEffect::GetInstance()->SetWeapon(player_->GetWeapon());
+
 	// フィールドの初期化
 	fieldManager_ = new FieldManager();
 	fieldManager_->Init(player_);

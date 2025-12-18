@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 
+class Weapon;
 class EffekseerEffect
 {
 public:
@@ -41,8 +42,16 @@ public:
     // ÉfÉäÅ[Ég
 	void Delete(void);
 
+    void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
+
 private:
     int shalshutEffectId_;
 
     int PlayshalshuEffectHandle;
+
+    Weapon* weapon_ = nullptr;
+
+    int slashHandle_ = -1;
+
+    bool isSlashing_ = false;
 };

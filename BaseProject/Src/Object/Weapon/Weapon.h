@@ -44,7 +44,12 @@ public:
 
     bool IsAttacking() const { return isAttacking_; }
 
+    VECTOR GetPos(void) const{ return swordTip_; }
 
+    VECTOR GetSwordBasePos() const
+    {
+        return swordBase_;
+    }
 
 	Player* player_;  // プレイヤーへのポインタ
 };

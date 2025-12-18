@@ -105,6 +105,7 @@ public:
 
 	//void PlayEffectAt(const VECTOR& pos, const VECTOR& dir);
 
+	Weapon* GetWeapon() { return weapon_; }
 
 private:
 
