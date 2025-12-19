@@ -78,11 +78,15 @@ void Weapon::Update()
             EndAttack();
         }
     }
+
+    UpdateTrail();
 }
 
 void Weapon::Draw()
 {
     MV1DrawModel(modelId_);
+
+    DrawTrail();
 
     //// 当たり判定が出ているときだけ「判定に一致するカプセル」を厳密に可視化する
     //bool playerAttackFlag = (player_ != nullptr) && player_->IsAtack();
@@ -132,11 +136,6 @@ void Weapon::StartAttack()
     isAttacking_ = true;
     attackTimer_ = 0;
     hitEnemies_.clear();
-
-    if (player_) {
-		VECTOR swingPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
-		player_->PlayEffectAt(swingPos);
-    }
 }
 
 void Weapon::EndAttack()
@@ -145,6 +144,70 @@ void Weapon::EndAttack()
     attackTimer_ = 0;
     hitEnemies_.clear();
     bossHit_ = false;
+    tipTrail_.clear();
+}
+
+void Weapon::UpdateTrail()
+{
+    VECTOR tipPos = GetPos(); // 剣先座標取得
+    tipTrail_.push_back(tipPos);
+    if (tipTrail_.size() > trailMax_) {
+        tipTrail_.erase(tipTrail_.begin());
+    }
+}
+
+void Weapon::DrawTrail() const
+{
+    //const int barCountPerSegment = 8; // 1区間に出す縦棒の数
+    //const float barLength = 40.0f;    // 縦棒の長さ
+    //const unsigned int barColor = GetColor(255, 255, 80); // 黄色っぽい
+
+    //for (size_t i = 1; i < tipTrail_.size(); ++i) {
+    //    const VECTOR& p0 = tipTrail_[i - 1];
+    //    const VECTOR& p1 = tipTrail_[i];
+    //    // 軌跡ライン
+    //    DrawLine3D(p0, p1, GetColor(255, 255, 0));
+
+    //    // 区間ベクトル（剣の向き）
+    //    VECTOR dir = VNorm(VSub(p1, p0));
+    //    // 縦方向（Y軸）ベクトル
+    //    VECTOR up = VGet(0, 1, 0);
+
+    //    // 剣の向きに合わせてupベクトルを回転させたい場合は、dirとupの外積で垂直方向を作る
+    //    // ここでは単純にY軸方向に棒を出す例
+    //    for (int j = 0; j < barCountPerSegment; ++j) {
+    //        float t = (float)j / (barCountPerSegment - 1);
+    //        VECTOR pos = {
+    //            p0.x + (p1.x - p0.x) * t,
+    //            p0.y + (p1.y - p0.y) * t,
+    //            p0.z + (p1.z - p0.z) * t
+    //        };
+    //        // 剣の向きに合わせて棒を出す場合
+    //        // 棒の中心をpos、向きをdir、長さbarLengthで描画
+    //        VECTOR barStart = {
+    //            pos.x - dir.x * barLength * 0.5f,
+    //            pos.y - dir.y * barLength * 0.5f,
+    //            pos.z - dir.z * barLength * 0.5f
+    //        };
+    //        VECTOR barEnd = {
+    //            pos.x + dir.x * barLength * 0.5f,
+    //            pos.y + dir.y * barLength * 0.5f,
+    //            pos.z + dir.z * barLength * 0.5f
+    //        };
+    //        DrawLine3D(barStart, barEnd, barColor);
+    //    }
+    //}
+
+    // 攻撃中のみ軌跡エフェクトを表示
+    if (!player_ || !player_->IsAtack()) {
+        return;
+    }
+
+    for (size_t i = 1; i < tipTrail_.size(); ++i) {
+        const VECTOR& p0 = tipTrail_[i - 1];
+        const VECTOR& p1 = tipTrail_[i];
+        DrawLine3D(p0, p1, GetColor(255, 255, 0)); // VECTOR型で渡す
+    }
 }
 
 void Weapon::CheckCollision()

@@ -38,30 +38,15 @@ void EffekseerEffect::Init(void)
 
 void EffekseerEffect::Update(void)
 {
-	//if (!weapon_) return;
-
-	//float kensc = 10.0f;
-
-	//VECTOR tipPos = weapon_->GetPos();
-
-	//if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down)
-	//{
-	//	slashHandle_ = PlayEffekseer3DEffect(shalshutEffectId_);
-	//	isSlashing_ = true;
-	//}
-
-	//if (isSlashing_ && IsEffekseer3DEffectPlaying(slashHandle_))
-	//{
-	//	SetPosPlayingEffekseer3DEffect(
-	//		slashHandle_,
-	//		tipPos.x, tipPos.y, tipPos.z
-	//	);
-
-	//	SetRotationPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.0f, DX_PI_F / 2.0f, 0.0f);
-	//	SetScalePlayingEffekseer3DEffect(PlayshalshuEffectHandle, kensc, kensc, kensc);
-	//}
-
     if (!weapon_) return;
+    
+    // UŒ‚I—¹‚Å’âŽ~
+    if (isSlashing_ && !weapon_->IsAttacking())
+    {
+        StopEffekseer3DEffect(PlayshalshuEffectHandle);
+        isSlashing_ = false;
+        PlayshalshuEffectHandle = -1;
+    }
 
     // UŒ‚ŠJŽn
     if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down)
@@ -70,13 +55,16 @@ void EffekseerEffect::Update(void)
         if (!isSlashing_)
         {
             PlayshalshuEffectHandle = PlayEffekseer3DEffect(shalshutEffectId_);
+            SetSpeedPlayingEffekseer3DEffect(PlayshalshuEffectHandle, 0.5f);
             isSlashing_ = true;
         }
     }
 
     // Ä¶’†FŒ•æ‚É’Ç]
-    if (isSlashing_ && IsEffekseer3DEffectPlaying(PlayshalshuEffectHandle))
+    if (isSlashing_)
     {
+        if (IsEffekseer3DEffectPlaying(PlayshalshuEffectHandle) != 0) return;
+
         VECTOR basePos = weapon_->GetSwordBasePos();
         VECTOR tipPos = weapon_->GetPos();
 
@@ -88,12 +76,16 @@ void EffekseerEffect::Update(void)
             tipPos.z
         );
 
-        // Œ•‚ÌŒü‚«ƒxƒNƒgƒ‹
         VECTOR dir = VNorm(VSub(tipPos, basePos));
 
         // ‰ñ“]ŒvŽZ
-        float yaw = atan2f(dir.x, dir.z);   // ¶‰E
-        float pitch = -asinf(dir.y);           // ã‰º
+        float yaw = atan2f(dir.x, dir.z);
+
+        float clampled_dir_y = dir.y;
+        if (clampled_dir_y > 1.0f) clampled_dir_y = 1.0f;
+        if (clampled_dir_y < -1.0f) clampled_dir_y = -1.0f;
+
+        float pitch = -asinf(clampled_dir_y);
 
         SetRotationPlayingEffekseer3DEffect(
             PlayshalshuEffectHandle,
@@ -103,19 +95,11 @@ void EffekseerEffect::Update(void)
         );
 
         // ƒXƒP[ƒ‹
-        float scale = 40.0f;
+        float scale = 10.0f;
         SetScalePlayingEffekseer3DEffect(
             PlayshalshuEffectHandle,
             scale, scale, scale
         );
-    }
-
-    // UŒ‚I—¹‚Å’âŽ~
-    if (isSlashing_ && !weapon_->IsAttacking())
-    {
-        StopEffekseer3DEffect(PlayshalshuEffectHandle);
-        isSlashing_ = false;
-        PlayshalshuEffectHandle = -1;
     }
 
 	//PlayshalshuEffectHandle = PlayEffekseer3DEffect(shalshutEffectId_);

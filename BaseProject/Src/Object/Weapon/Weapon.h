@@ -22,6 +22,9 @@ private:
     std::set<SlimeEnemy*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
     bool bossHit_ = false;
 
+    std::vector<VECTOR> tipTrail_; // 剣先の軌跡
+    int trailMax_ = 10;
+
     // 線分と球の当たり判定
     bool CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
         const VECTOR& spherePos, float sphereRadius);
@@ -52,4 +55,7 @@ public:
     }
 
 	Player* player_;  // プレイヤーへのポインタ
+
+    void UpdateTrail();
+    void DrawTrail() const;
 };

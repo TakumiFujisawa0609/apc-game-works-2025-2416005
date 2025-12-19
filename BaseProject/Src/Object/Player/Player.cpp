@@ -59,7 +59,7 @@ void Player::Init(void)
 	//	MessageBoxA(NULL, "プレイヤーモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	//}
 
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Player/Player.mv1").c_str());
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Player/model.mv1").c_str());
 	if (modelId_ == -1) {
 		MessageBoxA(NULL, "プレイヤーモデルの読み込みに失敗しました。パスやファイルを確認してください。", "エラー", MB_OK);
 	}
