@@ -1,5 +1,6 @@
 #include "FieldBase.h"
 #include "../../Player/Player.h"
+#include "../../../Application.h"
 
 
 FieldBase::FieldBase(void)
@@ -95,14 +96,14 @@ void FieldBase::Draw(void)
 	if (isPlayerInside_ && !isCaptured_ && enemyManager_) {
 		int kill = enemyManager_->GetKilledCount();
 		DrawFormatString(
-			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 80, GetColor(255, 255, 255),
+			Application::SCREEN_SIZE_X / 2 + 300, Application::SCREEN_SIZE_Y / 2 + 300, GetColor(255, 255, 255),
 			"ì¢î∞êî: %d / %d", kill, targetKillCount_);
 	}
 
 	// êßà≥çœÇ›ï\é¶
 	if (isCaptured_) {
 		DrawFormatString(
-			(int)pos_.x / 3 + 100, (int)pos_.z / 3 + 100, GetColor(0, 255, 0),
+			Application::SCREEN_SIZE_X / 2 + 300, Application::SCREEN_SIZE_Y / 2 + 300, GetColor(0, 255, 0),
 			"êßà≥äÆóπ");
 	}
 }

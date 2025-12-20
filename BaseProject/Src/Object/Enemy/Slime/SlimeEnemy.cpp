@@ -37,6 +37,30 @@ void SlimeEnemy::Update()
 {
     if (!isAlive) return;
 
+    if (player_->IsBranchHitActive() && CanBeHit())
+    {
+        VECTOR hitPos = player_->GetBranchHitPos();
+        float hitRadius = player_->GetBranchHitRadius();
+
+        VECTOR diff = VSub(GetPos(), hitPos);
+        diff.y = 0.0f;
+
+        float dist = VSize(diff);
+        float minDist = GetRadius() + hitRadius;
+
+        if (dist < minDist)
+        {
+            // ダメージ
+            TakeDamage(999);
+
+            // ノックバック方向用
+            OnHit(hitPos);
+
+            // 1回当たったら終了（多段ヒット防止）
+            return;
+        }
+    }
+
     if (damageStunTimer_ > 0)
     {
         damageStunTimer_--;

@@ -72,10 +72,10 @@ void EnemyManager::Draw()
         slime->Draw();
     }
 
-    DrawFormatString(
-        0, 70, 0xffffff,
-        "スライム数 : %d / %d", (int)slimes.size(), maxSlimes
-    );
+    //DrawFormatString(
+    //    0, 70, 0xffffff,
+    //    "スライム数 : %d / %d", (int)slimes.size(), maxSlimes
+    //);
 }
 
 void EnemyManager::Release()

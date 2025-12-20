@@ -107,6 +107,10 @@ public:
 
 	Weapon* GetWeapon() { return weapon_; }
 
+	bool   IsBranchHitActive() const;
+	VECTOR GetBranchHitPos() const;
+	float  GetBranchHitRadius() const;
+
 private:
 
 	enum class STATE
@@ -249,4 +253,9 @@ private:
 
 	int attackFrameCount_;
 
+	bool  isBranchHitActive_ = false;
+	int   branchHitTimer_ = 0;
+	VECTOR branchHitPos_;
+	float branchHitRadius_ = 0.0f;
+	float branchHitLifeTime_;  
 };

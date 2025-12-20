@@ -27,6 +27,15 @@ private:
     EffekseerEffect& operator=(EffekseerEffect&&) = delete;
 
 public:
+
+    enum class ComboStep
+    {
+        First,      // 1段目
+        Second,     // 2段目
+        Third,      // 3段目
+        Finish      // フィニッシュ
+    };
+
 	// 初期化
 	void Init(void);
     
@@ -44,6 +53,18 @@ public:
 
     void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
+    void PlayComboEffect(const VECTOR& pos, float rotY);
+
+    void PlayComboEffect2(const VECTOR& pos, float rotY);
+
+	void PlayComboEffect3(const VECTOR& pos, float rotY);
+
+    void PlayComboEffect4(const VECTOR& pos, float rotY);
+
+    void PlayComboEffect5(const VECTOR& pos, float rotY);
+
+    void PlayComboEffect6(const VECTOR& pos, float rotY);
+
 private:
     int shalshutEffectId_;
 
@@ -54,4 +75,28 @@ private:
     int slashHandle_ = -1;
 
     bool isSlashing_ = false;
+
+    int finisyuId;
+
+	int finisyu2Id;
+
+	int finisyu3Id;
+
+	int finisyu4Id;
+
+	int finisyu5Id;
+
+	int finisyu6Id;
+
+	int playFinisyuHandle;
+
+	int playFinisyu2Handle;
+
+	int playFinisyu3Handle;
+
+	int playFinisyu4Handle;
+
+	int playFinisyu5Handle;
+
+	int playFinisyu6Handle;
 };

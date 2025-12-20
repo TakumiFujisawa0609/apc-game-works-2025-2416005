@@ -124,7 +124,7 @@ protected:
 
     std::unique_ptr<EnemyManager> enemyManager_;
     int killCount_ = 0;
-    int targetKillCount_ = 100;
+    int targetKillCount_ = 300;
     bool isActive_ = false; // バトル中か？
     bool isCaptured_ = false;      // すでに制圧済みか？
 

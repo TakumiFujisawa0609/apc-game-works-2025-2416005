@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <set>
 #include "../../Object/Enemy/Slime/SlimeEnemy.h"
+#include "../../Object/Enemy/EnemyBase.h"
 
 class Player;
 class SlimeEnemy;
@@ -19,7 +20,7 @@ private:
     int attackActiveStart_; // 判定有効開始フレーム
     int attackActiveEnd_;   // 判定有効終了フレーム
     int attackDuration_;    // 攻撃全体時間
-    std::set<SlimeEnemy*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
+    std::set<EnemyBase*> hitEnemies_;  // 1回の攻撃で当たった敵のリスト
     bool bossHit_ = false;
 
     std::vector<VECTOR> tipTrail_; // 剣先の軌跡
@@ -32,7 +33,17 @@ private:
     // 敵との当たり判定チェック
     void CheckCollision();
 
+    VECTOR GetHitPos() const;
+    float  GetHitRadius() const;
 public:
+
+    struct TRAIL_VERTEX
+    {
+        VECTOR pos;       // 座標
+        float u, v;       // テクスチャ座標
+        unsigned int color; // 色
+    };
+
 	Weapon(Player* player);
     ~Weapon();
 
@@ -59,3 +70,5 @@ public:
     void UpdateTrail();
     void DrawTrail() const;
 };
+
+bool IsHitSpheres(VECTOR pos1, float radius1, VECTOR pos2, float radius2);

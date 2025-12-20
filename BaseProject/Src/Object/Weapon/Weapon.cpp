@@ -64,7 +64,7 @@ void Weapon::Update()
     else {
         // 非攻撃時はヒット済み集合やボスフラグをリセットしておく
         hitEnemies_.clear();
-        bossHit_ = false;
+        //bossHit_ = false;
         // attackTimer_ 等は Start/End によって管理されるが、
         // プレイヤー側フラグ基準で判定するためここでタイマーはリセットしておく
         attackTimer_ = 0;
@@ -79,14 +79,21 @@ void Weapon::Update()
         }
     }
 
-    UpdateTrail();
+    if (isAttacking_ &&
+        attackTimer_ >= attackActiveStart_ &&
+        attackTimer_ <= attackActiveEnd_)
+    {
+        CheckCollision();
+    }
+
+    //UpdateTrail();
 }
 
 void Weapon::Draw()
 {
     MV1DrawModel(modelId_);
 
-    DrawTrail();
+    //DrawTrail();
 
     //// 当たり判定が出ているときだけ「判定に一致するカプセル」を厳密に可視化する
     //bool playerAttackFlag = (player_ != nullptr) && player_->IsAtack();
@@ -143,7 +150,7 @@ void Weapon::EndAttack()
     isAttacking_ = false;
     attackTimer_ = 0;
     hitEnemies_.clear();
-    bossHit_ = false;
+    //bossHit_ = false;
     tipTrail_.clear();
 }
 
@@ -158,56 +165,16 @@ void Weapon::UpdateTrail()
 
 void Weapon::DrawTrail() const
 {
-    //const int barCountPerSegment = 8; // 1区間に出す縦棒の数
-    //const float barLength = 40.0f;    // 縦棒の長さ
-    //const unsigned int barColor = GetColor(255, 255, 80); // 黄色っぽい
+    //// 攻撃中のみ軌跡エフェクトを表示
+    //if (!player_ || !player_->IsAtack()) {
+    //    return;
+    //}
 
     //for (size_t i = 1; i < tipTrail_.size(); ++i) {
     //    const VECTOR& p0 = tipTrail_[i - 1];
     //    const VECTOR& p1 = tipTrail_[i];
-    //    // 軌跡ライン
-    //    DrawLine3D(p0, p1, GetColor(255, 255, 0));
-
-    //    // 区間ベクトル（剣の向き）
-    //    VECTOR dir = VNorm(VSub(p1, p0));
-    //    // 縦方向（Y軸）ベクトル
-    //    VECTOR up = VGet(0, 1, 0);
-
-    //    // 剣の向きに合わせてupベクトルを回転させたい場合は、dirとupの外積で垂直方向を作る
-    //    // ここでは単純にY軸方向に棒を出す例
-    //    for (int j = 0; j < barCountPerSegment; ++j) {
-    //        float t = (float)j / (barCountPerSegment - 1);
-    //        VECTOR pos = {
-    //            p0.x + (p1.x - p0.x) * t,
-    //            p0.y + (p1.y - p0.y) * t,
-    //            p0.z + (p1.z - p0.z) * t
-    //        };
-    //        // 剣の向きに合わせて棒を出す場合
-    //        // 棒の中心をpos、向きをdir、長さbarLengthで描画
-    //        VECTOR barStart = {
-    //            pos.x - dir.x * barLength * 0.5f,
-    //            pos.y - dir.y * barLength * 0.5f,
-    //            pos.z - dir.z * barLength * 0.5f
-    //        };
-    //        VECTOR barEnd = {
-    //            pos.x + dir.x * barLength * 0.5f,
-    //            pos.y + dir.y * barLength * 0.5f,
-    //            pos.z + dir.z * barLength * 0.5f
-    //        };
-    //        DrawLine3D(barStart, barEnd, barColor);
-    //    }
+    //    DrawLine3D(p0, p1, GetColor(255, 255, 0)); // VECTOR型で渡す
     //}
-
-    // 攻撃中のみ軌跡エフェクトを表示
-    if (!player_ || !player_->IsAtack()) {
-        return;
-    }
-
-    for (size_t i = 1; i < tipTrail_.size(); ++i) {
-        const VECTOR& p0 = tipTrail_[i - 1];
-        const VECTOR& p1 = tipTrail_[i];
-        DrawLine3D(p0, p1, GetColor(255, 255, 0)); // VECTOR型で渡す
-    }
 }
 
 void Weapon::CheckCollision()
@@ -221,7 +188,7 @@ void Weapon::CheckCollision()
         if (!slime) continue;
         if (!slime->CanBeHit()) continue;
 
-        // すでに当たった敵ならスキップ
+        // すでに当たった敵ならスキップ (hitEnemies_ に SlimeEnemy* を入れる)
         if (hitEnemies_.find(slime) != hitEnemies_.end()) continue;
 
         VECTOR enemyPos = slime->GetPos();
@@ -230,7 +197,7 @@ void Weapon::CheckCollision()
         // カプセル vs 球体 で判定
         if (CheckLineToSphereCollision(swordBase_, swordTip_, enemyPos, enemyRadius))
         {
-            hitEnemies_.insert(slime);
+            hitEnemies_.insert(slime); // SlimeEnemy* (EnemyBase* にアップキャストされる) を挿入
 
             VECTOR hitPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
 
@@ -243,26 +210,32 @@ void Weapon::CheckCollision()
     }
 
     Boss* boss = enemyManager->GetBoss();
-    if (boss && boss->CanBeHit() && !bossHit_)
+    if (!boss) return;
+
+    if (!boss->CanBeHit()) return;
+
+    VECTOR weaponPos = GetHitPos();
+    float  weaponRad = GetHitRadius();
+
+    VECTOR bossPos = boss->GetHitPos();
+    float  bossRad = boss->GetHitRadius();
+
+    if (IsHitSpheres(weaponPos, weaponRad, bossPos, bossRad))
     {
-        VECTOR bossPos = boss->GetPos();
-        float bossRadius = boss->GetRadius();
-
-        if (CheckLineToSphereCollision(swordBase_, swordTip_, bossPos, bossRadius))
-        {
-            bossHit_ = true;
-
-            VECTOR hitPos = VScale(VAdd(swordBase_, swordTip_), 0.5f);
-
-            boss->OnHit(hitPos);
-            boss->TakeDamage(5);
-
-            if (boss->GetHP() <= 0)
-                boss->Kill();
-        }
+        boss->OnHit(weaponPos);
+        boss->TakeDamage(5);
     }
 }
 
+VECTOR Weapon::GetHitPos() const
+{
+    return VScale(VAdd(swordBase_, swordTip_), 0.5f);
+}
+
+float Weapon::GetHitRadius() const
+{
+    return 60.0f; // 
+}
 
 bool Weapon::CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& lineEnd,
     const VECTOR& spherePos, float sphereRadius)
@@ -284,4 +257,18 @@ bool Weapon::CheckLineToSphereCollision(const VECTOR& lineStart, const VECTOR& l
     VECTOR closestPoint = VAdd(lineStart, VScale(lineDir, t));
     float distance = VSize(VSub(spherePos, closestPoint));
     return distance <= (sphereRadius + capsuleRadius);
+}
+
+bool IsHitSpheres(VECTOR pos1, float radius1,
+    VECTOR pos2, float radius2)
+{
+    float radius = radius1 + radius2;
+
+    float dx = pos1.x - pos2.x;
+    float dy = pos1.y - pos2.y;
+    float dz = pos1.z - pos2.z;
+
+    float dis = dx * dx + dy * dy + dz * dz;
+
+    return dis <= (radius * radius);
 }

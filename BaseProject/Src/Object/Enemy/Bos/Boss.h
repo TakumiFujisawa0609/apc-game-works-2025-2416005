@@ -65,6 +65,11 @@ public:
     int GetHP() const { return hp_; }
     bool CanBeHit() const;
 
+    VECTOR GetHitCenter() const;
+
+    VECTOR GetHitPos() const;
+    float  GetHitRadius() const;
+
 private:
 
     void ChangeState(STATE newState);
@@ -80,7 +85,8 @@ private:
 
     float radius_ = 100.0f;
     int modelId_ = -1;
-    int hp_ = 100;  // 体力
+    int hp_ = 5;  // 体力
+    const int maxHp_ = 100; // 最大HP (Initで設定)
 
     // 攻撃関連（フレーム単位で管理、Slime と同様の方式）
     bool isAttacking_ = false;     // 攻撃中かどうか
@@ -100,4 +106,6 @@ private:
 
     VECTOR Pos_;
     VECTOR Angels_;
+
+    bool isHitInThisFrame_ = false; // 今フレームで武器に当たったかどうか
 };

@@ -56,6 +56,8 @@ void Boss::Update()
 {
 	if (!isAlive) return;
 
+	isHitInThisFrame_ = false;
+
 	if (animationController_) {
 		animationController_->Update();
 	}
@@ -88,13 +90,30 @@ void Boss::Draw()
 		MV1DrawModel(modelId_);
 	}
 
+	// ?? 変更: ヒットフラグに基づいて色を決定
+	unsigned int lineColor = GetColor(0, 255, 0); // 通常: 緑
+	unsigned int fillColor = GetColor(0, 128, 0); // 通常: 濃い緑
+
+	if (isHitInThisFrame_) {
+		lineColor = GetColor(255, 0, 0); // ヒット時: 赤
+		fillColor = GetColor(128, 0, 0); // ヒット時: 濃い赤
+	}
+
+	// Y軸方向に上げるオフセット量 (この値を調整して高さを変える)
+	const float sphereOffsetY = 50.0f; // 単位はゲームのスケールに合わせて調整してください
+
+	// 球体の描画位置を計算: 現在の Pos_ から Y 軸方向 (上方向) に持ち上げる
+	VECTOR sphereDrawPos = Pos_;
+	sphereDrawPos.y += sphereOffsetY;
+
+
 	DrawSphere3D(
-		Pos_,           // 座標
-		GetRadius(),    // あたり判定半径
+		sphereDrawPos,
+		GetRadius(),
 		16,
-		GetColor(0, 255, 0),     // 外線
-		GetColor(0, 128, 0),     // 塗り
-		FALSE                    // 塗りつぶし無し
+		lineColor,
+		fillColor,
+		FALSE
 	);
 }
 
@@ -110,9 +129,15 @@ void Boss::Kill()
 
 void Boss::TakeDamage(int damage)
 {
+	if (!isAlive) return;
 	hp_ -= damage;
-	ChangeState(STATE::DAMAGE);
-	if (hp_ <= 0) {
+
+	damageStunTimer_ = damageStunMax_;
+
+	// HPが0以下になったら死亡
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
 		Kill();
 	}
 }
@@ -122,6 +147,8 @@ void Boss::OnHit(const VECTOR&)
 	// ここは被弾時の処理を追加したい場合に拡張できます（ノックバックなど）
 	// 現状は被弾で短時間スタンさせる挙動にしておきます
 	damageStunTimer_ = damageStunMax_;
+
+	isHitInThisFrame_ = true;
 }
 
 void Boss::ChangeState(STATE newState)
@@ -254,4 +281,20 @@ void Boss::UpdateDead()
 bool Boss::CanBeHit() const
 {
 	return isAlive;
+}
+
+VECTOR Boss::GetHitCenter() const
+{
+	VECTOR p = Pos_;
+	p.y += 50.0f; // 描画と完全一致させる
+	return p;
+}
+
+VECTOR Boss::GetHitPos() const
+{
+	return GetHitCenter();
+}
+float  Boss::GetHitRadius() const
+{
+	return GetRadius();
 }

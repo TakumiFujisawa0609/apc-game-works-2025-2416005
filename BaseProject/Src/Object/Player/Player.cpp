@@ -12,6 +12,7 @@
 #include "../../Scene/SceneManager.h"
 #include "../../Scene/GameOver.h"
 #include <EffekseerForDXLib.h>
+#include "../../Effect/EffekseerEffect.h"
 
 Player::Player(void) :
 animationController_(nullptr),
@@ -131,8 +132,8 @@ void Player::Init(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK6), 30.0f,
 		Application::PATH_MODEL + "Player/spin.mv1");
 
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACKS), 30.0f,
-		Application::PATH_MODEL + "Player/Sword And Shield Slash.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACKS), 60.0f,
+		Application::PATH_MODEL + "Player/Standing 2H Magic Attack 01.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), 30.0f,
 		Application::PATH_MODEL + "Player/Sword And Shield Slash.mv1");
@@ -223,6 +224,14 @@ void Player::Update(void)
 	weapon_->Update();
 
 	animationController_->Update();
+
+	if (isBranchHitActive_) {
+		branchHitLifeTime_ -= (1.0f / 60.0f);
+
+		if (branchHitLifeTime_ <= 0.0f) {
+			isBranchHitActive_ = false;
+		}
+	}
 }
 
 void Player::Draw(void)
@@ -293,114 +302,131 @@ void Player::Draw(void)
 		//DrawFormatString(gaugeX, gaugeY - 20, GetColor(255, 255, 255), "Stamina: %d / %d", dashTp, DASH_TP_MAX);
 	}
 
-	//// --- HPバー描画 ---
-	//const int barX = 50;      // HPバーの左上X座標
-	//const int barY = 50;      // HPバーの左上Y座標
-	//const int barWidth = 200; // HPバーの全体幅
-	//const int barHeight = 20; // HPバーの高さ
+	// --- HPバー描画 ---
+	const int barX = 50;      // HPバーの左上X座標
+	const int barY = 50;      // HPバーの左上Y座標
+	const int barWidth = 200; // HPバーの全体幅
+	const int barHeight = 20; // HPバーの高さ
 
-	//// HP割合を計算
-	//float hpRate = static_cast<float>(hp_) / maxHp_;
-	//if (hpRate < 0.0f) hpRate = 0.0f;
+	// HP割合を計算
+	float hpRate = static_cast<float>(hp_) / maxHp_;
+	if (hpRate < 0.0f) hpRate = 0.0f;
 
-	//// 枠（背景）
-	//DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(80, 80, 80), TRUE);
+	// 枠（背景）
+	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(80, 80, 80), TRUE);
 
-	//// HPの残量部分（赤～緑）
-	//int r = 255 - static_cast<int>(255 * hpRate);
-	//int g = static_cast<int>(255 * hpRate);
-	//DrawBox(barX, barY, barX + static_cast<int>(barWidth * hpRate), barY + barHeight, GetColor(r, g, 0), TRUE);
+	// HPの残量部分（赤～緑）
+	int r = 255 - static_cast<int>(255 * hpRate);
+	int g = static_cast<int>(255 * hpRate);
+	DrawBox(barX, barY, barX + static_cast<int>(barWidth * hpRate), barY + barHeight, GetColor(r, g, 0), TRUE);
 
-	//// 枠線
-	//DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
+	// 枠線
+	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
 
 	//// 数値表示（例: HP 80 / 100）
 	//DrawFormatString(barX + 50, barY - 20, GetColor(255, 255, 255), "HP: %d / %d", hp_, maxHp_);
 
-	{
-		DrawFormatString(
-			0, 10, 0xffffff,
-			"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
-			AsoUtility::Rad2DegF(angles_.x),
-			AsoUtility::Rad2DegF(angles_.y),
-			AsoUtility::Rad2DegF(angles_.z)
-		);
+	//{
+	//	DrawFormatString(
+	//		0, 10, 0xffffff,
+	//		"プレイヤー角度　 ：(% .1f, % .1f, % .1f)",
+	//		AsoUtility::Rad2DegF(angles_.x),
+	//		AsoUtility::Rad2DegF(angles_.y),
+	//		AsoUtility::Rad2DegF(angles_.z)
+	//	);
 
-		DrawFormatString(
-			0, 30, 0xffffff,
-			"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
-			pos_.x, pos_.y, pos_.z
-		);
+	//	DrawFormatString(
+	//		0, 30, 0xffffff,
+	//		"プレイヤー座標　 ：(%.1f, %.1f, %.1f)",
+	//		pos_.x, pos_.y, pos_.z
+	//	);
 
-		DrawFormatString(
-			0, 50, 0xffffff,
-			"ジャンプ中　　　 ：%s",
-			isJump_ ? "Yes" : "No"
-		);
+	//	DrawFormatString(
+	//		0, 50, 0xffffff,
+	//		"ジャンプ中　　　 ：%s",
+	//		isJump_ ? "Yes" : "No"
+	//	);
 
-		DrawFormatString(
-			0, 90, 0xffffff,
-			"攻撃中: %s",
-			isAtack_ ? "Yes" : "No"
-		);
+	//	DrawFormatString(
+	//		0, 90, 0xffffff,
+	//		"攻撃中: %s",
+	//		isAtack_ ? "Yes" : "No"
+	//	);
 
-		//DrawFormatString(
-		//	0, 150, 0xffffff,
-		//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
-		//);
+	//	//DrawFormatString(
+	//	//	0, 150, 0xffffff,
+	//	//	"こちらが　濃厚とんこつ豚無双さんの濃厚無双ラーメン　海苔トッピングですうっひょ～～～～～～！着席時　コップに水垢が付いていたのを見て大きな声を出したら　店主さんからの誠意でチャーシューをサービスしてもらいました俺の動画次第でこの店潰すことだって出来るんだぞってことでいただきま～～～～す！まずはスープからコラ～！これでもかって位ドロドロの濃厚スープの中には虫が入っており　怒りのあまり卓上調味料を全部倒してしまいました～！すっかり店側も立場を弁え　誠意のチャーシュー丼を貰った所で	お次に　圧倒的存在感の極太麺を	啜る～！　殺すぞ～！ワシワシとした触感の麺の中には、髪の毛が入っておりさすがのSUSURUも　厨房に入って行ってしまいました～！ちなみに、店主さんが土下座している様子は　ぜひサブチャンネルを御覧ください"
+	//	//);
 
-		// 攻撃段数の表示
-		if (isAtack_) {
-			DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: %d段目", attackStep_);
-		}
-		else {
-			DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: なし");
-		}
+	//	// 攻撃段数の表示
+	//	if (isAtack_) {
+	//		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: %d段目", attackStep_);
+	//	}
+	//	else {
+	//		DrawFormatString(0, 170, GetColor(255, 255, 0), "攻撃段数: なし");
+	//	}
 
-		{
-			const int indX = 880; const int indY = 8;
-			const int indW = 260; const int indH = 72;
+	//	{
+	//		const int indX = 880; const int indY = 8;
+	//		const int indW = 260; const int indH = 72;
 
-			// 背景と枠
-			DrawBox(indX, indY, indX + indW, indY + indH, GetColor(20, 20, 20), TRUE);
-			DrawBox(indX, indY, indX + indW, indY + indH, GetColor(255, 255, 255), FALSE);
+	//		// 背景と枠
+	//		DrawBox(indX, indY, indX + indW, indY + indH, GetColor(20, 20, 20), TRUE);
+	//		DrawBox(indX, indY, indX + indW, indY + indH, GetColor(255, 255, 255), FALSE);
 
-			// 現在の入力／バッファ状態を取得
-			bool attackDown = (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) != 0;
-			bool attackBuffered = (attackInputBuffer_ == 1);
-			bool branchDown = (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down) != 0;
-			bool branchBuffered = isBranchAttack_;
+	//		// 現在の入力／バッファ状態を取得
+	//		bool attackDown = (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down) != 0;
+	//		bool attackBuffered = (attackInputBuffer_ == 1);
+	//		bool branchDown = (KEY::GetIns().GetInfo(KEY_TYPE::HASEI).down) != 0;
+	//		bool branchBuffered = isBranchAttack_;
 
-			// 色決め（Buffered -> 緑、Down -> 黄、None -> グレー）
-			int cAttack = attackBuffered ? GetColor(0, 200, 0) : attackDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
-			int cBranch = branchBuffered ? GetColor(0, 200, 0) : branchDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
+	//		// 色決め（Buffered -> 緑、Down -> 黄、None -> グレー）
+	//		int cAttack = attackBuffered ? GetColor(0, 200, 0) : attackDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
+	//		int cBranch = branchBuffered ? GetColor(0, 200, 0) : branchDown ? GetColor(255, 200, 0) : GetColor(120, 120, 120);
 
-			// 見出し
-			DrawFormatString(indX + 8, indY + 6, GetColor(255, 255, 255), "Command Buffer");
+	//		// 見出し
+	//		DrawFormatString(indX + 8, indY + 6, GetColor(255, 255, 255), "Command Buffer");
 
-			// 攻撃コマンド状態
-			if (attackBuffered) {
-				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Buffered");
-			}
-			else if (attackDown) {
-				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Down");
-			}
-			else {
-				DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : None");
-			}
+	//		// 攻撃コマンド状態
+	//		if (attackBuffered) {
+	//			DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Buffered");
+	//		}
+	//		else if (attackDown) {
+	//			DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : Down");
+	//		}
+	//		else {
+	//			DrawFormatString(indX + 8, indY + 28, cAttack, "Attack : None");
+	//		}
 
-			// 派生コマンド状態
-			if (branchBuffered) {
-				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Buffered");
-			}
-			else if (branchDown) {
-				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Down");
-			}
-			else {
-				DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : None");
-			}
-		}
-	}
+	//		// 派生コマンド状態
+	//		if (branchBuffered) {
+	//			DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Buffered");
+	//		}
+	//		else if (branchDown) {
+	//			DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : Down");
+	//		}
+	//		else {
+	//			DrawFormatString(indX + 140, indY + 28, cBranch, "Branch : None");
+	//		}
+	//	}
+	//}
+
+	//if (isBranchHitActive_) {
+	//	DrawSphere3D(
+	//		branchHitPos_,
+	//		branchHitRadius_,
+	//		16,
+	//		GetColor(255, 0, 0),
+	//		GetColor(255, 0, 0),
+	//		FALSE
+	//	);
+	//}
+
+	//DrawFormatString(
+	//	0, 200, GetColor(255, 255, 255),
+	//	"BranchPos : %.1f %.1f %.1f",
+	//	branchHitPos_.x, branchHitPos_.y, branchHitPos_.z
+	//);
 }
 
 void Player::Release(void)
@@ -788,6 +814,10 @@ void Player::ProcessAtack(void)
 {
 	isAttackStartedThisFrame = false;
 
+	const float BRANCH_HIT_RADIUS = 12000.0f;   // クソデカ
+	const float BRANCH_HIT_DISTANCE = 1000.0f; // プレイヤー前方
+	const int   BRANCH_HIT_TIME = 5;          // 5フレームだけ有効
+
 	if (KEY::GetIns().GetInfo(KEY_TYPE::ATTACK).down && attackStep_ == 0 && !isAtack_) {
 		attackStep_ = 1;
 		isAtack_ = true;
@@ -829,24 +859,79 @@ void Player::ProcessAtack(void)
 				isBranchAttack_ = false;
 				isAtack_ = true;
 
+				VECTOR forward = VGet(-sinf(angles_.y), 0.0f, -cosf(angles_.y));
+				forward = VNorm(forward);
+
+				// ★ ここだけで決める
+				branchHitPos_ = VAdd(pos_, VScale(forward, 100.0f));
+				branchHitPos_.y += 60.0f;
+
+				branchHitRadius_ = 120.0f;
+				branchHitLifeTime_ = 5.0f;
+				isBranchHitActive_ = true;
+
+				// ★ エフェクトも同じ座標
+
+				if (branchType_ == 1) {
+					EffekseerEffect::GetInstance()->PlayComboEffect(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
+				if (branchType_ == 2) {
+					EffekseerEffect::GetInstance()->PlayComboEffect2(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
+				if (branchType_ == 3) {
+					EffekseerEffect::GetInstance()->PlayComboEffect3(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
+				if (branchType_ == 4) {
+					EffekseerEffect::GetInstance()->PlayComboEffect4(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
+				if (branchType_ == 5) {
+					EffekseerEffect::GetInstance()->PlayComboEffect5(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
+				if (branchType_ == 6) {
+					EffekseerEffect::GetInstance()->PlayComboEffect6(
+						branchHitPos_,
+						angles_.y
+					);
+				}
+
 				switch (branchType_) {
 				case 1:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				case 2:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK2_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				case 3:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK3_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				case 4:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK4_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				case 5:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK5_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				case 6:
-					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK6_BRANCH), false);
+					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACKS), false);
 					break;
 				default:
 					animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK1_BRANCH), false);
@@ -1101,19 +1186,17 @@ void Player::PlayEffectAt(const VECTOR& pos)
 	}
 }
 
-//void Player::PlayEffectAt(const VECTOR& pos, const VECTOR& dir)
-//{
-//	if (efectslashId_ == -1) return;
-//	// エフェクトを再生してハンドルを得る
-//	int effHandle = PlayEffekseer3DEffect(efectslashId_);
-//	if (effHandle != -1)
-//	{
-//		// 再生ハンドルの位置を設定
-//		SetEffekseer3DEffectPosition(effHandle, pos);
-//
-//		// 方向に応じた回転を設定
-//		VECTOR up = VGet(0.0f, 1.0f, 0.0f);
-//		MATRIX rotMat = MGetRotDir(dir, up);
-//		SetEffekseer3DEffectRotation(effHandle, rotMat);
-//	}
-//}
+bool Player::IsBranchHitActive() const
+{
+	return isBranchHitActive_;
+}
+
+VECTOR Player::GetBranchHitPos() const
+{
+	return branchHitPos_;
+}
+
+float Player::GetBranchHitRadius() const
+{
+	return branchHitRadius_;
+}
